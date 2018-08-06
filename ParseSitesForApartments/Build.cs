@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ParseSitesForApartments
+﻿namespace ParseSitesForApartments
 {
-  class Build
+  public class Build
   {
+    public string Adress { get; set; }
+    public string Metro { get; set; }
+    public string CountRoom { get; set; }
+    public int Price { get; set; }
+    public string Square { get; set; }
+    public string Floor { get; set; }
   }
 }
