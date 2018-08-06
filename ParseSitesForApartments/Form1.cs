@@ -53,7 +53,8 @@ namespace ParseSitesForApartments
               build.Floor = aboutBuild[2];
 
               var adress = adresses[k];
-              var metro = adress.ChildNodes[2].NodeValue.Trim();
+              build.Metro = adress.ChildNodes[2].NodeValue.Trim();
+              build.Distance = adresses[k].GetElementsByClassName("c-2")[0].TextContent;
               sw.WriteLine($@"{build.Adress};{build.Price};{build.CountRoom};{build.Square};{build.Floor}");
             }
           }
