@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Parser.Html;
+using ParseSitesForApartments.Sites;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -22,6 +23,9 @@ namespace ParseSitesForApartments
     private int pageMaz = 100;
     private void button1_Click(object sender, EventArgs e)
     {
+      var avito = new Avito();
+      avito.ParsingAll();
+      /*
       List<Build> list = new List<Build>();
       using (var webClient = new WebClient())
       {
@@ -99,14 +103,16 @@ namespace ParseSitesForApartments
           }
         }
       }
+      */
     }
 
     private void button2_Click(object sender, EventArgs e)
     {
-      /*
+
       using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
       {
         connection.Open();
+        /*
         using (var sr = new StreamReader(@"D:\BuldingData.csv"))
         {
           string line;
@@ -128,8 +134,32 @@ values('{district}','{street}','{number}','{bulding}','{buldingDate}','{repairDa
             command.ExecuteNonQuery();
           }
         }
+        */
+        /*
+        using (var sr = new StreamReader(@"D:\district.txt"))
+        {
+          string line;
+          while ((line = sr.ReadLine()) != null)
+          {
+            string insert = $@"insert into ParseBulding.dbo.District (ID, Name)
+values (newid(), '{line}')";
+            var command = new SqlCommand(insert, connection);
+            command.ExecuteNonQuery();
+          }
+        }
+        */
+        using (var sr = new StreamReader(@"D:\data.csv"))
+        {
+          string line;
+          while ((line = sr.ReadLine()) != null)
+          {
+            string insert = $@"insert into [ParseBulding].[dbo].[MainInfoAboutBulding] (Id, Number, Bulding, Letter, DistrictId, DateBulding, SeriesID, CountCommApartament, DateReconstruct, DateRepair, BuldingArea, LivingArea, NoLivingArea, Stairs, Storeys,Residents, MansardArea, HeatingCentral, ElectroCentral, GascCntral, FlatType, FlatNum, InternalNum, TepCreateDate, ManagCompanyId, Failure, RepairJob, LiftCount, BasementArea)
+values(newid())";
+            var command = new SqlCommand(insert, connection);
+            command.ExecuteNonQuery();
+          }
+        }
       }
-      */
     }
 
     private void button3_Click(object sender, EventArgs e)
@@ -605,7 +635,7 @@ values('{district}','{street}','{number}','{bulding}','{buldingDate}','{repairDa
               var rows = listing.GetElementsByClassName("row1");
               for (int j = 0; j < rows.Length; j++)
               {
-                if(rows[j].GetElementsByClassName("w-image").Length > 0 )
+                if (rows[j].GetElementsByClassName("w-image").Length > 0)
                 {
                   var divImage = rows[j].GetElementsByClassName("w-image")[0];
                   var divs = divImage.GetElementsByTagName("div");
@@ -613,7 +643,7 @@ values('{district}','{street}','{number}','{bulding}','{buldingDate}','{repairDa
                   square = rows[j].GetElementsByClassName("space-all")[0].TextContent;
 
                   var adr = rows[j].GetElementsByClassName("address-geo")[0].TextContent.Split(',');
-                  if(adr.Length == 3)
+                  if (adr.Length == 3)
                   {
                     street = adr[0] + " " + adr[1];
                     number = adr[2];
