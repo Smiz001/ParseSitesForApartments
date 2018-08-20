@@ -148,14 +148,161 @@ values (newid(), '{line}')";
           }
         }
         */
-        using (var sr = new StreamReader(@"D:\data.csv"))
+        /*
+        using (var sr = new StreamReader(@"D:\Manager Company.txt"))
         {
           string line;
           while ((line = sr.ReadLine()) != null)
           {
-            string insert = $@"insert into [ParseBulding].[dbo].[MainInfoAboutBulding] (Id, Number, Bulding, Letter, DistrictId, DateBulding, SeriesID, CountCommApartament, DateReconstruct, DateRepair, BuldingArea, LivingArea, NoLivingArea, Stairs, Storeys,Residents, MansardArea, HeatingCentral, ElectroCentral, GascCntral, FlatType, FlatNum, InternalNum, TepCreateDate, ManagCompanyId, Failure, RepairJob, LiftCount, BasementArea)
-values(newid())";
+            string insert = $@"insert into ParseBulding.dbo.ManageCompany (ID, Name)
+values (newid(), '{line}')";
             var command = new SqlCommand(insert, connection);
+            command.ExecuteNonQuery();
+          }
+        }
+        */
+        /*
+        using (var sr = new StreamReader(@"D:\Series.txt"))
+        {
+          string line;
+          while ((line = sr.ReadLine()) != null)
+          {
+            string insert = $@"insert into ParseBulding.dbo.Series (ID, Name)
+values (newid(), '{line}')";
+            var command = new SqlCommand(insert, connection);
+            command.ExecuteNonQuery();
+          }
+        }
+        */
+        using (var sr = new StreamReader(@"D:\data1.csv"))
+        {
+          string line;
+          sr.ReadLine();
+          string number = string.Empty;
+          string bulding = string.Empty;
+          string letter = string.Empty;
+          Guid district;
+          string dateBulding = string.Empty;
+          Guid series;
+          int countCommApartament = 0;
+          string dateReconstruct = string.Empty;
+          string dateRepair = string.Empty;
+          float buldingArea;
+          float livingArea;
+          float noLivingArea;
+          int stairs;
+          int storeys;
+          int residents;
+          float mansardArea;
+          short heatingCentral;
+          short electroCentral;
+          short gascCntral;
+          string flatType = string.Empty;
+          string flatNum = string.Empty;
+          int internalNum;
+          DateTime tepCreateDate;
+          Guid managCompanyId;
+          short failure;
+          string repairJob = string.Empty;
+          int liftCount;
+          float basementArea;
+
+
+          while ((line = sr.ReadLine()) != null)
+          {
+            var ar = line.Split(';');
+
+            if (!string.IsNullOrEmpty(ar[5]))
+            {
+              var ar1 = ar[5].Split(',');
+              foreach (var item in ar1)
+              {
+                countCommApartament += int.Parse(item);
+              }
+            }
+            string select = $@"SELECT [ID]
+FROM [ParseBulding].[dbo].[District]
+WHERE Name = '{ar[4]}'";
+            var command = new SqlCommand(select, connection);
+            district = Guid.Parse(command.ExecuteScalar().ToString());
+
+            var manageName = ar[24].Replace("\"", "");
+            select = $@"SELECT [Id]
+  FROM [ParseBulding].[dbo].[ManageCompany]
+  WHERE NAME = '{manageName}'";
+            command = new SqlCommand(select, connection);
+            managCompanyId = Guid.Parse(command.ExecuteScalar().ToString());
+
+            select = $@"SELECT [Id]
+  FROM [ParseBulding].[dbo].[Series]
+  WHERE NAME ='{ar[6]}'";
+            command = new SqlCommand(select, connection);
+            series = Guid.Parse(command.ExecuteScalar().ToString());
+
+            string insert = $@"INSERT INTO [dbo].[MainInfoAboutBulding]
+           ([Id]
+           ,[Street]
+           ,[Number]
+           ,[Bulding]
+           ,[Letter]
+           ,[DistrictId]
+           ,[DateBulding]
+           ,[SeriesID]
+           ,[CountCommApartament]
+           ,[DateReconstruct]
+           ,[DateRepair]
+           ,[BuldingArea]
+           ,[LivingArea]
+           ,[NoLivingArea]
+           ,[Stairs]
+           ,[Storeys]
+           ,[Residents]
+           ,[MansardArea]
+           ,[HeatingCentral]
+           ,[HotWaterCentral]
+           ,[ElectroCentral]
+           ,[GascCntral]
+           ,[FlatType]
+           ,[FlatNum]
+           ,[InternalNum]
+           ,[TepCreateDate]
+           ,[ManagCompanyId]
+           ,[Failure]
+           ,[RepairJob]
+           ,[LiftCount])
+     VALUES
+           (newid()
+           ,'{ar[0]}'
+           ,'{ar[1]}'
+           ,'{ar[2]}'
+           ,'{ar[3]}'
+           ,'{district}'
+           ,'{ar[7]}'
+           ,'{series}'
+           ,{countCommApartament}
+           ,'{ar[8]}'
+           ,'{ar[26]}'
+           ,{(string.IsNullOrEmpty(ar[9]) ? 0.ToString() : ar[9])}
+           ,{(string.IsNullOrEmpty(ar[10]) ? 0.ToString() : ar[10])}
+           ,{(string.IsNullOrEmpty(ar[11]) ? 0.ToString() : ar[11])}
+           ,{(string.IsNullOrEmpty(ar[12]) ? 0.ToString() : ar[12])}
+           ,{(string.IsNullOrEmpty(ar[13]) ? 0.ToString() : ar[13])}
+           ,{(string.IsNullOrEmpty(ar[14]) ? 0.ToString() : ar[14])}
+           ,{(string.IsNullOrEmpty(ar[15]) ? 0.ToString() : ar[15])}
+           ,{(string.IsNullOrEmpty(ar[16]) ? 0.ToString() : ar[16])}
+           ,{(string.IsNullOrEmpty(ar[17]) ? 0.ToString() : ar[17])}
+           ,{(string.IsNullOrEmpty(ar[18]) ? 0.ToString() : ar[18])}
+           ,{(string.IsNullOrEmpty(ar[19]) ? 0.ToString() : ar[19])}
+           ,'{ar[20]}'
+           ,'{ar[21]}'
+           ,{(string.IsNullOrEmpty(ar[22]) ? 0.ToString() : ar[22])}
+           ,'{ar[23]}'
+           ,'{managCompanyId}'
+           ,{(string.IsNullOrEmpty(ar[25]) ? 0.ToString() : ar[25])}
+           ,'{ar[27]}'
+           ,{(string.IsNullOrEmpty(ar[28]) ? 0.ToString() : ar[28])})";
+
+            command = new SqlCommand(insert, connection);
             command.ExecuteNonQuery();
           }
         }
@@ -669,6 +816,11 @@ values(newid())";
           }
         }
       }
+    }
+
+    private void button10_Click(object sender, EventArgs e)
+    {
+
     }
   }
 }
