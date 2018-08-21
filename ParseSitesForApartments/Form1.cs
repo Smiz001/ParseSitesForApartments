@@ -823,27 +823,48 @@ WHERE Name = '{ar[4]}'";
     private void button10_Click(object sender, EventArgs e)
     {
       var yandex = new Yandex();
-      var doc1 = yandex.SearchObjectByAddress("Санкт-Петербург 10-я Красноармейская улица, 23");
-      using (StreamWriter sw = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
+      using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
       {
-        sw.WriteLine(doc1);
+        connection.Open();
+        string select = $@"select [Street],[Number],[Bulding],[Letter] 
+from [dbo].[MainInfoAboutBulding]";
+
+        var command = new SqlCommand(select, connection);
+        var reader = command.ExecuteReader();
+        string address = string.Empty;
+        while(reader.Read())
+        {
+          var street = reader.GetString(0);
+          var number = reader.GetString(1);
+          var bulding = reader.GetString(2);
+          var letter = reader.GetString(3);
+
+          address = $@"Санкт-Петербург {street}, {number}к{bulding} лит.{letter}";
+        }
+
+        var doc1 = yandex.SearchObjectByAddress("Санкт-Петербург 10-я Красноармейская улица, 23");
+        using (var sw = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
+        {
+          sw.WriteLine(doc1);
+        }
+
+        XmlDocument doc = new XmlDocument();
+        doc.Load(@"D:\Coord.xml");
+        var root = doc.DocumentElement;
+        var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
+        var featureMember = GeoObjectCollection.ChildNodes[1];
+        var GeoObject = featureMember.ChildNodes[0];
+        var Point = GeoObject.ChildNodes[4];
+        var coor = Point.InnerText.Split(' ');
+        double x = float.Parse(coor[1].Replace(".", ","));
+        double y = float.Parse(coor[0].Replace(".", ","));
+
+        //string insert = $@"insert into [dbo].[MainInfoAboutBulding]";
+        //command = new SqlCommand(insert, connection);
+        //command.ExecuteNonQuery();
+
+        File.Delete(@"D:\Coord.xml");
       }
-
-      XmlDocument doc = new XmlDocument();
-      doc.Load(@"D:\Coord.xml");
-      var root = doc.DocumentElement;
-      var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
-      var featureMember = GeoObjectCollection.ChildNodes[1];
-      var GeoObject = featureMember.ChildNodes[0];
-      var Point = GeoObject.ChildNodes[4];
-      var coor = Point.InnerText.Split(' ');
-      double x = float.Parse(coor[1].Replace(".",","));
-      double y = float.Parse(coor[0].Replace(".", ","));
-
-      File.Delete(@"D:\Coord.xml");
-
-      //var GeoObjectCollection = ymaps.Element("GeoObjectCollection");
-      // var metaDataProperty = GeoObjectCollection.Element("metaDataProperty");
     }
   }
 }
