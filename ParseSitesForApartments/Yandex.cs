@@ -9,11 +9,11 @@ namespace ParseSitesForApartments
 {
   public class Yandex
   {
-    public XDocument SearchObjectByAddress(string Address)
+    public string SearchObjectByAddress(string Address)
     {
       string urlXml = "http://geocode-maps.yandex.ru/1.x/?geocode=" + Address + "&results=1";
       Request request = new Request();
-      return request.GetResponseToXDocument(request.GET(urlXml));
+      return request.GetResponseToString(request.GET(urlXml));
     }
   }
 
