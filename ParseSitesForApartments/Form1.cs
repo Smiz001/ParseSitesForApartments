@@ -108,7 +108,7 @@ namespace ParseSitesForApartments
 
     private void button2_Click(object sender, EventArgs e)
     {
-
+      /*
       using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
       {
         connection.Open();
@@ -173,7 +173,7 @@ values (newid(), '{line}')";
             command.ExecuteNonQuery();
           }
         }
-        */
+        
         using (var sr = new StreamReader(@"D:\data1.csv"))
         {
           string line;
@@ -307,6 +307,7 @@ WHERE Name = '{ar[4]}'";
           }
         }
       }
+    */
     }
 
     private void button3_Click(object sender, EventArgs e)
@@ -820,7 +821,11 @@ WHERE Name = '{ar[4]}'";
 
     private void button10_Click(object sender, EventArgs e)
     {
-
+      var yandex = new Yandex();
+      var doc = yandex.SearchObjectByAddress("Санкт-Петербург 10-я Красноармейская улица, 23");
+      var ymaps = doc.Nodes();
+      //var GeoObjectCollection = ymaps.Element("GeoObjectCollection");
+     // var metaDataProperty = GeoObjectCollection.Element("metaDataProperty");
     }
   }
 }
