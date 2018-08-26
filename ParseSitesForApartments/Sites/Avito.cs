@@ -18,21 +18,32 @@ namespace ParseSitesForApartments.Sites
       using (var sw = new StreamWriter(@"D:\AvitoProdam.csv", true, System.Text.Encoding.UTF8))
       {
         sw.WriteLine($@"Улица;Номер дома;Станция метро;Расстояние до метро;Цена;Кол-во комнат;общая площадь;Этаж;Дата постройик дома;Дата кап. ремонта");
-        ParsingStudio(sw);
-        ParsingOneRoom(sw);
-        ParsingTwoRoom(sw);
-        ParsingThreeRoom(sw);
-        ParsingFourRoom(sw);
-        ParsingFiveRoom(sw);
-        ParsingSixRoom(sw);
-        ParsingSevenRoom(sw);
-        ParsingEightRoom(sw);
-        ParsingNineRoom(sw);
-        ParsingMoreNineRoom(sw);
+        using (var swInvalid = new StreamWriter(@"D:\AvitoProdamInvalidHtml.txt", true, System.Text.Encoding.UTF8))
+        {
+          try
+          {
+            ParsingStudio(sw, swInvalid);
+            ParsingOneRoom(sw, swInvalid);
+            ParsingTwoRoom(sw, swInvalid);
+            ParsingThreeRoom(sw, swInvalid);
+            ParsingFourRoom(sw, swInvalid);
+            ParsingFiveRoom(sw, swInvalid);
+            ParsingSixRoom(sw, swInvalid);
+            ParsingSevenRoom(sw, swInvalid);
+            ParsingEightRoom(sw, swInvalid);
+            ParsingNineRoom(sw, swInvalid);
+            ParsingMoreNineRoom(sw, swInvalid);
+          }
+          catch (WebException ex)
+          {
+            var e = ex;
+            var result = e.HResult;
+          }
+        }
       }
     }
 
-    public void ParsingStudio(StreamWriter sw)
+    public void ParsingStudio(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -46,11 +57,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("Студия", sw, document);
+          ParsingSheet("Студия", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingOneRoom(StreamWriter sw)
+    public void ParsingOneRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -64,11 +75,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("1 км. кв.", sw, document);
+          ParsingSheet("1 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingTwoRoom(StreamWriter sw)
+    public void ParsingTwoRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -82,11 +93,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("2 км. кв.", sw, document);
+          ParsingSheet("2 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingThreeRoom(StreamWriter sw)
+    public void ParsingThreeRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -100,11 +111,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("3 км. кв.", sw, document);
+          ParsingSheet("3 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingFourRoom(StreamWriter sw)
+    public void ParsingFourRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -118,11 +129,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("4 км. кв.", sw, document);
+          ParsingSheet("4 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingFiveRoom(StreamWriter sw)
+    public void ParsingFiveRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -136,11 +147,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("5 км. кв.", sw, document);
+          ParsingSheet("5 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingSixRoom(StreamWriter sw)
+    public void ParsingSixRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -154,11 +165,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("6 км. кв.", sw, document);
+          ParsingSheet("6 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingSevenRoom(StreamWriter sw)
+    public void ParsingSevenRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -172,11 +183,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("7 км. кв.", sw, document);
+          ParsingSheet("7 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingEightRoom(StreamWriter sw)
+    public void ParsingEightRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -190,11 +201,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("8 км. кв.", sw, document);
+          ParsingSheet("8 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingNineRoom(StreamWriter sw)
+    public void ParsingNineRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -208,11 +219,11 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("9 км. кв.", sw, document);
+          ParsingSheet("9 км. кв.", sw, document, swInvalid);
         }
       }
     }
-    public void ParsingMoreNineRoom(StreamWriter sw)
+    public void ParsingMoreNineRoom(StreamWriter sw, StreamWriter swInvalid)
     {
       using (var webClient = new WebClient())
       {
@@ -226,12 +237,12 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet(">9 км. кв.", sw, document);
+          ParsingSheet(">9 км. кв.", sw, document, swInvalid);
         }
       }
     }
 
-    private void ParsingSheet(string typeRoom, StreamWriter sw, IHtmlDocument doc)
+    private void ParsingSheet(string typeRoom, StreamWriter sw, IHtmlDocument doc, StreamWriter swInvalid)
     {
       var elem = doc.GetElementsByClassName("item_table-header");
       var adresses = doc.GetElementsByClassName("address");
@@ -322,12 +333,31 @@ namespace ParseSitesForApartments.Sites
           if (adArr.Length > 1)
             build.Number = adArr[adArr.Length - 1].Trim();
         }
-        string a;
-        if (string.IsNullOrEmpty(build.Street))
-          a = "";
+        //string a;
+        //if (string.IsNullOrEmpty(build.Street))
+        //  a = "";
 
         //build.Street = build.Street.Replace("проспект", "").Replace("пр.", "").Replace("пр-т", "").Replace("ул.", "").Replace("улица", "").Replace("ул", "").Replace("Санкт-Петербург", "").Replace("пр-кт", "").Replace("Колпино", "").Replace("Красное Село", "").Trim();
+        
+
+        int num;
+        if (int.TryParse(build.Street, out num))
+        {
+          if (string.IsNullOrWhiteSpace(build.Metro))
+            break;
+        }
+        if (string.IsNullOrWhiteSpace(build.Street))
+          break;
+
         build.Street = build.Street.Replace("проспект", "").Replace("пр.", "").Replace("пр-т", "").Replace("ул.", "").Replace("улица", "").Replace("ул", "").Replace("пр-кт", "").Replace("ул ", "").Trim();
+
+
+        if (build.Number.Contains("Санкт-Петербург"))
+        {
+          string invalidHtml = adress.InnerHtml;
+          swInvalid.WriteLine(invalidHtml);
+          break;
+        }
 
         sw.WriteLine($@"{build.Street};{build.Number};{build.Metro};{build.Distance};{build.Price};{build.CountRoom};{build.Square};{build.Floor};{build.DateBuild};{build.DateRepair}");
       }
