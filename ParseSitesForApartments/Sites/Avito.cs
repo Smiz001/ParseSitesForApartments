@@ -8,12 +8,12 @@ using System.Threading;
 
 namespace ParseSitesForApartments.Sites
 {
-  public class Avito
+  public class Avito: BaseParse
   {
     private int minPage = 1;
     private int maxPage = 100;
 
-    public void ParsingAll()
+    public override void ParsingAll()
     {
       using (var sw = new StreamWriter(@"D:\AvitoProdam.csv", true, System.Text.Encoding.UTF8))
       {
