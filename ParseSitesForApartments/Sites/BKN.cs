@@ -1,14 +1,12 @@
-﻿using AngleSharp.Dom.Html;
+﻿using AngleSharp.Dom;
+using AngleSharp.Dom.Html;
 using AngleSharp.Parser.Html;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -16,15 +14,18 @@ namespace ParseSitesForApartments.Sites
   {
     private int minPage = 1;
     private int maxPage = 100;
-    private object webClient;
 
     public override void ParsingAll()
     {
       var random = new Random();
       using (var sw = new StreamWriter(@"D:\BKNProdam.csv", true, System.Text.Encoding.UTF8))
       {
-
-
+        ParsingStudio(sw);
+        ParsingOneRoom(sw);
+        ParsingTwoRoom(sw);
+        ParsingThreeRoom(sw);
+        ParsingFourRoom(sw);
+        ParsingFiveAndMoreRoom(sw);
       }
     }
 
@@ -42,7 +43,8 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("Студия", sw, document);
+          if (!ParsingSheet("Студия", sw, document))
+            return;
         }
       }
     }
@@ -61,7 +63,8 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("1 км. кв.", sw, document);
+          if(!ParsingSheet("1 км. кв.", sw, document))
+             return;
         }
       }
     }
@@ -80,7 +83,8 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("2 км. кв.", sw, document);
+          if (!ParsingSheet("2 км. кв.", sw, document))
+            return;
         }
       }
     }
@@ -99,7 +103,8 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("3 км. кв.", sw, document);
+          if (!ParsingSheet("3 км. кв.", sw, document))
+            return;
         }
       }
     }
@@ -118,7 +123,8 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("4 км. кв.", sw, document);
+          if (!ParsingSheet("4 км. кв.", sw, document))
+            return;
         }
       }
     }
@@ -137,95 +143,127 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          ParsingSheet("5 км. кв. и более", sw, document);
+          if (!ParsingSheet("5 км. кв. и более", sw, document))
+            return;
         }
       }
     }
 
-    private void ParsingSheet(string typeRoom, StreamWriter sw, IHtmlDocument document)
+    private bool ParsingSheet(string typeRoom, StreamWriter sw, IHtmlDocument document)
     {
-      string rooms = string.Empty;
-      string square = string.Empty;
+      var newApartment = document.GetElementsByClassName("main NewApartment");
+      var apartment = document.GetElementsByClassName("main Apartments");
+      if (newApartment.Length == 0 && apartment.Length == 0)
+        return false;
+
+      Parse(apartment, typeRoom, sw);
+      Parse(newApartment, typeRoom, sw);
+      return true;
+    }
+
+    private void Parse(IHtmlCollection<IElement> collection, string typeRoom, StreamWriter sw)
+    {
       string year = string.Empty;
-      string price = string.Empty;
-      string floor = string.Empty;
-      string street = string.Empty;
-      string number = string.Empty;
-      string metro = string.Empty;
       string distanceInMinute = string.Empty;
       string district = string.Empty;
       string building = string.Empty;
 
-      var newApartment = document.GetElementsByClassName("main NewApartment");
-      var apartment = document.GetElementsByClassName("main Apartments");
-      if (newApartment.Length == 0 && apartment.Length == 0)
-        return;
-
-      for (int j = 0; j < apartment.Length; j++)
+      for (int j = 0; j < collection.Length; j++)
       {
-        var priceDiv = apartment[j].GetElementsByClassName("price overflow");
+        string town = string.Empty;
+
+        var build = new Build();
+        build.CountRoom = typeRoom;
+
+        var priceDiv = collection[j].GetElementsByClassName("price overflow");
         if (priceDiv.Length == 0)
           break;
         else
         {
-          Regex regex = new Regex(@"(\d+\,\d+\sм2)|(\d+\sм2)");
-          var title = apartment[j].GetElementsByClassName("title")[0].TextContent;
-          square = regex.Match(title).Value;
-          rooms = title.Replace(square, "").Trim();
-          price = priceDiv[0].TextContent.Replace(" ", "").Replace("a", "");
+          var regex = new Regex(@"(\d+\,\d+\sм2)|(\d+\sм2)");
+          var title = collection[j].GetElementsByClassName("title")[0].TextContent;
+          build.Square = regex.Match(title).Value;
 
-          floor = apartment[j].GetElementsByClassName("floor overflow")[0].TextContent;
-          district = apartment[j].GetElementsByClassName("overflow")[2].TextContent;
-          street = apartment[j].GetElementsByClassName("overflow")[3].TextContent;
+          regex = new Regex(@"(\d+)");
+          var ms = regex.Matches(priceDiv[0].TextContent);
+          var price = int.Parse($"{ms[0].Value}{ms[1].Value}{ms[2].Value}");
+          build.Price = price;
+
+          regex = new Regex(@"(\d+)");
+          ms = regex.Matches(collection[j].GetElementsByClassName("floor overflow")[0].TextContent);
+          if(ms.Count>0)
+           build.Floor = ms[0].Value;
+          else
+            build.Floor = "";
+
+          district = collection[j].GetElementsByClassName("overflow")[2].TextContent;
+          build.Street = collection[j].GetElementsByClassName("overflow")[3].TextContent;
 
           regex = new Regex(@"(д. \d+)|(\d+)");
-          number = regex.Match(street).Value;
+          build.Number = regex.Match(build.Street).Value.Replace("д. ", "");
 
           regex = new Regex(@"(к. \d+)");
-          building = regex.Match(street).Value;
+          building = regex.Match(build.Street).Value.Replace("к. ", "");
+
+          if(build.Street.Contains("Сестрорецк г."))
+          {
+            town = "Сестрорецк г.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else if(build.Street.Contains("Шушары пос."))
+          {
+            town = "Шушары пос.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else if (build.Street.Contains("Петергоф г."))
+          {
+            town = "Петергоф г.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else if (build.Street.Contains("Пушкин г."))
+          {
+            town = "Пушкин г.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else if (build.Street.Contains("Зеленогорск г."))
+          {
+            town = "Зеленогорск г.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else if (build.Street.Contains("Металлострой пос."))
+          {
+            town = "Металлострой пос.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else
+            town = "Санкт-Петербург";
 
           if (string.IsNullOrEmpty(building))
-            street = street.Replace(number, "").Replace(",", "").Replace(" ", "");
+          {
+            if (string.IsNullOrEmpty(build.Number))
+              build.Street = build.Street.Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
+            else
+              build.Street = build.Street.Replace(build.Number, "").Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
+          }
+          else if(string.IsNullOrEmpty(build.Number))
+          {
+            if (string.IsNullOrEmpty(building))
+              build.Street = build.Street.Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
+            else
+              build.Street = build.Street.Replace(building, "").Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
+          }
           else
-            street = street.Replace(number, "").Replace(building, "").Replace(",", "").Replace(" ", "");
+            build.Street = build.Street.Replace(build.Number, "").Replace(building, "").Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
 
-          metro = apartment[j].GetElementsByClassName("subwaystring")[0].TextContent;
+          build.Metro = collection[j].GetElementsByClassName("subwaystring")[0].TextContent;
 
-          sw.WriteLine($@"{street};{number};{building};{rooms};{square};{price};{floor};{metro}");
-        }
-      }
+          regex = new Regex(@"(\d+\sмин.\sна\sтранспорте)|(\d+\sмин\.\sпешком)");
+          build.Distance = regex.Match(build.Metro).Value;
 
-      for (int j = 0; j < newApartment.Length; j++)
-      {
-        var priceDiv = newApartment[j].GetElementsByClassName("price overflow");
-        if (priceDiv.Length == 0)
-          break;
-        else
-        {
-          Regex regex = new Regex(@"(\d+\,\d+\sм2)|(\d+\sм2)");
-          var title = apartment[j].GetElementsByClassName("title")[0].TextContent;
-          square = regex.Match(title).Value;
-          rooms = title.Replace(square, "").Trim();
-          price = priceDiv[0].TextContent.Replace(" ", "").Replace("a", "");
+          if (!string.IsNullOrWhiteSpace(build.Distance))
+            build.Metro = build.Metro.Replace(build.Distance, "").Replace("●", "").Replace(",", "").Trim();
 
-          floor = apartment[j].GetElementsByClassName("floor overflow")[0].TextContent;
-          district = apartment[j].GetElementsByClassName("overflow")[2].TextContent;
-          street = apartment[j].GetElementsByClassName("overflow")[3].TextContent;
-
-          regex = new Regex(@"(д. \d+)|(\d+)");
-          number = regex.Match(street).Value;
-
-          regex = new Regex(@"(к. \d+)");
-          building = regex.Match(street).Value;
-
-          if (string.IsNullOrEmpty(building))
-            street = street.Replace(number, "").Replace(",", "").Replace(" ", "");
-          else
-            street = street.Replace(number, "").Replace(building, "").Replace(",", "").Replace(" ", "");
-
-          metro = apartment[j].GetElementsByClassName("subwaystring")[0].TextContent;
-
-          sw.WriteLine($@"{street};{number};{building};{rooms};{square};{price};{floor};{metro}");
+          sw.WriteLine($@"{town};{build.Street};{build.Number};{building};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance}");
         }
       }
     }
