@@ -3,6 +3,7 @@ using ParseSitesForApartments.Sites;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -136,179 +137,179 @@ values('{district}','{street}','{number}','{bulding}','{buldingDate}','{repairDa
           }
         }
         */
-        /*
-        using (var sr = new StreamReader(@"D:\district.txt"))
+      /*
+      using (var sr = new StreamReader(@"D:\district.txt"))
+      {
+        string line;
+        while ((line = sr.ReadLine()) != null)
         {
-          string line;
-          while ((line = sr.ReadLine()) != null)
-          {
-            string insert = $@"insert into ParseBulding.dbo.District (ID, Name)
+          string insert = $@"insert into ParseBulding.dbo.District (ID, Name)
 values (newid(), '{line}')";
-            var command = new SqlCommand(insert, connection);
-            command.ExecuteNonQuery();
-          }
-        }
-        */
-        /*
-        using (var sr = new StreamReader(@"D:\Manager Company.txt"))
-        {
-          string line;
-          while ((line = sr.ReadLine()) != null)
-          {
-            string insert = $@"insert into ParseBulding.dbo.ManageCompany (ID, Name)
-values (newid(), '{line}')";
-            var command = new SqlCommand(insert, connection);
-            command.ExecuteNonQuery();
-          }
-        }
-        */
-        /*
-        using (var sr = new StreamReader(@"D:\Series.txt"))
-        {
-          string line;
-          while ((line = sr.ReadLine()) != null)
-          {
-            string insert = $@"insert into ParseBulding.dbo.Series (ID, Name)
-values (newid(), '{line}')";
-            var command = new SqlCommand(insert, connection);
-            command.ExecuteNonQuery();
-          }
-        }
-        
-        using (var sr = new StreamReader(@"D:\data1.csv"))
-        {
-          string line;
-          sr.ReadLine();
-          string number = string.Empty;
-          string bulding = string.Empty;
-          string letter = string.Empty;
-          Guid district;
-          string dateBulding = string.Empty;
-          Guid series;
-          int countCommApartament = 0;
-          string dateReconstruct = string.Empty;
-          string dateRepair = string.Empty;
-          float buldingArea;
-          float livingArea;
-          float noLivingArea;
-          int stairs;
-          int storeys;
-          int residents;
-          float mansardArea;
-          short heatingCentral;
-          short electroCentral;
-          short gascCntral;
-          string flatType = string.Empty;
-          string flatNum = string.Empty;
-          int internalNum;
-          DateTime tepCreateDate;
-          Guid managCompanyId;
-          short failure;
-          string repairJob = string.Empty;
-          int liftCount;
-          float basementArea;
-
-
-          while ((line = sr.ReadLine()) != null)
-          {
-            var ar = line.Split(';');
-
-            if (!string.IsNullOrEmpty(ar[5]))
-            {
-              var ar1 = ar[5].Split(',');
-              foreach (var item in ar1)
-              {
-                countCommApartament += int.Parse(item);
-              }
-            }
-            string select = $@"SELECT [ID]
-FROM [ParseBulding].[dbo].[District]
-WHERE Name = '{ar[4]}'";
-            var command = new SqlCommand(select, connection);
-            district = Guid.Parse(command.ExecuteScalar().ToString());
-
-            var manageName = ar[24].Replace("\"", "");
-            select = $@"SELECT [Id]
-  FROM [ParseBulding].[dbo].[ManageCompany]
-  WHERE NAME = '{manageName}'";
-            command = new SqlCommand(select, connection);
-            managCompanyId = Guid.Parse(command.ExecuteScalar().ToString());
-
-            select = $@"SELECT [Id]
-  FROM [ParseBulding].[dbo].[Series]
-  WHERE NAME ='{ar[6]}'";
-            command = new SqlCommand(select, connection);
-            series = Guid.Parse(command.ExecuteScalar().ToString());
-
-            string insert = $@"INSERT INTO [dbo].[MainInfoAboutBulding]
-           ([Id]
-           ,[Street]
-           ,[Number]
-           ,[Bulding]
-           ,[Letter]
-           ,[DistrictId]
-           ,[DateBulding]
-           ,[SeriesID]
-           ,[CountCommApartament]
-           ,[DateReconstruct]
-           ,[DateRepair]
-           ,[BuldingArea]
-           ,[LivingArea]
-           ,[NoLivingArea]
-           ,[Stairs]
-           ,[Storeys]
-           ,[Residents]
-           ,[MansardArea]
-           ,[HeatingCentral]
-           ,[HotWaterCentral]
-           ,[ElectroCentral]
-           ,[GascCntral]
-           ,[FlatType]
-           ,[FlatNum]
-           ,[InternalNum]
-           ,[TepCreateDate]
-           ,[ManagCompanyId]
-           ,[Failure]
-           ,[RepairJob]
-           ,[LiftCount])
-     VALUES
-           (newid()
-           ,'{ar[0]}'
-           ,'{ar[1]}'
-           ,'{ar[2]}'
-           ,'{ar[3]}'
-           ,'{district}'
-           ,'{ar[7]}'
-           ,'{series}'
-           ,{countCommApartament}
-           ,'{ar[8]}'
-           ,'{ar[26]}'
-           ,{(string.IsNullOrEmpty(ar[9]) ? 0.ToString() : ar[9])}
-           ,{(string.IsNullOrEmpty(ar[10]) ? 0.ToString() : ar[10])}
-           ,{(string.IsNullOrEmpty(ar[11]) ? 0.ToString() : ar[11])}
-           ,{(string.IsNullOrEmpty(ar[12]) ? 0.ToString() : ar[12])}
-           ,{(string.IsNullOrEmpty(ar[13]) ? 0.ToString() : ar[13])}
-           ,{(string.IsNullOrEmpty(ar[14]) ? 0.ToString() : ar[14])}
-           ,{(string.IsNullOrEmpty(ar[15]) ? 0.ToString() : ar[15])}
-           ,{(string.IsNullOrEmpty(ar[16]) ? 0.ToString() : ar[16])}
-           ,{(string.IsNullOrEmpty(ar[17]) ? 0.ToString() : ar[17])}
-           ,{(string.IsNullOrEmpty(ar[18]) ? 0.ToString() : ar[18])}
-           ,{(string.IsNullOrEmpty(ar[19]) ? 0.ToString() : ar[19])}
-           ,'{ar[20]}'
-           ,'{ar[21]}'
-           ,{(string.IsNullOrEmpty(ar[22]) ? 0.ToString() : ar[22])}
-           ,'{ar[23]}'
-           ,'{managCompanyId}'
-           ,{(string.IsNullOrEmpty(ar[25]) ? 0.ToString() : ar[25])}
-           ,'{ar[27]}'
-           ,{(string.IsNullOrEmpty(ar[28]) ? 0.ToString() : ar[28])})";
-
-            command = new SqlCommand(insert, connection);
-            command.ExecuteNonQuery();
-          }
+          var command = new SqlCommand(insert, connection);
+          command.ExecuteNonQuery();
         }
       }
-    */
+      */
+      /*
+      using (var sr = new StreamReader(@"D:\Manager Company.txt"))
+      {
+        string line;
+        while ((line = sr.ReadLine()) != null)
+        {
+          string insert = $@"insert into ParseBulding.dbo.ManageCompany (ID, Name)
+values (newid(), '{line}')";
+          var command = new SqlCommand(insert, connection);
+          command.ExecuteNonQuery();
+        }
+      }
+      */
+      /*
+      using (var sr = new StreamReader(@"D:\Series.txt"))
+      {
+        string line;
+        while ((line = sr.ReadLine()) != null)
+        {
+          string insert = $@"insert into ParseBulding.dbo.Series (ID, Name)
+values (newid(), '{line}')";
+          var command = new SqlCommand(insert, connection);
+          command.ExecuteNonQuery();
+        }
+      }
+
+      using (var sr = new StreamReader(@"D:\data1.csv"))
+      {
+        string line;
+        sr.ReadLine();
+        string number = string.Empty;
+        string bulding = string.Empty;
+        string letter = string.Empty;
+        Guid district;
+        string dateBulding = string.Empty;
+        Guid series;
+        int countCommApartament = 0;
+        string dateReconstruct = string.Empty;
+        string dateRepair = string.Empty;
+        float buldingArea;
+        float livingArea;
+        float noLivingArea;
+        int stairs;
+        int storeys;
+        int residents;
+        float mansardArea;
+        short heatingCentral;
+        short electroCentral;
+        short gascCntral;
+        string flatType = string.Empty;
+        string flatNum = string.Empty;
+        int internalNum;
+        DateTime tepCreateDate;
+        Guid managCompanyId;
+        short failure;
+        string repairJob = string.Empty;
+        int liftCount;
+        float basementArea;
+
+
+        while ((line = sr.ReadLine()) != null)
+        {
+          var ar = line.Split(';');
+
+          if (!string.IsNullOrEmpty(ar[5]))
+          {
+            var ar1 = ar[5].Split(',');
+            foreach (var item in ar1)
+            {
+              countCommApartament += int.Parse(item);
+            }
+          }
+          string select = $@"SELECT [ID]
+FROM [ParseBulding].[dbo].[District]
+WHERE Name = '{ar[4]}'";
+          var command = new SqlCommand(select, connection);
+          district = Guid.Parse(command.ExecuteScalar().ToString());
+
+          var manageName = ar[24].Replace("\"", "");
+          select = $@"SELECT [Id]
+FROM [ParseBulding].[dbo].[ManageCompany]
+WHERE NAME = '{manageName}'";
+          command = new SqlCommand(select, connection);
+          managCompanyId = Guid.Parse(command.ExecuteScalar().ToString());
+
+          select = $@"SELECT [Id]
+FROM [ParseBulding].[dbo].[Series]
+WHERE NAME ='{ar[6]}'";
+          command = new SqlCommand(select, connection);
+          series = Guid.Parse(command.ExecuteScalar().ToString());
+
+          string insert = $@"INSERT INTO [dbo].[MainInfoAboutBulding]
+         ([Id]
+         ,[Street]
+         ,[Number]
+         ,[Bulding]
+         ,[Letter]
+         ,[DistrictId]
+         ,[DateBulding]
+         ,[SeriesID]
+         ,[CountCommApartament]
+         ,[DateReconstruct]
+         ,[DateRepair]
+         ,[BuldingArea]
+         ,[LivingArea]
+         ,[NoLivingArea]
+         ,[Stairs]
+         ,[Storeys]
+         ,[Residents]
+         ,[MansardArea]
+         ,[HeatingCentral]
+         ,[HotWaterCentral]
+         ,[ElectroCentral]
+         ,[GascCntral]
+         ,[FlatType]
+         ,[FlatNum]
+         ,[InternalNum]
+         ,[TepCreateDate]
+         ,[ManagCompanyId]
+         ,[Failure]
+         ,[RepairJob]
+         ,[LiftCount])
+   VALUES
+         (newid()
+         ,'{ar[0]}'
+         ,'{ar[1]}'
+         ,'{ar[2]}'
+         ,'{ar[3]}'
+         ,'{district}'
+         ,'{ar[7]}'
+         ,'{series}'
+         ,{countCommApartament}
+         ,'{ar[8]}'
+         ,'{ar[26]}'
+         ,{(string.IsNullOrEmpty(ar[9]) ? 0.ToString() : ar[9])}
+         ,{(string.IsNullOrEmpty(ar[10]) ? 0.ToString() : ar[10])}
+         ,{(string.IsNullOrEmpty(ar[11]) ? 0.ToString() : ar[11])}
+         ,{(string.IsNullOrEmpty(ar[12]) ? 0.ToString() : ar[12])}
+         ,{(string.IsNullOrEmpty(ar[13]) ? 0.ToString() : ar[13])}
+         ,{(string.IsNullOrEmpty(ar[14]) ? 0.ToString() : ar[14])}
+         ,{(string.IsNullOrEmpty(ar[15]) ? 0.ToString() : ar[15])}
+         ,{(string.IsNullOrEmpty(ar[16]) ? 0.ToString() : ar[16])}
+         ,{(string.IsNullOrEmpty(ar[17]) ? 0.ToString() : ar[17])}
+         ,{(string.IsNullOrEmpty(ar[18]) ? 0.ToString() : ar[18])}
+         ,{(string.IsNullOrEmpty(ar[19]) ? 0.ToString() : ar[19])}
+         ,'{ar[20]}'
+         ,'{ar[21]}'
+         ,{(string.IsNullOrEmpty(ar[22]) ? 0.ToString() : ar[22])}
+         ,'{ar[23]}'
+         ,'{managCompanyId}'
+         ,{(string.IsNullOrEmpty(ar[25]) ? 0.ToString() : ar[25])}
+         ,'{ar[27]}'
+         ,{(string.IsNullOrEmpty(ar[28]) ? 0.ToString() : ar[28])})";
+
+          command = new SqlCommand(insert, connection);
+          command.ExecuteNonQuery();
+        }
+      }
+    }
+  */
     }
 
     private void button3_Click(object sender, EventArgs e)
@@ -566,113 +567,8 @@ WHERE Name = '{ar[4]}'";
 
     private void button7_Click(object sender, EventArgs e)
     {
-      int minPage = 1;
-      int maxPage = 1000;
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
-        {
-          connection.Open();
-          using (var sw = new StreamWriter(@"D:\BKNProdam.csv", true, System.Text.Encoding.UTF8))
-          {
-            string rooms = string.Empty;
-            string square = string.Empty;
-            string year = string.Empty;
-            string price = string.Empty;
-            string floor = string.Empty;
-            string street = string.Empty;
-            string number = string.Empty;
-            string metro = string.Empty;
-            string distanceInMinute = string.Empty;
-            string district = string.Empty;
-            string building = string.Empty;
-
-            for (int i = minPage; i < maxPage; i++)
-            {
-              Thread.Sleep(random.Next(5000, 15000));
-              string sdam = $@"https://www.bkn.ru/prodazha/kvartiri?page={i}";
-              webClient.Encoding = System.Text.Encoding.UTF8;
-              var responce = webClient.DownloadString(sdam);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var newApartment = document.GetElementsByClassName("main NewApartment");
-              var apartment = document.GetElementsByClassName("main Apartments");
-              if (newApartment.Length == 0 && apartment.Length == 0)
-                break;
-
-              for (int j = 0; j < apartment.Length; j++)
-              {
-                var priceDiv = apartment[j].GetElementsByClassName("price overflow");
-                if (priceDiv.Length == 0)
-                  break;
-                else
-                {
-                  Regex regex = new Regex(@"(\d+\,\d+\sм2)|(\d+\sм2)");
-                  var title = apartment[j].GetElementsByClassName("title")[0].TextContent;
-                  square = regex.Match(title).Value;
-                  rooms = title.Replace(square, "").Trim();
-                  price = priceDiv[0].TextContent.Replace(" ", "").Replace("a", "");
-
-                  floor = apartment[j].GetElementsByClassName("floor overflow")[0].TextContent;
-                  district = apartment[j].GetElementsByClassName("overflow")[2].TextContent;
-                  street = apartment[j].GetElementsByClassName("overflow")[3].TextContent;
-
-                  regex = new Regex(@"(д. \d+)|(\d+)");
-                  number = regex.Match(street).Value;
-
-                  regex = new Regex(@"(к. \d+)");
-                  building = regex.Match(street).Value;
-
-                  if (string.IsNullOrEmpty(building))
-                    street = street.Replace(number, "").Replace(",", "").Replace(" ", "");
-                  else
-                    street = street.Replace(number, "").Replace(building, "").Replace(",", "").Replace(" ", "");
-
-                  metro = apartment[j].GetElementsByClassName("subwaystring")[0].TextContent;
-
-                  sw.WriteLine($@"{street};{number};{building};{rooms};{square};{price};{floor};{metro}");
-                }
-              }
-
-              for (int j = 0; j < newApartment.Length; j++)
-              {
-                var priceDiv = newApartment[j].GetElementsByClassName("price overflow");
-                if (priceDiv.Length == 0)
-                  break;
-                else
-                {
-                  Regex regex = new Regex(@"(\d+\,\d+\sм2)|(\d+\sм2)");
-                  var title = apartment[j].GetElementsByClassName("title")[0].TextContent;
-                  square = regex.Match(title).Value;
-                  rooms = title.Replace(square, "").Trim();
-                  price = priceDiv[0].TextContent.Replace(" ", "").Replace("a", "");
-
-                  floor = apartment[j].GetElementsByClassName("floor overflow")[0].TextContent;
-                  district = apartment[j].GetElementsByClassName("overflow")[2].TextContent;
-                  street = apartment[j].GetElementsByClassName("overflow")[3].TextContent;
-
-                  regex = new Regex(@"(д. \d+)|(\d+)");
-                  number = regex.Match(street).Value;
-
-                  regex = new Regex(@"(к. \d+)");
-                  building = regex.Match(street).Value;
-
-                  if (string.IsNullOrEmpty(building))
-                    street = street.Replace(number, "").Replace(",", "").Replace(" ", "");
-                  else
-                    street = street.Replace(number, "").Replace(building, "").Replace(",", "").Replace(" ", "");
-
-                  metro = apartment[j].GetElementsByClassName("subwaystring")[0].TextContent;
-
-                  sw.WriteLine($@"{street};{number};{building};{rooms};{square};{price};{floor};{metro}");
-                }
-              }
-            }
-          }
-        }
-      }
+      var bkn = new BKN();
+      bkn.ParsingAll();
     }
 
     private void button8_Click(object sender, EventArgs e)
@@ -826,45 +722,76 @@ WHERE Name = '{ar[4]}'";
       using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
       {
         connection.Open();
-        string select = $@"select [Street],[Number],[Bulding],[Letter] 
-from [dbo].[MainInfoAboutBulding]";
+        string select = $@"select [Street],[Number],[Bulding],[Letter], id 
+from [dbo].[MainInfoAboutBulding]
+where Xcoor = 0";
 
         var command = new SqlCommand(select, connection);
         var reader = command.ExecuteReader();
         string address = string.Empty;
-        while(reader.Read())
+        var list = new List<BuildForCoordinate>();
+        while (reader.Read())
         {
-          var street = reader.GetString(0);
-          var number = reader.GetString(1);
-          var bulding = reader.GetString(2);
-          var letter = reader.GetString(3);
-
-          address = $@"Санкт-Петербург {street}, {number}к{bulding} лит.{letter}";
+          var build = new BuildForCoordinate()
+          {
+            Street = reader.GetString(0),
+            Number = reader.GetString(1),
+            Bulding = reader.GetString(2),
+            Letter = reader.GetString(3),
+            Id = reader.GetGuid(4)
+          };
+          list.Add(build);
         }
+        reader.Close();
 
-        var doc1 = yandex.SearchObjectByAddress("Санкт-Петербург 10-я Красноармейская улица, 23");
-        using (var sw = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
+        foreach (var item in list)
         {
-          sw.WriteLine(doc1);
+          address = $@"Санкт-Петербург {item.Street}, {item.Number}к{item.Bulding} лит.{item.Letter}";
+
+          var doc1 = yandex.SearchObjectByAddress(address);
+          using (var sw = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
+          {
+            sw.WriteLine(doc1);
+          }
+
+          XmlDocument doc = new XmlDocument();
+          doc.Load(@"D:\Coord.xml");
+          var root = doc.DocumentElement;
+          var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
+          if (GeoObjectCollection.ChildNodes.Count > 1)
+          {
+            var featureMember = GeoObjectCollection.ChildNodes[1];
+            if (featureMember.ChildNodes.Count > 0)
+            {
+              var GeoObject = featureMember.ChildNodes[0];
+              if (GeoObject.ChildNodes.Count > 4)
+              {
+                var Point = GeoObject.ChildNodes[4];
+                var coor = Point.InnerText.Split(' ');
+                double x = float.Parse(coor[1].Replace(".", ","));
+                double y = float.Parse(coor[0].Replace(".", ","));
+
+                string insert = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding] 
+SET Xcoor = {x.ToString(CultureInfo.GetCultureInfo("en-US"))},
+Ycoor = {y.ToString(CultureInfo.GetCultureInfo("en-US"))}
+WHERE ID ='{item.Id}'";
+                command = new SqlCommand(insert, connection);
+                command.ExecuteNonQuery();
+              }
+            }
+          }
+          File.Delete(@"D:\Coord.xml");
         }
-
-        XmlDocument doc = new XmlDocument();
-        doc.Load(@"D:\Coord.xml");
-        var root = doc.DocumentElement;
-        var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
-        var featureMember = GeoObjectCollection.ChildNodes[1];
-        var GeoObject = featureMember.ChildNodes[0];
-        var Point = GeoObject.ChildNodes[4];
-        var coor = Point.InnerText.Split(' ');
-        double x = float.Parse(coor[1].Replace(".", ","));
-        double y = float.Parse(coor[0].Replace(".", ","));
-
-        //string insert = $@"insert into [dbo].[MainInfoAboutBulding]";
-        //command = new SqlCommand(insert, connection);
-        //command.ExecuteNonQuery();
-
-        File.Delete(@"D:\Coord.xml");
       }
     }
+  }
+
+  class BuildForCoordinate
+  {
+    public string Street { get; set; }
+    public string Number { get; set; }
+    public string Bulding { get; set; }
+    public string Letter { get; set; }
+    public Guid Id { get; set; }
   }
 }
