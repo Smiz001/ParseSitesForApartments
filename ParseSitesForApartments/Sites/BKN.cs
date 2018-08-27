@@ -235,6 +235,11 @@ namespace ParseSitesForApartments.Sites
             town = "Металлострой пос.";
             build.Street = build.Street.Replace(town, "");
           }
+          else if (build.Street.Contains("Колпино г."))
+          {
+            town = "Колпино г.";
+            build.Street = build.Street.Replace(town, "");
+          }
           else
             town = "Санкт-Петербург";
 
