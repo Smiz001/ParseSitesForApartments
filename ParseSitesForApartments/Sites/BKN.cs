@@ -444,7 +444,7 @@ namespace ParseSitesForApartments.Sites
         Random random = new Random();
         for (int i = minPage; i < 6; i++)
         {
-          Thread.Sleep(random.Next(5000, 6000));
+          Thread.Sleep(random.Next(1000, 3000));
           string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/studii?page={i}";
 
           webClient.Encoding = Encoding.UTF8;
@@ -515,7 +515,7 @@ namespace ParseSitesForApartments.Sites
         Random random = new Random();
         for (int i = minPage; i < 15; i++)
         {
-          Thread.Sleep(random.Next(5000, 6000));
+          Thread.Sleep(random.Next(2000, 3000));
           string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/odnokomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = Encoding.UTF8;
@@ -566,7 +566,7 @@ namespace ParseSitesForApartments.Sites
                   break;
                 str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
                 var hrefStudiiGk = $@"https://www.bkn.ru{str}";
-                Thread.Sleep(random.Next(5000, 6000));
+                Thread.Sleep(random.Next(2000, 3000));
 
                 responce = wb.DownloadString(hrefStudiiGk);
                 document = parser.Parse(responce);
@@ -597,7 +597,7 @@ namespace ParseSitesForApartments.Sites
         Random random = new Random();
         for (int i = minPage; i < 15; i++)
         {
-          Thread.Sleep(random.Next(4000, 5000));
+          Thread.Sleep(random.Next(2000, 3000));
           string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/dvuhkomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = Encoding.UTF8;
@@ -648,7 +648,7 @@ namespace ParseSitesForApartments.Sites
                   break;
                 str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
                 var hrefStudiiGk = $@"https://www.bkn.ru{str}";
-                Thread.Sleep(random.Next(3000, 4000));
+                Thread.Sleep(random.Next(2000, 3000));
 
                 responce = wb.DownloadString(hrefStudiiGk);
                 document = parser.Parse(responce);
@@ -679,7 +679,7 @@ namespace ParseSitesForApartments.Sites
         Random random = new Random();
         for (int i = minPage; i < 12; i++)
         {
-          Thread.Sleep(random.Next(4000, 5000));
+          Thread.Sleep(random.Next(2000, 3000));
           string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/trehkomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = Encoding.UTF8;
@@ -730,7 +730,7 @@ namespace ParseSitesForApartments.Sites
                   break;
                 str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
                 var hrefStudiiGk = $@"https://www.bkn.ru{str}";
-                Thread.Sleep(random.Next(3000, 4000));
+                Thread.Sleep(random.Next(2000, 3000));
 
                 responce = wb.DownloadString(hrefStudiiGk);
                 document = parser.Parse(responce);
