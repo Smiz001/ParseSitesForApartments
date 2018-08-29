@@ -60,6 +60,7 @@
     <Compile Include="Sites\Avito.cs" />
     <Compile Include="Sites\BaseParse.cs" />
     <Compile Include="Sites\BKN.cs" />
+    <Compile Include="Sites\BN.cs" />
     <Compile Include="Yandex.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
