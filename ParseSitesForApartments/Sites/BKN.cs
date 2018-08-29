@@ -431,10 +431,10 @@ namespace ParseSitesForApartments.Sites
 
     public void ParsingNovostroiki(StreamWriter sw)
     {
-      ParsingStudioNovostroiki(sw);
+      //ParsingStudioNovostroiki(sw);
       ParsingOneRoomNovostroiki(sw);
-      ParsingTwoRoomNovostroiki(sw);
-      ParsingThreeRoomNovostroiki(sw);
+      //ParsingTwoRoomNovostroiki(sw);
+      //ParsingThreeRoomNovostroiki(sw);
     }
 
     public void ParsingStudioNovostroiki(StreamWriter sw)
@@ -515,7 +515,7 @@ namespace ParseSitesForApartments.Sites
         Random random = new Random();
         for (int i = minPage; i < 15; i++)
         {
-          Thread.Sleep(random.Next(2000, 3000));
+          Thread.Sleep(random.Next(1000, 2000));
           string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/odnokomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = Encoding.UTF8;
@@ -538,53 +538,51 @@ namespace ParseSitesForApartments.Sites
       {
         for (int i = 0; i < collection.Length; i++)
         {
-          try
+          if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("1-комн."))
           {
-            if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("1-комн."))
+            var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
+            var hrefGk = $@"https://www.bkn.ru{str}";
+
+            wb.Encoding = Encoding.UTF8;
+            var responce = wb.DownloadString(hrefGk);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var content = document.GetElementsByClassName("complex-mode-content")[0];
+            var list = content.GetElementsByClassName("row offset-bottom-30");
+            for (int k = 0; k < list.Length; k++)
             {
-              var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
-              var hrefGk = $@"https://www.bkn.ru{str}";
-
-              wb.Encoding = Encoding.UTF8;
-              var responce = wb.DownloadString(hrefGk);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var content = document.GetElementsByClassName("complex-mode-content")[0];
-              var list = content.GetElementsByClassName("row offset-bottom-30");
-              if (list.Length < 3)
-                break;
-              var elementOneRoomGk = list[2];
-              var nameElement = elementOneRoomGk.GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent;
-              if (nameElement != "Однокомнатные квартиры")
-                elementOneRoomGk = list[3];
-
-              int length = 30;
-              for (int j = 1; j < length; j++)
+              var listBold = list[k].GetElementsByClassName("bold nopadding nomargin font-size-20");
+              if(listBold.Length != 0 )
               {
-                if (elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius").Length == 0)
-                  break;
-                str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
-                var hrefStudiiGk = $@"https://www.bkn.ru{str}";
-                Thread.Sleep(random.Next(2000, 3000));
+                if (list[k].GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent == "Однокомнатные квартиры")
+                {
+                  var elementOneRoomGk = list[k];
 
-                responce = wb.DownloadString(hrefStudiiGk);
-                document = parser.Parse(responce);
+                  int length = 30;
+                  for (int j = 1; j < length; j++)
+                  {
+                    if (elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius").Length == 0)
+                      break;
+                    str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
+                    var hrefStudiiGk = $@"https://www.bkn.ru{str}";
+                    Thread.Sleep(random.Next(1000, 2000));
 
-                var newApartment = document.GetElementsByClassName("main NewApartment");
-                Parse(newApartment, "1 км. кв.", sw);
+                    responce = wb.DownloadString(hrefStudiiGk);
+                    document = parser.Parse(responce);
+
+                    var newApartment = document.GetElementsByClassName("main NewApartment");
+                    Parse(newApartment, "1 км. кв.", sw);
+                  }
+                }
               }
             }
-            else
-            {
-              var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
-              //var a = parent.PreviousElementSibling;
-              //ParseOneElement(parent, "Студия", sw);
-            }
           }
-          catch (Exception ex)
+          else
           {
-            var str = ex.Message;
+            var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
+            //var a = parent.PreviousElementSibling;
+            //ParseOneElement(parent, "Студия", sw);
           }
         }
       }
@@ -664,7 +662,7 @@ namespace ParseSitesForApartments.Sites
               //ParseOneElement(parent, "Студия", sw);
             }
           }
-          catch(Exception ex)
+          catch (Exception ex)
           {
             var str = ex.Message;
           }
@@ -746,7 +744,7 @@ namespace ParseSitesForApartments.Sites
               //ParseOneElement(parent, "Студия", sw);
             }
           }
-          catch(Exception ex)
+          catch (Exception ex)
           {
             var str = ex.Message;
           }
