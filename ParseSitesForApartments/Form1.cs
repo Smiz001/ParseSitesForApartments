@@ -573,73 +573,8 @@ WHERE NAME ='{ar[6]}'";
 
     private void button8_Click(object sender, EventArgs e)
     {
-      int minPage = 1;
-      int maxPage = 17;
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
-        {
-          connection.Open();
-          using (var sw = new StreamWriter(@"D:\BNProdam.csv", true, System.Text.Encoding.UTF8))
-          {
-            string rooms = string.Empty;
-            string square = string.Empty;
-            string year = string.Empty;
-            string price = string.Empty;
-            string floor = string.Empty;
-            string street = string.Empty;
-            string number = string.Empty;
-            string metro = string.Empty;
-            string distance = string.Empty;
-            string district = string.Empty;
-            string building = string.Empty;
-
-            for (int i = minPage; i < maxPage; i++)
-            {
-              Thread.Sleep(random.Next(5000, 15000));
-              string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/?from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
-              webClient.Encoding = System.Text.Encoding.UTF8;
-              var responce = webClient.DownloadString(sdam);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var newApartment = document.GetElementsByClassName("catalog_filter_body");
-
-              for (int j = 0; j < newApartment.Length; j++)
-              {
-                if (newApartment[j].GetElementsByClassName("object__square").Length > 0)
-                  square = newApartment[j].GetElementsByClassName("object__square")[0].TextContent.Trim();
-                if (newApartment[j].GetElementsByClassName("catalog_filter_title-item_kkv").Length > 0)
-                  rooms = newApartment[j].GetElementsByClassName("catalog_filter_title-item_kkv")[0].TextContent.Trim().Replace(square, "").Replace(",", "").Trim();
-
-                if (newApartment[j].GetElementsByClassName("object__add-price-info").Length > 0 && newApartment[j].GetElementsByClassName("object__price").Length > 0)
-                {
-                  var kv = newApartment[j].GetElementsByClassName("object__add-price-info")[0].TextContent.Trim();
-                  price = newApartment[j].GetElementsByClassName("object__price")[0].TextContent.Replace(kv, "").Replace(",", "").Replace("₽", "").Trim();
-                }
-                if (newApartment[j].GetElementsByClassName("metro").Length > 0)
-                  metro = newApartment[j].GetElementsByClassName("metro")[0].TextContent.Trim();
-                if (newApartment[j].GetElementsByClassName("metro-distance").Length > 0)
-                  distance = newApartment[j].GetElementsByClassName("metro-distance")[0].TextContent.Replace(",", "").Trim();
-
-                if (newApartment[j].GetElementsByClassName("catalog_filter_body-img-bottom-right-item obj-add-info").Length > 0)
-                  floor = newApartment[j].GetElementsByClassName("catalog_filter_body-img-bottom-right-item obj-add-info")[0].TextContent.Replace("\n", "").Replace(" ", "").Trim();
-
-                if (newApartment[j].GetElementsByClassName("catalog_filter_block-cb_address catalog_filter_block-cb_address_string").Length > 0)
-                  street = newApartment[j].GetElementsByClassName("catalog_filter_block-cb_address catalog_filter_block-cb_address_string")[0].TextContent.Replace("\n", "").Trim();
-
-                Regex regex = new Regex(@"(\d+, \d+, \d+)|(\d+, \d+)|(\d+)");
-                number = regex.Match(street).Value;
-                if (!string.IsNullOrEmpty(number))
-                  street = street.Replace(number, "");
-
-                sw.WriteLine($@"{street};{number};{rooms};{square};{price};{floor};{metro};{distance}");
-              }
-            }
-          }
-        }
-      }
+      var bn = new BN();
+      bn.ParsingAll();
     }
 
     private void button9_Click(object sender, EventArgs e)
