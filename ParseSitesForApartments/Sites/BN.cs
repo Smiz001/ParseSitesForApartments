@@ -47,6 +47,62 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
+    public void ParseOneRoom(StreamWriter sw)
+    {
+      int minPage = 1;
+      int maxPage = 17;
+      int countDistrict = 18;
+
+      using (var webClient = new WebClient())
+      {
+        var random = new Random();
+        for (int k = 1; k < countDistrict; k++)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            Thread.Sleep(random.Next(2000, 4000));
+            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{k}/?cpu=kkv-1-city_district-13&kkv%5B0%5D=1&city_district%5B0%5D=13&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
+            webClient.Encoding = Encoding.UTF8;
+            var responce = webClient.DownloadString(sdam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+            ParseSheet(sw, "1 км. кв.", document);
+            if (document.GetElementsByClassName("object--item").Length < 30)
+              break;
+
+          }
+        }
+      }
+    }
+
+    public void ParseTwoRoom(StreamWriter sw)
+    {
+      int minPage = 1;
+      int maxPage = 17;
+      int countDistrict = 18;
+
+      using (var webClient = new WebClient())
+      {
+        var random = new Random();
+        for (int k = 1; k < countDistrict; k++)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            Thread.Sleep(random.Next(2000, 4000));
+            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{k}/?cpu=kkv-2-city_district-13&kkv%5B0%5D=2&city_district%5B0%5D=13&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
+            webClient.Encoding = Encoding.UTF8;
+            var responce = webClient.DownloadString(sdam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+            ParseSheet(sw, "2 км. кв.", document);
+            if (document.GetElementsByClassName("object--item").Length < 30)
+              break;
+
+          }
+        }
+      }
+    }
+
     private void ParseSheet(StreamWriter sw, string typeRoom, IHtmlDocument document)
     {
       var apartaments = document.GetElementsByClassName("object--item");
@@ -91,10 +147,6 @@ namespace ParseSitesForApartments.Sites
           if(!string.IsNullOrEmpty(build.Number))
             build.Street = build.Street.Replace(build.Number, "");
         }
-        //regex = new Regex(@"(\d+, \d+, \d+)|(\d+, \d+)|(\d+)");
-        //build.Number = regex.Match(build.Street).Value;
-        //if (!string.IsNullOrEmpty(build.Number))
-        //  build.Street = build.Street.Replace(build.Number, "");
 
         build.Distance = build.Distance.Replace(".", ",");
         if (string.IsNullOrEmpty(build.Number))
