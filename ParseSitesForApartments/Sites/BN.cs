@@ -13,31 +13,32 @@ namespace ParseSitesForApartments.Sites
   public class BN : BaseParse
   {
     static object locker = new object();
+    private const string Filename = @"D:\BNProdam.csv";
+
     public override void ParsingAll()
     {
-      using (var sw = new StreamWriter(@"D:\BNProdam.csv", true, Encoding.UTF8))
+      using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
       {
         sw.WriteLine($@"Нас. пункт;Улица;Номер;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км)");
-        var studiiThread = new Thread(new ParameterizedThreadStart(ParseStudii));
-        studiiThread.Start(sw);
-        var oneThread = new Thread(new ParameterizedThreadStart(ParseOneRoom));
-        oneThread.Start(sw);
-        //ParseStudii(sw);
-        //ParseOneRoom(sw);
-        //ParseTwoRoom(sw);
-        //ParseThreeRoom(sw);
-        //ParseFourRoom(sw);
       }
+      var studiiThread = new Thread(ParseStudii);
+      studiiThread.Start();
+      var oneThread = new Thread(ParseOneRoom);
+      oneThread.Start();
+      var twoThread = new Thread(ParseTwoRoom);
+      twoThread.Start();
+      //ParseStudii(sw);
+      //ParseOneRoom(sw);
+      //ParseTwoRoom(sw);
+      //ParseThreeRoom(sw);
+      //ParseFourRoom(sw);
     }
 
-    public void ParseStudii(object sw)
+    public void ParseStudii()
     {
       int minPage = 1;
       int maxPage = 17;
       int countDistrict = 18;
-
-      var writer = sw as StreamWriter;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
@@ -51,7 +52,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet(writer, "Студия", document);
+            ParseSheet("Студия", document);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -60,13 +61,11 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили студии");
     }
-    public void ParseOneRoom(object sw)
+    public void ParseOneRoom()
     {
       int minPage = 1;
       int maxPage = 17;
       int countDistrict = 18;
-
-      var writer = sw as StreamWriter;
 
       using (var webClient = new WebClient())
       {
@@ -81,7 +80,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet(writer, "1 км. кв.", document);
+            ParseSheet("1 км. кв.", document);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -91,8 +90,7 @@ namespace ParseSitesForApartments.Sites
 
       MessageBox.Show("Закончили 1 км. кв.");
     }
-
-    public void ParseTwoRoom(StreamWriter sw)
+    public void ParseTwoRoom()
     {
       int minPage = 1;
       int maxPage = 17;
@@ -111,15 +109,17 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet(sw, "2 км. кв.", document);
+            ParseSheet("2 км. кв.", document);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
           }
         }
       }
+
+      MessageBox.Show("Закончили 2 км. кв.");
     }
-    public void ParseThreeRoom(StreamWriter sw)
+    public void ParseThreeRoom()
     {
       int minPage = 1;
       int maxPage = 17;
@@ -138,7 +138,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet(sw, "3 км. кв.", document);
+            ParseSheet("3 км. кв.", document);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -146,7 +146,7 @@ namespace ParseSitesForApartments.Sites
         }
       }
     }
-    public void ParseFourRoom(StreamWriter sw)
+    public void ParseFourRoom()
     {
       int minPage = 1;
       int maxPage = 17;
@@ -165,7 +165,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet(sw, "3 км. кв.", document);
+            ParseSheet("3 км. кв.", document);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -173,8 +173,7 @@ namespace ParseSitesForApartments.Sites
         }
       }
     }
-
-    private void ParseSheet(StreamWriter sw, string typeRoom, IHtmlDocument document)
+    private void ParseSheet(string typeRoom, IHtmlDocument document)
     {
       try
       {
@@ -192,8 +191,10 @@ namespace ParseSitesForApartments.Sites
 
           var priceString = apartaments[i].GetElementsByClassName("object--price_original")[0].TextContent.Trim();
           var ms = regex.Matches(priceString);
-          var price = int.Parse($"{ms[0].Value}{ms[1].Value}000");
-          build.Price = price;
+          if(ms.Count>1)
+            build.Price = int.Parse($"{ms[0].Value}{ms[1].Value}000");
+          else
+            build.Price = int.Parse($"{ms[0].Value}000");
 
           if (apartaments[i].GetElementsByClassName("object--metro").Length > 0)
             build.Metro = apartaments[i].GetElementsByClassName("object--metro")[0].TextContent.Trim();
@@ -284,13 +285,25 @@ namespace ParseSitesForApartments.Sites
           var str = regex.Match(build.Street).Value;
           if (!string.IsNullOrEmpty(str))
             build.Street = build.Street.Replace(str, "");
-
-          sw.WriteLine($@"{town};{build.Street};{build.Number};{build.CountRoom};{build.Square};{build.Price};{ build.Floor};{build.Metro};{build.Distance}");
+          using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+          {
+            sw.BaseStream.Position = sw.BaseStream.Length;
+            sw.WriteLine($@"{town};{build.Street};{build.Number};{build.CountRoom};{build.Square};{build.Price};{ build.Floor};{build.Metro};{build.Distance}");
+          }
         }
       }
       finally
       {
         Monitor.Exit(locker);
+      }
+    }
+
+    private void WriteInFile(string str)
+    {
+      using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+      {
+        sw.BaseStream.Position = sw.BaseStream.Length;
+        sw.WriteLine(str);
       }
     }
   }
