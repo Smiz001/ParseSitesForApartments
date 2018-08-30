@@ -27,11 +27,10 @@ namespace ParseSitesForApartments.Sites
       oneThread.Start();
       var twoThread = new Thread(ParseTwoRoom);
       twoThread.Start();
-      //ParseStudii(sw);
-      //ParseOneRoom(sw);
-      //ParseTwoRoom(sw);
-      //ParseThreeRoom(sw);
-      //ParseFourRoom(sw);
+      var threeThread = new Thread(ParseThreeRoom);
+      threeThread.Start();
+      var fourThread = new Thread(ParseFourRoom);
+      fourThread.Start();
     }
 
     public void ParseStudii()
@@ -145,6 +144,7 @@ namespace ParseSitesForApartments.Sites
           }
         }
       }
+      MessageBox.Show("Закончили 3 км. кв.");
     }
     public void ParseFourRoom()
     {
@@ -172,6 +172,7 @@ namespace ParseSitesForApartments.Sites
           }
         }
       }
+      MessageBox.Show("Закончили 4+ км. кв.");
     }
     private void ParseSheet(string typeRoom, IHtmlDocument document)
     {
@@ -248,7 +249,7 @@ namespace ParseSitesForApartments.Sites
             build.Number = "Новостройка";
           else
             build.Number = build.Number.Replace(".", ",");
-          build.Number = build.Number.Replace("д,", "").Replace(" к, ", "/").Replace("ул, ", "");
+          build.Number = build.Number.Replace("д,", "").Replace(" к, ", "/").Replace("ул, ", "").Replace(" к,", "/");
 
           build.Distance = build.Distance.Replace(".", ",");
 
@@ -279,7 +280,16 @@ namespace ParseSitesForApartments.Sites
             build.Street = build.Street.Replace("СПб", "");
           }
 
-          build.Street = build.Street.Replace(" ул.", "").Replace("ул.", "").Replace("пр-кт.", "").Replace("пр.", "").Replace("бульвар ", "").Replace("б-р", "").Replace(", строение 1", "").Replace(" б-р/2", "").Replace("/3", "").Replace("/2", "").Replace(" проспект", "").Replace("улица ", "").Replace(" улица", "").Replace("пр-кт", "").Replace(",  ", "").Trim();
+          build.Street = build.Street.Replace(" ул.", "").Replace("ул.", "").Replace("пр-кт.", "").Replace("пр.", "").Replace("бульвар ", "").Replace("б-р", "").Replace(", строение 1", "").Replace(" б-р/2", "").Replace("/3", "").Replace("/2", "").Replace("проспект", "").Replace("улица ", "").Replace(" улица", "").Replace("пр-кт", "").Replace(",  ", "").Replace(", ", "").Replace("ш.","").Replace(", д.","").Replace("г. , ","").Replace("б, д.", "").Replace("шос.","").Replace(",", "").Trim();
+
+          regex = new Regex(@"(к\.\d+)|(к\d+)");
+          var building = regex.Match(build.Street).Value;
+          if(!string.IsNullOrEmpty(building))
+          {
+            build.Street = build.Street.Replace(building, "").Trim();
+            building = building.Replace("к.","").Replace("к", "");
+            build.Number = $@"{build.Number}/{building}";
+          }
 
           regex = new Regex(@"(\/А\d+А)");
           var str = regex.Match(build.Street).Value;
