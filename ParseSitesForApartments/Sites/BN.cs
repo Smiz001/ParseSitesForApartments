@@ -279,7 +279,7 @@ namespace ParseSitesForApartments.Sites
             build.Street = build.Street.Replace("СПб", "");
           }
 
-          build.Street = build.Street.Replace(" ул.", "").Replace("ул.", "").Replace("пр-кт.", "").Replace("пр.", "").Replace("бульвар ", "").Replace("б-р", "").Replace(", строение 1", "").Replace(" б-р/2", "").Replace("/3", "").Replace("/2", "").Replace(" проспект", "").Replace("улица ", "").Replace(" улица", "").Replace("пр-кт", "").Trim();
+          build.Street = build.Street.Replace(" ул.", "").Replace("ул.", "").Replace("пр-кт.", "").Replace("пр.", "").Replace("бульвар ", "").Replace("б-р", "").Replace(", строение 1", "").Replace(" б-р/2", "").Replace("/3", "").Replace("/2", "").Replace(" проспект", "").Replace("улица ", "").Replace(" улица", "").Replace("пр-кт", "").Replace(",  ", "").Trim();
 
           regex = new Regex(@"(\/А\d+А)");
           var str = regex.Match(build.Street).Value;
