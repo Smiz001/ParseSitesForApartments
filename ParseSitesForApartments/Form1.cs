@@ -651,6 +651,12 @@ WHERE ID ='{item.Id}'";
         }
       }
     }
+
+    private void button12_Click(object sender, EventArgs e)
+    {
+      var elms = new ELMS();
+      elms.GetInfoAboutBuilding();
+    }
   }
 
   class BuildForCoordinate
