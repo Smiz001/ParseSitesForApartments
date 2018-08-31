@@ -19,7 +19,7 @@ namespace ParseSitesForApartments.Sites
     {
       using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
       {
-        sw.WriteLine($@"Нас. пункт;Улица;Номер;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км)");
+        sw.WriteLine($@"Нас. пункт;Улица;Номер;Корпус;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км)");
       }
       var studiiThread = new Thread(ParseStudii);
       studiiThread.Start();
@@ -76,12 +76,19 @@ namespace ParseSitesForApartments.Sites
             Thread.Sleep(random.Next(2000, 4000));
             string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{k}/?cpu=kkv-1-city_district-13&kkv%5B0%5D=1&city_district%5B0%5D=13&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("1 км. кв.", document);
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
+            try
+            {
+              var responce = webClient.DownloadString(sdam);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+              ParseSheet("1 км. кв.", document);
+              if (document.GetElementsByClassName("object--item").Length < 30)
+                break;
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message);
+            }
 
           }
         }
@@ -178,7 +185,7 @@ namespace ParseSitesForApartments.Sites
     {
       try
       {
-        Monitor.Enter(locker);
+       
         var apartaments = document.GetElementsByClassName("object--item");
 
         for (int i = 0; i < apartaments.Length; i++)
@@ -192,7 +199,7 @@ namespace ParseSitesForApartments.Sites
 
           var priceString = apartaments[i].GetElementsByClassName("object--price_original")[0].TextContent.Trim();
           var ms = regex.Matches(priceString);
-          if(ms.Count>1)
+          if (ms.Count > 1)
             build.Price = int.Parse($"{ms[0].Value}{ms[1].Value}000");
           else
             build.Price = int.Parse($"{ms[0].Value}000");
@@ -205,6 +212,7 @@ namespace ParseSitesForApartments.Sites
             build.Distance = apartaments[i].GetElementsByClassName("object--metro-distance")[0].TextContent.Replace(",", "").Replace(" ", "");
             build.Distance = regex.Match(build.Distance).Value;
           }
+          build.Distance = build.Distance.Replace(".", ",");
 
           if (apartaments[i].GetElementsByClassName("object--floor").Length > 0)
           {
@@ -221,7 +229,72 @@ namespace ParseSitesForApartments.Sites
           {
             string a1 = "";
           }
+          regex = new Regex(@"(\d+к\d+)");
+          build.Number = regex.Match(build.Street).Value;
+          if (!string.IsNullOrEmpty(build.Number))
+          {
+            build.Street = build.Street.Replace(build.Number,"");
+            regex = new Regex(@"(к\d+)");
+            build.Building = regex.Match(build.Number).Value.Replace("к", "");
+            build.Number.Replace($"к{build.Building}", "");
+          }
+          else
+          {
+            regex = new Regex(@"(\d+\/\d+)");
+            build.Number = regex.Match(build.Street).Value;
+            if (!string.IsNullOrEmpty(build.Number))
+            {
+              build.Street = build.Street.Replace(build.Number, "");
+              regex = new Regex(@"(\/\d+)");
+              build.Building = regex.Match(build.Number).Value.Replace(@"/", "");
+              build.Number.Replace($@"/{build.Building}", "");
+            }
+            else
+            {
+              regex = new Regex(@"(\d+\sк\.\d+)|(\d+к\.\d+)|(\d+\sк\.\s\d+)|(\d+к\.\s\d+)");
+              build.Number = regex.Match(build.Street).Value;
+              if (!string.IsNullOrEmpty(build.Number))
+              {
+                build.Street = build.Street.Replace(build.Number, "");
+                build.Number = build.Number.Replace(" ", "");
+                regex = new Regex(@"(к.\d+)");
+                build.Building = regex.Match(build.Number).Value.Replace(@"к.", "");
+                build.Number.Replace($@"к.{build.Building}", "");
+              }
+              else
+              {
+                regex = new Regex(@"(ул.\s\d+)$");
+                build.Number = regex.Match(build.Street).Value;
+                if (!string.IsNullOrEmpty(build.Number))
+                {
+                  build.Street = build.Street.Replace(build.Number, "");
+                  build.Number = build.Number.Replace("ул. ","");
+                }
+                else
+                {
+                  regex = new Regex(@"(ул\.,\sд\.\s\d+)$");
+                  build.Number = regex.Match(build.Street).Value;
+                  if (!string.IsNullOrEmpty(build.Number))
+                  {
+                    build.Street = build.Street.Replace(build.Number, "");
+                    build.Number = build.Number.Replace("ул., д. ", "");
+                  }
+                  else
+                  {
+                    regex = new Regex(@"(пр\.\,\s\d+$)|(пр\.\s\d+$)$");
+                    build.Number = regex.Match(build.Street).Value;
+                    if (!string.IsNullOrEmpty(build.Number))
+                    {
+                      build.Street = build.Street.Replace(build.Number, "");
+                      build.Number = build.Number.Replace("пр., ", "").Replace("пр. ", "");
+                    }
+                  }
+                }
+              }
+            }
+          }
 
+          /*
           regex = new Regex(@"(\d+\,\s+\d+\,\s+\d+)|(\d+\,\s+\d+)");
           build.Number = regex.Match(build.Street).Value;
 
@@ -249,9 +322,9 @@ namespace ParseSitesForApartments.Sites
             build.Number = "Новостройка";
           else
             build.Number = build.Number.Replace(".", ",");
-          build.Number = build.Number.Replace("д,", "").Replace(" к, ", "/").Replace("ул, ", "").Replace(" к,", "/");
+          //build.Number = build.Number.Replace("д,", "").Replace(" к, ", "/").Replace("ул, ", "").Replace(" к,", "/");
+          */
 
-          build.Distance = build.Distance.Replace(".", ",");
 
           string town = "";
           if (build.Street.Contains("Колпино") || build.Street.Contains("г. Колпино"))
@@ -280,26 +353,28 @@ namespace ParseSitesForApartments.Sites
             build.Street = build.Street.Replace("СПб", "");
           }
 
-          build.Street = build.Street.Replace(" ул.", "").Replace("ул.", "").Replace("пр-кт.", "").Replace("пр.", "").Replace("бульвар ", "").Replace("б-р", "").Replace(", строение 1", "").Replace(" б-р/2", "").Replace("/3", "").Replace("/2", "").Replace("проспект", "").Replace("улица ", "").Replace(" улица", "").Replace("пр-кт", "").Replace(",  ", "").Replace(", ", "").Replace("ш.","").Replace(", д.","").Replace("г. , ","").Replace("б, д.", "").Replace("шос.","").Replace(",", "").Trim();
+          // build.Street = build.Street.Replace(" ул.", "").Replace("ул.", "").Replace("пр-кт.", "").Replace("пр.", "").Replace("бульвар ", "").Replace("б-р", "").Replace(", строение 1", "").Replace(" б-р/2", "").Replace("/3", "").Replace("/2", "").Replace("проспект", "").Replace("улица ", "").Replace(" улица", "").Replace("пр-кт", "").Replace(",  ", "").Replace(", ", "").Replace("ш.","").Replace(", д.","").Replace("г. , ","").Replace("б, д.", "").Replace("шос.","").Replace(",", "").Trim();
 
-          regex = new Regex(@"(к\.\d+)|(к\d+)");
-          var building = regex.Match(build.Street).Value;
-          if(!string.IsNullOrEmpty(building))
-          {
-            build.Street = build.Street.Replace(building, "").Trim();
-            building = building.Replace("к.","").Replace("к", "");
-            build.Number = $@"{build.Number}/{building}";
-          }
+          //regex = new Regex(@"(к\.\d+)|(к\d+)");
+          //var building = regex.Match(build.Street).Value;
+          //if (!string.IsNullOrEmpty(building))
+          //{
+          //   build.Street = build.Street.Replace(building, "").Trim();
+          //   building = building.Replace("к.","").Replace("к", "");
+          //  build.Number = $@"{build.Number}/{building}";
+          //}
 
           regex = new Regex(@"(\/А\d+А)");
           var str = regex.Match(build.Street).Value;
           if (!string.IsNullOrEmpty(str))
             build.Street = build.Street.Replace(str, "");
+          Monitor.Enter(locker);
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
           {
             sw.BaseStream.Position = sw.BaseStream.Length;
-            sw.WriteLine($@"{town};{build.Street};{build.Number};{build.CountRoom};{build.Square};{build.Price};{ build.Floor};{build.Metro};{build.Distance}");
+            sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.CountRoom};{build.Square};{build.Price};{ build.Floor};{build.Metro};{build.Distance}");
           }
+          
         }
       }
       finally
