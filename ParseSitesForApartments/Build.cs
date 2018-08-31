@@ -10,6 +10,8 @@
     public string Floor { get; set; } = string.Empty;
 
     public string Number { get; set; } = string.Empty;
+    public string Building { get; set; } = string.Empty;
+    public string Liter { get; set; } = string.Empty;
     public string Street { get; set; } = string.Empty;
     public string DateBuild { get; set; } = string.Empty;
     public string DateRepair { get; set; } = string.Empty;

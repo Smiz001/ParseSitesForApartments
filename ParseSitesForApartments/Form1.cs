@@ -579,76 +579,8 @@ WHERE NAME ='{ar[6]}'";
 
     private void button9_Click(object sender, EventArgs e)
     {
-      int minPage = 1;
-      int maxPage = 20;
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
-        {
-          connection.Open();
-          using (var sw = new StreamWriter(@"D:\EMLSProdam.csv", true, System.Text.Encoding.UTF8))
-          {
-            string rooms = string.Empty;
-            string square = string.Empty;
-            string year = string.Empty;
-            string price = string.Empty;
-            string floor = string.Empty;
-            string street = string.Empty;
-            string number = string.Empty;
-            string metro = string.Empty;
-            string distance = string.Empty;
-            string district = string.Empty;
-            string building = string.Empty;
-
-            for (int i = minPage; i < maxPage; i++)
-            {
-              Thread.Sleep(random.Next(5000, 15000));
-              string sdam = $@"https://www.emls.ru/flats/page{i}.html?query=s/1/is_auction/2/place/address/reg/2/dept/2/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdam);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var listing = document.GetElementsByClassName("listing")[0];
-
-              var rows = listing.GetElementsByClassName("row1");
-              for (int j = 0; j < rows.Length; j++)
-              {
-                if (rows[j].GetElementsByClassName("w-image").Length > 0)
-                {
-                  var divImage = rows[j].GetElementsByClassName("w-image")[0];
-                  var divs = divImage.GetElementsByTagName("div");
-                  rooms = divImage.GetElementsByTagName("div")[4].TextContent;
-                  square = rows[j].GetElementsByClassName("space-all")[0].TextContent;
-
-                  var adr = rows[j].GetElementsByClassName("address-geo")[0].TextContent.Split(',');
-                  if (adr.Length == 3)
-                  {
-                    street = adr[0] + " " + adr[1];
-                    number = adr[2];
-                  }
-                  else
-                  {
-                    street = adr[0];
-                    if (adr.Length > 1)
-                      number = adr[1].Trim();
-                  }
-
-                  metro = rows[j].GetElementsByClassName("metroline-2")[0].TextContent;
-
-                  distance = rows[j].GetElementsByClassName("ellipsis em")[0].TextContent.Replace("\n", "").Trim();
-                  floor = rows[j].GetElementsByClassName("w-floor")[0].TextContent;
-                  year = rows[j].GetElementsByClassName("w-year")[0].TextContent;
-                  price = rows[j].GetElementsByClassName("price")[0].TextContent.Replace(" a", "");
-
-                  sw.WriteLine($@"{street};{number};{rooms};{square};{price};{floor};{metro};{distance}");
-                }
-              }
-            }
-          }
-        }
-      }
+      var elms = new ELMS();
+      elms.ParsingAll();
     }
 
     private void button10_Click(object sender, EventArgs e)
