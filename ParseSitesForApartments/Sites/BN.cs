@@ -233,7 +233,7 @@ namespace ParseSitesForApartments.Sites
             build.Street = build.Street.Replace(build.Number,"");
             regex = new Regex(@"(к\d+)");
             build.Building = regex.Match(build.Number).Value.Replace("к", "");
-            build.Number.Replace($"к{build.Building}", "");
+            build.Number= build.Number.Replace($"к{build.Building}", "");
           }
           else
           {
