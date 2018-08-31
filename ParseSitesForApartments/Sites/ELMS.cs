@@ -279,8 +279,6 @@ namespace ParseSitesForApartments.Sites
               }
             }
 
-
-
             string town = string.Empty;
             if (build.Street.Contains("(Горелово)"))
             {
@@ -301,13 +299,13 @@ namespace ParseSitesForApartments.Sites
               town = "Санкт-Петербург";
 
 
-            build.Street = build.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Trim();
+            build.Street = build.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б","").Trim();
 
             Monitor.Enter(locker);
             using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
             {
               sw.BaseStream.Position = sw.BaseStream.Length;
-              sw.WriteLine($@"{town};{build.Street};{build.Number};{build.DateBuild};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance}");
+              sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance}");
             }
             Monitor.Exit(locker);
           }

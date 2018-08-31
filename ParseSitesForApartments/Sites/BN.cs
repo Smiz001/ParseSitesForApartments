@@ -243,7 +243,7 @@ namespace ParseSitesForApartments.Sites
           }
 
           if (!string.IsNullOrEmpty(build.Number))
-            build.Street = build.Street.Replace(build.Number, "");
+            //build.Street = build.Street.Replace(build.Number, "");
 
           if (string.IsNullOrEmpty(build.Number))
             build.Number = "Новостройка";
