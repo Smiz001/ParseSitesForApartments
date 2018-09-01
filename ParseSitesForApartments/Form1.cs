@@ -663,6 +663,11 @@ WHERE ID ='{item.Id}'";
       var bkn = new BKN();
       bkn.GetInfoAboutBuilding();
     }
+
+    private void button13_Click(object sender, EventArgs e)
+    {
+
+    }
   }
 
   class BuildForCoordinate

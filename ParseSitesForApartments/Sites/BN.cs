@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom.Html;
 using AngleSharp.Parser.Html;
 using System;
+using System.Data.SqlClient;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -14,6 +15,7 @@ namespace ParseSitesForApartments.Sites
   {
     static object locker = new object();
     private const string Filename = @"D:\BNProdam.csv";
+    private const string FilenameWithinfo = @"D:\BNProdamWithInfo.csv";
 
     public override void ParsingAll()
     {
@@ -172,7 +174,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("3 км. кв.", document);
+            ParseSheet("4 км. кв.", document);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -194,6 +196,14 @@ namespace ParseSitesForApartments.Sites
           if (apartaments[i].GetElementsByClassName("object__square").Length > 0)
             build.Square = apartaments[i].GetElementsByClassName("object__square")[0].TextContent.Trim();
           build.CountRoom = typeRoom;
+          if (typeRoom == "4 км. кв.")
+          {
+            var rx = new Regex(@"(\d+)");
+            if (apartaments[i].GetElementsByClassName("object--title").Length > 0)
+            {
+              build.CountRoom = $@"{rx.Match(apartaments[i].GetElementsByClassName("object--title")[0].TextContent).Value} км. кв.";
+            }
+          }
 
           var regex = new Regex(@"(\d+)");
 
@@ -230,10 +240,10 @@ namespace ParseSitesForApartments.Sites
           build.Number = regex.Match(build.Street).Value;
           if (!string.IsNullOrEmpty(build.Number))
           {
-            build.Street = build.Street.Replace(build.Number,"");
+            build.Street = build.Street.Replace(build.Number, "");
             regex = new Regex(@"(к\d+)");
             build.Building = regex.Match(build.Number).Value.Replace("к", "");
-            build.Number= build.Number.Replace($"к{build.Building}", "");
+            build.Number = build.Number.Replace($"к{build.Building}", "");
           }
           else
           {
@@ -265,7 +275,7 @@ namespace ParseSitesForApartments.Sites
                 if (!string.IsNullOrEmpty(build.Number))
                 {
                   build.Street = build.Street.Replace(build.Number, "");
-                  build.Number = build.Number.Replace("ул. ","").Replace("ул, ", "");
+                  build.Number = build.Number.Replace("ул. ", "").Replace("ул, ", "");
                 }
                 else
                 {
@@ -301,7 +311,7 @@ namespace ParseSitesForApartments.Sites
                         if (!string.IsNullOrEmpty(build.Number))
                         {
                           build.Street = build.Street.Replace(build.Number, "");
-                          build.Number = build.Number.Replace(" ", "").Replace("д.","");
+                          build.Number = build.Number.Replace(" ", "").Replace("д.", "");
                         }
                         else
                         {
@@ -350,7 +360,7 @@ namespace ParseSitesForApartments.Sites
               }
             }
           }
-          
+
 
           string town = "";
           if (build.Street.Contains("Колпино") || build.Street.Contains("г. Колпино"))
@@ -373,13 +383,18 @@ namespace ParseSitesForApartments.Sites
             town = "Парголово";
             build.Street = build.Street.Replace(town, "");
           }
+          else if (build.Street.Contains("Красное Село г"))
+          {
+            town = "Красное Село г";
+            build.Street = build.Street.Replace(town, "");
+          }
           else
           {
             town = "Санкт-Петербург";
             build.Street = build.Street.Replace("СПб", "");
           }
-          
-          build.Street = build.Street.Replace("ул.", "").Replace("пр-кт", "").Replace("проспект", "").Replace("наб", "").Replace("б-р", "").Replace("б-р/2", "").Replace("б-р/4", "").Replace("б", "").Replace("пр", "").Replace(",", "").Replace(".", "");
+
+          build.Street = build.Street.Replace("ул.", "").Replace("ул", "").Replace("пр-кт", "").Replace("проспект", "").Replace("наб", "").Replace("б-р", "").Replace("б-р/2", "").Replace("б-р/4", "").Replace("проезд", "").Replace("пр", "").Replace("шос к", "").Replace("бульвар", "").Replace(" б", "").Replace("  к", "").Replace("  д", "").Replace("пл", "").Replace(",", "").Replace(".", "").Trim();
 
           regex = new Regex(@"(\/А\d+А)");
           var str = regex.Match(build.Street).Value;
@@ -390,7 +405,7 @@ namespace ParseSitesForApartments.Sites
             sw.BaseStream.Position = sw.BaseStream.Length;
             sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.CountRoom};{build.Square};{build.Price};{ build.Floor};{build.Metro};{build.Distance}");
           }
-          
+
         }
       }
       finally
@@ -399,12 +414,124 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
-    private void WriteInFile(string str)
+    public void GetInfoAboutBuilding()
     {
-      using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+      if (File.Exists(Filename))
       {
-        sw.BaseStream.Position = sw.BaseStream.Length;
-        sw.WriteLine(str);
+        using (var sr = new StreamReader(Filename, Encoding.UTF8))
+        {
+          using (var sw = new StreamWriter(FilenameWithinfo, true, Encoding.UTF8))
+          {
+            using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
+            {
+              connection.Open();
+
+              sw.WriteLine($@"Улица;Номер;Корпус;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Расстояние;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов");
+              string line;
+              sr.ReadLine();
+              while ((line = sr.ReadLine()) != null)
+              {
+                string street = string.Empty;
+                string number = string.Empty;
+                string building = string.Empty;
+                string letter = string.Empty;
+                string typeRoom = string.Empty;
+                string square = string.Empty;
+                string floor = string.Empty;
+                string countFloor = string.Empty;
+                string price = string.Empty;
+                string metro = string.Empty;
+                string distance = string.Empty;
+                string dateBuild = string.Empty;
+                string dateRecon = string.Empty;
+                string dateRepair = string.Empty;
+                string buildingSquare = string.Empty;
+                string livingSquare = string.Empty;
+                string noLivingSqaure = string.Empty;
+                string residents = string.Empty;
+                string mansardaSquare = string.Empty;
+                string otoplenie = string.Empty;
+                string gvs = string.Empty;
+                string es = string.Empty;
+                string gs = string.Empty;
+                string typeApartaments = string.Empty;
+                string countApartaments = string.Empty;
+                string countInternal = string.Empty;
+                DateTime dateTep = DateTime.Now;
+                string typeRepair = string.Empty;
+                string countLift = string.Empty;
+
+                var arr = line.Split(';');
+                street = arr[1];
+                number = arr[2];
+                building = arr[3];
+                letter = arr[4];
+                typeRoom = arr[5];
+                square = arr[6];
+                price = arr[7];
+                floor = arr[8];
+                metro = arr[9];
+                distance = arr[10];
+
+                string select = "";
+                if (string.IsNullOrWhiteSpace(letter))
+                {
+                  if (string.IsNullOrWhiteSpace(building))
+                  {
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{street}', '{number}'";
+                  }
+                  else
+                  {
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{street}', '{number}', '{building}'";
+                  }
+                }
+                else
+                {
+                  if (string.IsNullOrWhiteSpace(building))
+                  {
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{street}', '{number}', '{letter}'";
+                  }
+                  else
+                  {
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{street}', '{number}', '{building}', '{letter}'";
+                  }
+                }
+
+                var command = new SqlCommand(select, connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                  dateBuild = reader.GetString(1);
+                  dateRecon = reader.GetString(3);
+                  dateRepair = reader.GetString(4);
+                  buildingSquare = reader.GetDouble(5).ToString();
+                  livingSquare = reader.GetDouble(6).ToString();
+                  noLivingSqaure = reader.GetDouble(7).ToString();
+                  countFloor = reader.GetInt32(9).ToString();
+                  residents = reader.GetInt32(10).ToString();
+                  mansardaSquare = reader.GetDouble(11).ToString();
+                  otoplenie = reader.GetBoolean(12).ToString();
+                  gvs = reader.GetBoolean(13).ToString();
+                  es = reader.GetBoolean(14).ToString();
+                  gs = reader.GetBoolean(15).ToString();
+                  typeApartaments = reader.GetString(16);
+                  countApartaments = reader.GetString(17);
+                  countInternal = reader.GetInt32(18).ToString();
+                  dateTep = reader.GetDateTime(19);
+                  typeRepair = reader.GetString(21);
+                  countLift = reader.GetInt32(22).ToString();
+                }
+                reader.Close();
+
+                sw.WriteLine($@"{street};{number};{building};{typeRoom};{square};{floor};{countFloor};{price};{metro};{distance};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTep.ToShortDateString()};{typeRepair};{countLift}");
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        MessageBox.Show("Нет файла с данными");
       }
     }
   }
