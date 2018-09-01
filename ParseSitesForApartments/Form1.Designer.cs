@@ -39,6 +39,7 @@
       this.button9 = new System.Windows.Forms.Button();
       this.button10 = new System.Windows.Forms.Button();
       this.button12 = new System.Windows.Forms.Button();
+      this.button11 = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // button1
@@ -151,11 +152,21 @@
       this.button12.UseVisualStyleBackColor = true;
       this.button12.Click += new System.EventHandler(this.button12_Click);
       // 
+      // button11
+      // 
+      this.button11.Location = new System.Drawing.Point(289, 128);
+      this.button11.Name = "button11";
+      this.button11.Size = new System.Drawing.Size(139, 23);
+      this.button11.TabIndex = 12;
+      this.button11.Text = "БКН с инфо";
+      this.button11.UseVisualStyleBackColor = true;
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(800, 450);
+      this.Controls.Add(this.button11);
       this.Controls.Add(this.button12);
       this.Controls.Add(this.button10);
       this.Controls.Add(this.button9);
@@ -186,6 +197,7 @@
     private System.Windows.Forms.Button button9;
     private System.Windows.Forms.Button button10;
     private System.Windows.Forms.Button button12;
+    private System.Windows.Forms.Button button11;
   }
 }
 

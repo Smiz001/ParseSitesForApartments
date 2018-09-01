@@ -412,6 +412,7 @@ namespace ParseSitesForApartments.Sites
                   buildingSquare = reader.GetDouble(5).ToString();
                   livingSquare = reader.GetDouble(6).ToString();
                   noLivingSqaure = reader.GetDouble(7).ToString();
+                  countFloor = reader.GetInt32(9).ToString();
                   residents = reader.GetInt32(10).ToString();
                   mansardaSquare = reader.GetDouble(11).ToString();
                   otoplenie = reader.GetBoolean(12).ToString();

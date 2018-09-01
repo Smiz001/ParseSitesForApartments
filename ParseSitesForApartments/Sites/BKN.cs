@@ -2,12 +2,12 @@
 using AngleSharp.Dom.Html;
 using AngleSharp.Parser.Html;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -15,28 +15,41 @@ namespace ParseSitesForApartments.Sites
   {
     private int minPage = 1;
     private int maxPage = 100;
+    private const string Filename = @"D:\BKNProdam.csv";
+    private static object locker = new object();
 
     public override void ParsingAll()
     {
       var random = new Random();
       using (var sw = new StreamWriter(@"D:\BKNProdam.csv", true, System.Text.Encoding.UTF8))
       {
-        //ParsingVtorichka(sw);
-        ParsingNovostroiki(sw);
+        sw.WriteLine($@"Нас. пункт;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
       }
+      ParsingVtorichka();
     }
 
-    public void ParsingVtorichka(StreamWriter sw)
+    public void ParsingVtorichka()
     {
-      ParsingStudioVtorichka(sw);
-      ParsingOneRoomVtorichka(sw);
-      ParsingTwoRoomVtorichka(sw);
-      ParsingThreeRoomVtorichka(sw);
-      ParsingFourRoomVtorichka(sw);
-      ParsingFiveAndMoreRoomVtorichka(sw);
+      var studiiThread = new Thread(ParsingStudioVtorichka);
+      studiiThread.Start();
+      Thread.Sleep(55000);
+      var oneThread = new Thread(ParsingOneRoomVtorichka);
+      oneThread.Start();
+      Thread.Sleep(55000);
+      var twoThread = new Thread(ParsingTwoRoomVtorichka);
+      twoThread.Start();
+      Thread.Sleep(55000);
+      var threeThread = new Thread(ParsingThreeRoomVtorichka);
+      threeThread.Start();
+      Thread.Sleep(55000);
+      var fourThread = new Thread(ParsingFourRoomVtorichka);
+      fourThread.Start();
+      Thread.Sleep(55000);
+      var fiveThread = new Thread(ParsingFiveAndMoreRoomVtorichka);
+      fiveThread.Start();
     }
 
-    public void ParsingStudioVtorichka(StreamWriter sw)
+    public void ParsingStudioVtorichka( )
     {
       using (var webClient = new WebClient())
       {
@@ -50,13 +63,18 @@ namespace ParseSitesForApartments.Sites
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          if (!ParsingSheet("Студия", sw, document))
-            return;
+
+          var apartment = document.GetElementsByClassName("main Apartments");
+          if (apartment.Length > 0)
+            ParsingSheet("Студия", apartment);
+          else
+            break;
         }
       }
+      MessageBox.Show("Закончили Студии");
     }
 
-    public void ParsingOneRoomVtorichka(StreamWriter sw)
+    public void ParsingOneRoomVtorichka()
     {
       using (var webClient = new WebClient())
       {
@@ -64,19 +82,24 @@ namespace ParseSitesForApartments.Sites
         for (int i = minPage; i < maxPage; i++)
         {
           Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/odnokomnatnye-kvartiry?p={i}";
+          string prodam = $@"https://www.bkn.ru/prodazha/kvartiri/odnokomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = System.Text.Encoding.UTF8;
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          if (!ParsingSheet("1 км. кв.", sw, document))
-            return;
+
+          var apartment = document.GetElementsByClassName("main Apartments");
+          if (apartment.Length > 0)
+            ParsingSheet("1 км. кв.", apartment);
+          else
+            break;
         }
       }
+      MessageBox.Show("Закончили 1");
     }
 
-    public void ParsingTwoRoomVtorichka(StreamWriter sw)
+    public void ParsingTwoRoomVtorichka()
     {
       using (var webClient = new WebClient())
       {
@@ -84,19 +107,23 @@ namespace ParseSitesForApartments.Sites
         for (int i = minPage; i < maxPage; i++)
         {
           Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/dvuhkomnatnye-kvartiry?p={i}";
+          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/dvuhkomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = System.Text.Encoding.UTF8;
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          if (!ParsingSheet("2 км. кв.", sw, document))
-            return;
+          var apartment = document.GetElementsByClassName("main Apartments");
+          if (apartment.Length > 0)
+            ParsingSheet("2 км. кв.", apartment);
+          else
+            break;
         }
       }
+      MessageBox.Show("Закончили 2");
     }
 
-    public void ParsingThreeRoomVtorichka(StreamWriter sw)
+    public void ParsingThreeRoomVtorichka()
     {
       using (var webClient = new WebClient())
       {
@@ -104,19 +131,23 @@ namespace ParseSitesForApartments.Sites
         for (int i = minPage; i < maxPage; i++)
         {
           Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/trehkomnatnye-kvartiry?p={i}";
+          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/trehkomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = System.Text.Encoding.UTF8;
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          if (!ParsingSheet("3 км. кв.", sw, document))
-            return;
+          var apartment = document.GetElementsByClassName("main Apartments");
+          if (apartment.Length > 0)
+            ParsingSheet("3 км. кв.", apartment);
+          else
+            break;
         }
       }
+      MessageBox.Show("Закончили 3");
     }
 
-    public void ParsingFourRoomVtorichka(StreamWriter sw)
+    public void ParsingFourRoomVtorichka()
     {
       using (var webClient = new WebClient())
       {
@@ -124,19 +155,23 @@ namespace ParseSitesForApartments.Sites
         for (int i = minPage; i < maxPage; i++)
         {
           Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/chetyrehkomnatnye-kvartiry?p={i}";
+          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/chetyrehkomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = System.Text.Encoding.UTF8;
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          if (!ParsingSheet("4 км. кв.", sw, document))
-            return;
+          var apartment = document.GetElementsByClassName("main Apartments");
+          if (apartment.Length > 0)
+            ParsingSheet("4 км. кв.", apartment);
+          else
+            break;
         }
       }
+      MessageBox.Show("Закончили 4");
     }
 
-    public void ParsingFiveAndMoreRoomVtorichka(StreamWriter sw)
+    public void ParsingFiveAndMoreRoomVtorichka()
     {
       using (var webClient = new WebClient())
       {
@@ -144,31 +179,23 @@ namespace ParseSitesForApartments.Sites
         for (int i = minPage; i < maxPage; i++)
         {
           Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/pyatikomnatnye-kvartiry?p={i}";
+          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/pyatikomnatnye-kvartiry?page={i}";
 
           webClient.Encoding = System.Text.Encoding.UTF8;
           var responce = webClient.DownloadString(prodam);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          if (!ParsingSheet("5 км. кв. и более", sw, document))
-            return;
+          var apartment = document.GetElementsByClassName("main Apartments");
+          if (apartment.Length > 0)
+            ParsingSheet("5 км. кв.", apartment);
+          else
+            break;
         }
       }
+      MessageBox.Show("Закончили 5+");
     }
 
-    private bool ParsingSheet(string typeRoom, StreamWriter sw, IHtmlDocument document)
-    {
-      var newApartment = document.GetElementsByClassName("main NewApartment");
-      var apartment = document.GetElementsByClassName("main Apartments");
-      if (newApartment.Length == 0 && apartment.Length == 0)
-        return false;
-
-      Parse(apartment, typeRoom, sw);
-      Parse(newApartment, typeRoom, sw);
-      return true;
-    }
-
-    private void Parse(IHtmlCollection<IElement> collection, string typeRoom, StreamWriter sw)
+    private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection)
     {
       string year = string.Empty;
       string distanceInMinute = string.Empty;
@@ -178,7 +205,6 @@ namespace ParseSitesForApartments.Sites
       for (int j = 0; j < collection.Length; j++)
       {
         string town = string.Empty;
-
         var build = new Build();
         build.CountRoom = typeRoom;
 
@@ -205,12 +231,6 @@ namespace ParseSitesForApartments.Sites
 
           district = collection[j].GetElementsByClassName("overflow")[2].TextContent;
           build.Street = collection[j].GetElementsByClassName("overflow")[3].TextContent;
-
-          regex = new Regex(@"(д. \d+)|(\d+)");
-          build.Number = regex.Match(build.Street).Value.Replace("д. ", "");
-
-          regex = new Regex(@"(к. \d+)");
-          building = regex.Match(build.Street).Value.Replace("к. ", "");
 
           if (build.Street.Contains("Сестрорецк г."))
           {
@@ -262,6 +282,31 @@ namespace ParseSitesForApartments.Sites
             town = "Понтонный пос";
             build.Street = build.Street.Replace(town, "");
           }
+          else if (build.Street.Contains("г. Петергоф"))
+          {
+            town = "Петергоф г.";
+            build.Street = build.Street.Replace("г. Петергоф", "");
+          }
+          else if (build.Street.Contains("Ломоносов г."))
+          {
+            town = "Ломоносов г.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else if (build.Street.Contains("Стрельна г."))
+          {
+            town = "Стрельна г.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else if (build.Street.Contains("Павловск г."))
+          {
+            town = "Павловск г.";
+            build.Street = build.Street.Replace(town, "");
+          }
+          else if (build.Street.Contains("Кронштадт г."))
+          {
+            town = "Кронштадт г.";
+            build.Street = build.Street.Replace(town, "");
+          }
           else if (build.Street.Contains("Санкт-Петербург г."))
           {
             town = "Санкт-Петербург г.";
@@ -270,32 +315,178 @@ namespace ParseSitesForApartments.Sites
           else
             town = "Санкт-Петербург г.";
 
-          if (string.IsNullOrEmpty(building))
+          regex = new Regex(@"(д\.\s+\d+\,\s+к\.\s+\d+)");
+          build.Number = regex.Match(build.Street).Value;
+
+          if(!string.IsNullOrWhiteSpace(build.Number))
           {
-            if (string.IsNullOrEmpty(build.Number))
-              build.Street = build.Street.Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
-            else
-              build.Street = build.Street.Replace(build.Number, "").Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
-          }
-          else if (string.IsNullOrEmpty(build.Number))
-          {
-            if (string.IsNullOrEmpty(building))
-              build.Street = build.Street.Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
-            else
-              build.Street = build.Street.Replace(building, "").Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
+            build.Street = build.Street.Replace(build.Number,"");
+            regex = new Regex(@"(к\.\s+\d+)");
+            build.Building = regex.Match(build.Number).Value;
+            build.Number = build.Number.Replace(build.Building, "");
+
+            build.Building = build.Building.Replace("к.", "").Trim();
+            build.Number = build.Number.Replace("д.", "").Replace(",", "").Trim();
           }
           else
-            build.Street = build.Street.Replace(build.Number, "").Replace(building, "").Replace(",", "").Replace("к.", "").Replace("д.", "").Replace("шос.", "").Replace("просп.", "").Replace("ул.", "").Trim();
+          {
+            regex = new Regex(@"(д\.\s+\d+К\d+)");
+            build.Number = regex.Match(build.Street).Value;
+
+            if(string.IsNullOrWhiteSpace(build.Number))
+            {
+              regex = new Regex(@"(прд\.\,\d+)");
+              build.Number = regex.Match(build.Street).Value;
+              if (string.IsNullOrWhiteSpace(build.Number))
+              {
+                regex = new Regex(@"(д\.\d+\s+к\.\d+)");
+                build.Number = regex.Match(build.Street).Value;
+
+                if (string.IsNullOrWhiteSpace(build.Number))
+                {
+                  regex = new Regex(@"(д\.\s+\d+$)");
+                  build.Number = regex.Match(build.Street).Value;
+
+                  if (string.IsNullOrWhiteSpace(build.Number))
+                  {
+                    regex = new Regex(@"(д\.\s+\d+\/\d+)");
+                    build.Number = regex.Match(build.Street).Value;
+                    if (string.IsNullOrWhiteSpace(build.Number))
+                    {
+                      regex = new Regex(@"(д\.\d+\,\s+к\.\d+)");
+                      build.Number = regex.Match(build.Street).Value;
+                      if (string.IsNullOrWhiteSpace(build.Number))
+                      {
+                        regex = new Regex(@"(д\.\s+\d+\s+лит\.\s+\D)");
+                        build.Number = regex.Match(build.Street).Value;
+                        if (string.IsNullOrWhiteSpace(build.Number))
+                        {
+                          regex = new Regex(@"(д\.\d+)");
+                          build.Number = regex.Match(build.Street).Value;
+                          if (string.IsNullOrWhiteSpace(build.Number))
+                          {
+                            regex = new Regex(@"(\d+\s+к\.\d+)");
+                            build.Number = regex.Match(build.Street).Value;
+                            if (string.IsNullOrWhiteSpace(build.Number))
+                            {
+                              regex = new Regex(@"(д\.\s+\d+\D\s+к\.\s+\d+)");
+                              build.Number = regex.Match(build.Street).Value;
+                              if (string.IsNullOrWhiteSpace(build.Number))
+                              {
+                                regex = new Regex(@"(д\.\s+\d+)");
+                                build.Number = regex.Match(build.Street).Value;
+                                if (string.IsNullOrWhiteSpace(build.Number))
+                                {
+
+                                }
+                                else
+                                {
+                                  build.Street = build.Street.Replace(build.Number, "");
+                                  build.Number = build.Number.Replace("д.", "").Trim();
+                                }
+                              }
+                              else
+                              {
+                                build.Street = build.Street.Replace(build.Number, "");
+                                regex = new Regex(@"(к\.\s+\d+)");
+                                build.Building = regex.Match(build.Number).Value;
+                                build.Number = build.Number.Replace(build.Building, "").Trim();
+                                regex = new Regex(@"(д\.\s+\d+)");
+                                var num = regex.Match(build.Number).Value;
+                                build.Liter = build.Number.Replace(num,"");
+                                build.Number = num.Replace("д.","").Trim();
+                              }
+                            }
+                            else
+                            {
+                              build.Street = build.Street.Replace(build.Number, "");
+                              regex = new Regex(@"(к\.\d+)");
+                              build.Building = regex.Match(build.Number).Value;
+                              build.Number = build.Number.Replace(build.Building, "").Trim();
+                              build.Building = build.Building.Replace("к.", "");
+                            }
+                          }
+                          else
+                          {
+                            build.Street = build.Street.Replace(build.Number, "");
+                            build.Number = build.Number.Replace("д.","");
+                          }
+                        }
+                        else
+                        {
+                          build.Street = build.Street.Replace(build.Number, "");
+                          regex = new Regex(@"(лит\.\s+\D)");
+                          build.Liter = regex.Match(build.Number).Value;
+                          build.Number = build.Number.Replace(build.Liter, "").Replace("д.", "").Trim();
+                          build.Liter = build.Liter.Replace("лит.", "").Trim();
+                        }
+                      }
+                      else
+                      {
+                        build.Street = build.Street.Replace(build.Number, "");
+                        regex = new Regex(@"(к\.\d+)");
+                        build.Building = regex.Match(build.Number).Value;
+                        build.Number = build.Number.Replace(build.Building, "").Replace("д.","").Replace(",", "").Trim();
+                        build.Building = build.Building.Replace("к.","");
+                      }
+
+                    }
+                    else
+                    {
+                      build.Street = build.Street.Replace(build.Number, "");
+                      var arr = build.Number.Split('/');
+                      build.Number = arr[0].Replace("д.","").Trim();
+                      build.Building = arr[1];
+                    }
+                  }
+                  else
+                  {
+                    build.Street = build.Street.Replace(build.Number, "");
+                    build.Number = build.Number.Replace("д.","").Trim();
+                  }
+                }
+                else
+                {
+                  build.Street = build.Street.Replace(build.Number, "");
+                  regex = new Regex(@"(к\.\d+)");
+                  build.Building = regex.Match(build.Number).Value;
+                  build.Number = build.Number.Replace(build.Building, "").Replace("д.", "").Trim();
+                  build.Building = build.Building.Replace("к.", "");
+                }
+              }
+              else
+              {
+                build.Street = build.Street.Replace(build.Number, "");
+                build.Number = build.Number.Replace("прд.,", "");
+              }
+            }
+            else
+            {
+              build.Street = build.Street.Replace(build.Number, "");
+              regex = new Regex(@"(К\d+)");
+              build.Building = regex.Match(build.Number).Value;
+              build.Number = build.Number.Replace(build.Building, "").Replace("д.","");
+              build.Building = build.Building.Replace("К", "");
+            }
+          }
 
           build.Metro = collection[j].GetElementsByClassName("subwaystring")[0].TextContent;
 
           regex = new Regex(@"(\d+\sмин.\sна\sтранспорте)|(\d+\sмин\.\sпешком)");
           build.Distance = regex.Match(build.Metro).Value;
 
+          build.Street = build.Street.Replace("ул.", "").Replace("просп.", "").Replace("пр-кт", "").Replace("пер.", "").Replace("шос.", "").Replace("пр.", "").Replace("лит. а", "").Replace("лит. А", "").Replace("стр. 3", "").Replace("стр. 1", "").Replace("стр. 2", "").Replace("б-р.", "").Replace(" б", "").Replace("пр-д", "").Replace("тер.", "").Replace("пл.", "").Replace(",", "").Replace(".", "").Trim();
+
           if (!string.IsNullOrWhiteSpace(build.Distance))
             build.Metro = build.Metro.Replace(build.Distance, "").Replace("●", "").Replace(",", "").Trim();
 
-          sw.WriteLine($@"{town};{build.Street};{build.Number};{building};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance}");
+          Monitor.Enter(locker);
+          using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+          {
+            sw.BaseStream.Position = sw.BaseStream.Length;
+            sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance}");
+          }
+          Monitor.Exit(locker);
         }
       }
     }
@@ -432,324 +623,324 @@ namespace ParseSitesForApartments.Sites
     public void ParsingNovostroiki(StreamWriter sw)
     {
       //ParsingStudioNovostroiki(sw);
-      ParsingOneRoomNovostroiki(sw);
+      //ParsingOneRoomNovostroiki(sw);
       //ParsingTwoRoomNovostroiki(sw);
       //ParsingThreeRoomNovostroiki(sw);
     }
 
-    public void ParsingStudioNovostroiki(StreamWriter sw)
-    {
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        for (int i = minPage; i < 6; i++)
-        {
-          Thread.Sleep(random.Next(1000, 3000));
-          string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/studii?page={i}";
+    //public void ParsingStudioNovostroiki(StreamWriter sw)
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    Random random = new Random();
+    //    for (int i = minPage; i < 6; i++)
+    //    {
+    //      Thread.Sleep(random.Next(1000, 3000));
+    //      string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/studii?page={i}";
 
-          webClient.Encoding = Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
+    //      webClient.Encoding = Encoding.UTF8;
+    //      var responce = webClient.DownloadString(prodam);
+    //      var parser = new HtmlParser();
+    //      var document = parser.Parse(responce);
 
-          var newApartment = document.GetElementsByClassName("main NewApartment");
-          if (newApartment.Length == 0)
-            break;
-          ParseStudiiNovostroikiMain(newApartment, sw);
-        }
-      }
-    }
+    //      var newApartment = document.GetElementsByClassName("main NewApartment");
+    //      if (newApartment.Length == 0)
+    //        break;
+    //      ParseStudiiNovostroikiMain(newApartment, sw);
+    //    }
+    //  }
+    //}
 
-    private void ParseStudiiNovostroikiMain(IHtmlCollection<IElement> collection, StreamWriter sw)
-    {
-      Random random = new Random();
-      using (var wb = new WebClient())
-      {
-        for (int i = 0; i < collection.Length; i++)
-        {
-          if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("Студия"))
-          {
-            var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
-            var hrefGk = $@"https://www.bkn.ru{str}";
+    //private void ParseStudiiNovostroikiMain(IHtmlCollection<IElement> collection, StreamWriter sw)
+    //{
+    //  Random random = new Random();
+    //  using (var wb = new WebClient())
+    //  {
+    //    for (int i = 0; i < collection.Length; i++)
+    //    {
+    //      if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("Студия"))
+    //      {
+    //        var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
+    //        var hrefGk = $@"https://www.bkn.ru{str}";
 
-            wb.Encoding = Encoding.UTF8;
-            var responce = wb.DownloadString(hrefGk);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+    //        wb.Encoding = Encoding.UTF8;
+    //        var responce = wb.DownloadString(hrefGk);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
 
-            var content = document.GetElementsByClassName("complex-mode-content")[0];
-            var list = content.GetElementsByClassName("row offset-bottom-30");
-            var elementStudiiGk = list[2];
-            var nameElement = elementStudiiGk.GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent;
-            if (nameElement == "Студии")
-            {
-              int length = 15;
-              for (int j = 1; j < length; j++)
-              {
-                str = elementStudiiGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
-                var hrefStudiiGk = $@"https://www.bkn.ru{str}";
-                Thread.Sleep(random.Next(5000, 6000));
+    //        var content = document.GetElementsByClassName("complex-mode-content")[0];
+    //        var list = content.GetElementsByClassName("row offset-bottom-30");
+    //        var elementStudiiGk = list[2];
+    //        var nameElement = elementStudiiGk.GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent;
+    //        if (nameElement == "Студии")
+    //        {
+    //          int length = 15;
+    //          for (int j = 1; j < length; j++)
+    //          {
+    //            str = elementStudiiGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
+    //            var hrefStudiiGk = $@"https://www.bkn.ru{str}";
+    //            Thread.Sleep(random.Next(5000, 6000));
 
-                responce = wb.DownloadString(hrefStudiiGk);
-                document = parser.Parse(responce);
+    //            responce = wb.DownloadString(hrefStudiiGk);
+    //            document = parser.Parse(responce);
 
-                var newApartment = document.GetElementsByClassName("main NewApartment");
-                Parse(newApartment, "Студия", sw);
-              }
-            }
-          }
-          else
-          {
-            var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
-            //var a = parent.PreviousElementSibling;
-            //ParseOneElement(parent, "Студия", sw);
-          }
-        }
-      }
-    }
+    //            var newApartment = document.GetElementsByClassName("main NewApartment");
+    //            Parse(newApartment, "Студия", sw);
+    //          }
+    //        }
+    //      }
+    //      else
+    //      {
+    //        var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
+    //        //var a = parent.PreviousElementSibling;
+    //        //ParseOneElement(parent, "Студия", sw);
+    //      }
+    //    }
+    //  }
+    //}
 
-    public void ParsingOneRoomNovostroiki(StreamWriter sw)
-    {
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        for (int i = minPage; i < 15; i++)
-        {
-          Thread.Sleep(random.Next(1000, 2000));
-          string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/odnokomnatnye-kvartiry?page={i}";
+    //public void ParsingOneRoomNovostroiki(StreamWriter sw)
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    Random random = new Random();
+    //    for (int i = minPage; i < 15; i++)
+    //    {
+    //      Thread.Sleep(random.Next(1000, 2000));
+    //      string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/odnokomnatnye-kvartiry?page={i}";
 
-          webClient.Encoding = Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
+    //      webClient.Encoding = Encoding.UTF8;
+    //      var responce = webClient.DownloadString(prodam);
+    //      var parser = new HtmlParser();
+    //      var document = parser.Parse(responce);
 
-          var newApartment = document.GetElementsByClassName("main NewApartment");
-          if (newApartment.Length == 0)
-            break;
-          ParseOneRoomNovostroikiMain(newApartment, sw);
-        }
-      }
-    }
+    //      var newApartment = document.GetElementsByClassName("main NewApartment");
+    //      if (newApartment.Length == 0)
+    //        break;
+    //      ParseOneRoomNovostroikiMain(newApartment, sw);
+    //    }
+    //  }
+    //}
 
-    private void ParseOneRoomNovostroikiMain(IHtmlCollection<IElement> collection, StreamWriter sw)
-    {
-      Random random = new Random();
-      using (var wb = new WebClient())
-      {
-        for (int i = 0; i < collection.Length; i++)
-        {
-          if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("1-комн."))
-          {
-            var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
-            var hrefGk = $@"https://www.bkn.ru{str}";
+    //private void ParseOneRoomNovostroikiMain(IHtmlCollection<IElement> collection, StreamWriter sw)
+    //{
+    //  Random random = new Random();
+    //  using (var wb = new WebClient())
+    //  {
+    //    for (int i = 0; i < collection.Length; i++)
+    //    {
+    //      if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("1-комн."))
+    //      {
+    //        var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
+    //        var hrefGk = $@"https://www.bkn.ru{str}";
 
-            wb.Encoding = Encoding.UTF8;
-            var responce = wb.DownloadString(hrefGk);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+    //        wb.Encoding = Encoding.UTF8;
+    //        var responce = wb.DownloadString(hrefGk);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
 
-            var content = document.GetElementsByClassName("complex-mode-content")[0];
-            var list = content.GetElementsByClassName("row offset-bottom-30");
-            for (int k = 0; k < list.Length; k++)
-            {
-              var listBold = list[k].GetElementsByClassName("bold nopadding nomargin font-size-20");
-              if(listBold.Length != 0 )
-              {
-                if (list[k].GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent == "Однокомнатные квартиры")
-                {
-                  var elementOneRoomGk = list[k];
+    //        var content = document.GetElementsByClassName("complex-mode-content")[0];
+    //        var list = content.GetElementsByClassName("row offset-bottom-30");
+    //        for (int k = 0; k < list.Length; k++)
+    //        {
+    //          var listBold = list[k].GetElementsByClassName("bold nopadding nomargin font-size-20");
+    //          if(listBold.Length != 0 )
+    //          {
+    //            if (list[k].GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent == "Однокомнатные квартиры")
+    //            {
+    //              var elementOneRoomGk = list[k];
 
-                  int length = 30;
-                  for (int j = 1; j < length; j++)
-                  {
-                    if (elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius").Length == 0)
-                      break;
-                    str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
-                    var hrefStudiiGk = $@"https://www.bkn.ru{str}";
-                    Thread.Sleep(random.Next(1000, 2000));
+    //              int length = 30;
+    //              for (int j = 1; j < length; j++)
+    //              {
+    //                if (elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius").Length == 0)
+    //                  break;
+    //                str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
+    //                var hrefStudiiGk = $@"https://www.bkn.ru{str}";
+    //                Thread.Sleep(random.Next(1000, 2000));
 
-                    responce = wb.DownloadString(hrefStudiiGk);
-                    document = parser.Parse(responce);
+    //                responce = wb.DownloadString(hrefStudiiGk);
+    //                document = parser.Parse(responce);
 
-                    var newApartment = document.GetElementsByClassName("main NewApartment");
-                    Parse(newApartment, "1 км. кв.", sw);
-                  }
-                }
-              }
-            }
-          }
-          else
-          {
-            var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
-            //var a = parent.PreviousElementSibling;
-            //ParseOneElement(parent, "Студия", sw);
-          }
-        }
-      }
-    }
+    //                var newApartment = document.GetElementsByClassName("main NewApartment");
+    //                Parse(newApartment, "1 км. кв.", sw);
+    //              }
+    //            }
+    //          }
+    //        }
+    //      }
+    //      else
+    //      {
+    //        var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
+    //        //var a = parent.PreviousElementSibling;
+    //        //ParseOneElement(parent, "Студия", sw);
+    //      }
+    //    }
+    //  }
+    //}
 
-    public void ParsingTwoRoomNovostroiki(StreamWriter sw)
-    {
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        for (int i = minPage; i < 15; i++)
-        {
-          Thread.Sleep(random.Next(2000, 3000));
-          string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/dvuhkomnatnye-kvartiry?page={i}";
+    //public void ParsingTwoRoomNovostroiki(StreamWriter sw)
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    Random random = new Random();
+    //    for (int i = minPage; i < 15; i++)
+    //    {
+    //      Thread.Sleep(random.Next(2000, 3000));
+    //      string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/dvuhkomnatnye-kvartiry?page={i}";
 
-          webClient.Encoding = Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
+    //      webClient.Encoding = Encoding.UTF8;
+    //      var responce = webClient.DownloadString(prodam);
+    //      var parser = new HtmlParser();
+    //      var document = parser.Parse(responce);
 
-          var newApartment = document.GetElementsByClassName("main NewApartment");
-          if (newApartment.Length == 0)
-            break;
-          ParseTwoRoomNovostroikiMain(newApartment, sw);
-        }
-      }
-    }
+    //      var newApartment = document.GetElementsByClassName("main NewApartment");
+    //      if (newApartment.Length == 0)
+    //        break;
+    //      ParseTwoRoomNovostroikiMain(newApartment, sw);
+    //    }
+    //  }
+    //}
 
-    private void ParseTwoRoomNovostroikiMain(IHtmlCollection<IElement> collection, StreamWriter sw)
-    {
-      Random random = new Random();
-      using (var wb = new WebClient())
-      {
-        for (int i = 0; i < collection.Length; i++)
-        {
-          try
-          {
-            if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("2-комн"))
-            {
-              var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
-              var hrefGk = $@"https://www.bkn.ru{str}";
+    //private void ParseTwoRoomNovostroikiMain(IHtmlCollection<IElement> collection, StreamWriter sw)
+    //{
+    //  Random random = new Random();
+    //  using (var wb = new WebClient())
+    //  {
+    //    for (int i = 0; i < collection.Length; i++)
+    //    {
+    //      try
+    //      {
+    //        if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("2-комн"))
+    //        {
+    //          var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
+    //          var hrefGk = $@"https://www.bkn.ru{str}";
 
-              wb.Encoding = Encoding.UTF8;
-              var responce = wb.DownloadString(hrefGk);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
+    //          wb.Encoding = Encoding.UTF8;
+    //          var responce = wb.DownloadString(hrefGk);
+    //          var parser = new HtmlParser();
+    //          var document = parser.Parse(responce);
 
-              var content = document.GetElementsByClassName("complex-mode-content")[0];
-              var list = content.GetElementsByClassName("row offset-bottom-30");
-              if (list.Length < 4)
-                break;
-              var elementOneRoomGk = list[3];
-              var nameElement = elementOneRoomGk.GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent;
-              if (nameElement != "Двухкомнатные квартиры")
-                elementOneRoomGk = list[4];
+    //          var content = document.GetElementsByClassName("complex-mode-content")[0];
+    //          var list = content.GetElementsByClassName("row offset-bottom-30");
+    //          if (list.Length < 4)
+    //            break;
+    //          var elementOneRoomGk = list[3];
+    //          var nameElement = elementOneRoomGk.GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent;
+    //          if (nameElement != "Двухкомнатные квартиры")
+    //            elementOneRoomGk = list[4];
 
-              int length = 30;
-              for (int j = 1; j < length; j++)
-              {
-                if (elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius").Length == 0)
-                  break;
-                str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
-                var hrefStudiiGk = $@"https://www.bkn.ru{str}";
-                Thread.Sleep(random.Next(2000, 3000));
+    //          int length = 30;
+    //          for (int j = 1; j < length; j++)
+    //          {
+    //            if (elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius").Length == 0)
+    //              break;
+    //            str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
+    //            var hrefStudiiGk = $@"https://www.bkn.ru{str}";
+    //            Thread.Sleep(random.Next(2000, 3000));
 
-                responce = wb.DownloadString(hrefStudiiGk);
-                document = parser.Parse(responce);
+    //            responce = wb.DownloadString(hrefStudiiGk);
+    //            document = parser.Parse(responce);
 
-                var newApartment = document.GetElementsByClassName("main NewApartment");
-                Parse(newApartment, "2 км. кв.", sw);
-              }
-            }
-            else
-            {
-              var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
-              //var a = parent.PreviousElementSibling;
-              //ParseOneElement(parent, "Студия", sw);
-            }
-          }
-          catch (Exception ex)
-          {
-            var str = ex.Message;
-          }
-        }
-      }
-    }
+    //            var newApartment = document.GetElementsByClassName("main NewApartment");
+    //            Parse(newApartment, "2 км. кв.", sw);
+    //          }
+    //        }
+    //        else
+    //        {
+    //          var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
+    //          //var a = parent.PreviousElementSibling;
+    //          //ParseOneElement(parent, "Студия", sw);
+    //        }
+    //      }
+    //      catch (Exception ex)
+    //      {
+    //        var str = ex.Message;
+    //      }
+    //    }
+    //  }
+    //}
 
-    public void ParsingThreeRoomNovostroiki(StreamWriter sw)
-    {
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        for (int i = minPage; i < 12; i++)
-        {
-          Thread.Sleep(random.Next(2000, 3000));
-          string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/trehkomnatnye-kvartiry?page={i}";
+    //public void ParsingThreeRoomNovostroiki(StreamWriter sw)
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    Random random = new Random();
+    //    for (int i = minPage; i < 12; i++)
+    //    {
+    //      Thread.Sleep(random.Next(2000, 3000));
+    //      string prodam = $@"https://www.bkn.ru/prodazha/novostroiki/trehkomnatnye-kvartiry?page={i}";
 
-          webClient.Encoding = Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
+    //      webClient.Encoding = Encoding.UTF8;
+    //      var responce = webClient.DownloadString(prodam);
+    //      var parser = new HtmlParser();
+    //      var document = parser.Parse(responce);
 
-          var newApartment = document.GetElementsByClassName("main NewApartment");
-          if (newApartment.Length == 0)
-            break;
-          ParseThreeRoomNovostroikiMain(newApartment, sw);
-        }
-      }
-    }
+    //      var newApartment = document.GetElementsByClassName("main NewApartment");
+    //      if (newApartment.Length == 0)
+    //        break;
+    //      ParseThreeRoomNovostroikiMain(newApartment, sw);
+    //    }
+    //  }
+    //}
 
-    private void ParseThreeRoomNovostroikiMain(IHtmlCollection<IElement> collection, StreamWriter sw)
-    {
-      Random random = new Random();
-      using (var wb = new WebClient())
-      {
-        for (int i = 0; i < collection.Length; i++)
-        {
-          try
-          {
-            if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("3-комн"))
-            {
-              var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
-              var hrefGk = $@"https://www.bkn.ru{str}";
+    //private void ParseThreeRoomNovostroikiMain(IHtmlCollection<IElement> collection, StreamWriter sw)
+    //{
+    //  Random random = new Random();
+    //  using (var wb = new WebClient())
+    //  {
+    //    for (int i = 0; i < collection.Length; i++)
+    //    {
+    //      try
+    //      {
+    //        if (!collection[i].GetElementsByClassName("name")[0].TextContent.Contains("3-комн"))
+    //        {
+    //          var str = collection[i].GetElementsByClassName("name")[0].GetAttribute("href");
+    //          var hrefGk = $@"https://www.bkn.ru{str}";
 
-              wb.Encoding = Encoding.UTF8;
-              var responce = wb.DownloadString(hrefGk);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
+    //          wb.Encoding = Encoding.UTF8;
+    //          var responce = wb.DownloadString(hrefGk);
+    //          var parser = new HtmlParser();
+    //          var document = parser.Parse(responce);
 
-              var content = document.GetElementsByClassName("complex-mode-content")[0];
-              var list = content.GetElementsByClassName("row offset-bottom-30");
-              if (list.Length < 5)
-                break;
-              var elementOneRoomGk = list[4];
-              var nameElement = elementOneRoomGk.GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent;
-              if (nameElement != "Трехкомнатные квартиры")
-                elementOneRoomGk = list[5];
+    //          var content = document.GetElementsByClassName("complex-mode-content")[0];
+    //          var list = content.GetElementsByClassName("row offset-bottom-30");
+    //          if (list.Length < 5)
+    //            break;
+    //          var elementOneRoomGk = list[4];
+    //          var nameElement = elementOneRoomGk.GetElementsByClassName("bold nopadding nomargin font-size-20")[0].TextContent;
+    //          if (nameElement != "Трехкомнатные квартиры")
+    //            elementOneRoomGk = list[5];
 
-              int length = 30;
-              for (int j = 1; j < length; j++)
-              {
-                if (elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius").Length == 0)
-                  break;
-                str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
-                var hrefStudiiGk = $@"https://www.bkn.ru{str}";
-                Thread.Sleep(random.Next(2000, 3000));
+    //          int length = 30;
+    //          for (int j = 1; j < length; j++)
+    //          {
+    //            if (elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius").Length == 0)
+    //              break;
+    //            str = elementOneRoomGk.GetElementsByClassName("white-focus-font btn button-red-noradius")[0].GetAttribute("href").Replace("[]=0", $@"%5b%5d=0&Page={j}");
+    //            var hrefStudiiGk = $@"https://www.bkn.ru{str}";
+    //            Thread.Sleep(random.Next(2000, 3000));
 
-                responce = wb.DownloadString(hrefStudiiGk);
-                document = parser.Parse(responce);
+    //            responce = wb.DownloadString(hrefStudiiGk);
+    //            document = parser.Parse(responce);
 
-                var newApartment = document.GetElementsByClassName("main NewApartment");
-                Parse(newApartment, "3 км. кв.", sw);
-              }
-            }
-            else
-            {
-              var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
-              //var a = parent.PreviousElementSibling;
-              //ParseOneElement(parent, "Студия", sw);
-            }
-          }
-          catch (Exception ex)
-          {
-            var str = ex.Message;
-          }
-        }
-      }
-    }
+    //            var newApartment = document.GetElementsByClassName("main NewApartment");
+    //            Parse(newApartment, "3 км. кв.", sw);
+    //          }
+    //        }
+    //        else
+    //        {
+    //          var parent = collection[i].GetElementsByClassName("name")[0].PreviousElementSibling;
+    //          //var a = parent.PreviousElementSibling;
+    //          //ParseOneElement(parent, "Студия", sw);
+    //        }
+    //      }
+    //      catch (Exception ex)
+    //      {
+    //        var str = ex.Message;
+    //      }
+    //    }
+    //  }
+    //}
   }
 }
