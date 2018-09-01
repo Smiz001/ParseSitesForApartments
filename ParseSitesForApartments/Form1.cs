@@ -666,7 +666,8 @@ WHERE ID ='{item.Id}'";
 
     private void button13_Click(object sender, EventArgs e)
     {
-
+      var bn = new BN();
+      bn.GetInfoAboutBuilding();
     }
   }
 
