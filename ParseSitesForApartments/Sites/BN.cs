@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom.Html;
 using AngleSharp.Parser.Html;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Net;
@@ -16,6 +17,7 @@ namespace ParseSitesForApartments.Sites
     static object locker = new object();
     private const string Filename = @"D:\BNProdam.csv";
     private const string FilenameWithinfo = @"D:\BNProdamWithInfo.csv";
+    private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 4, "Калининский" }, { 5, "Кировский" }, { 6, "Колпинский" }, { 7, "Красногвардейский" }, { 8, "Красносельский" }, { 9, "Кронштадтский" }, { 10, "Курортный" }, { 11, "Московский" }, { 12, "Невский" }, { 13, "Петроградский" }, { 14, "Петродворцовый" }, { 15, "Приморский" }, { 16, "Пушкинский" }, { 17, "Фрунзенский" }, { 18, "Центральный" }, };
 
     public override void ParsingAll()
     {
@@ -39,11 +41,10 @@ namespace ParseSitesForApartments.Sites
     {
       int minPage = 1;
       int maxPage = 17;
-      int countDistrict = 18;
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < countDistrict; k++)
+        for (int k = 1; k < district.Count; k++)
         {
           for (int i = minPage; i < maxPage; i++)
           {
@@ -53,7 +54,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("Студия", document);
+            ParseSheet("Студия", document, district[k]);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -66,12 +67,11 @@ namespace ParseSitesForApartments.Sites
     {
       int minPage = 1;
       int maxPage = 17;
-      int countDistrict = 18;
 
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < countDistrict; k++)
+        for (int k = 1; k < district.Count; k++)
         {
           for (int i = minPage; i < maxPage; i++)
           {
@@ -83,7 +83,7 @@ namespace ParseSitesForApartments.Sites
               var responce = webClient.DownloadString(sdam);
               var parser = new HtmlParser();
               var document = parser.Parse(responce);
-              ParseSheet("1 км. кв.", document);
+              ParseSheet("1 км. кв.", document, district[k]);
               if (document.GetElementsByClassName("object--item").Length < 30)
                 break;
             }
@@ -102,12 +102,11 @@ namespace ParseSitesForApartments.Sites
     {
       int minPage = 1;
       int maxPage = 17;
-      int countDistrict = 18;
 
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < countDistrict; k++)
+        for (int k = 1; k < district.Count; k++)
         {
           for (int i = minPage; i < maxPage; i++)
           {
@@ -117,7 +116,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("2 км. кв.", document);
+            ParseSheet("2 км. кв.", document, district[k]);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -131,12 +130,11 @@ namespace ParseSitesForApartments.Sites
     {
       int minPage = 1;
       int maxPage = 17;
-      int countDistrict = 18;
 
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < countDistrict; k++)
+        for (int k = 1; k < district.Count; k++)
         {
           for (int i = minPage; i < maxPage; i++)
           {
@@ -146,7 +144,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("3 км. кв.", document);
+            ParseSheet("3 км. кв.", document, district[k]);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -159,12 +157,11 @@ namespace ParseSitesForApartments.Sites
     {
       int minPage = 1;
       int maxPage = 17;
-      int countDistrict = 18;
 
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < countDistrict; k++)
+        for (int k = 1; k < district.Count; k++)
         {
           for (int i = minPage; i < maxPage; i++)
           {
@@ -174,7 +171,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("4 км. кв.", document);
+            ParseSheet("4 км. кв.", document, district[k]);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -183,7 +180,7 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили 4+ км. кв.");
     }
-    private void ParseSheet(string typeRoom, IHtmlDocument document)
+    private void ParseSheet(string typeRoom, IHtmlDocument document, string districtName)
     {
       var apartaments = document.GetElementsByClassName("object--item");
 
@@ -402,7 +399,7 @@ namespace ParseSitesForApartments.Sites
         using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
         {
           sw.BaseStream.Position = sw.BaseStream.Length;
-          sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.CountRoom};{build.Square};{build.Price};{ build.Floor};{build.Metro};{build.Distance}");
+          sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.CountRoom};{build.Square};{build.Price};{ build.Floor};{build.Metro};{build.Distance};{districtName}");
         }
         Monitor.Exit(locker);
       }
@@ -420,7 +417,7 @@ namespace ParseSitesForApartments.Sites
             {
               connection.Open();
 
-              sw.WriteLine($@"Улица;Номер;Корпус;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Расстояние;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов");
+              sw.WriteLine($@"Район;Улица;Номер;Корпус;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Расстояние;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов");
               string line;
               sr.ReadLine();
               while ((line = sr.ReadLine()) != null)
@@ -454,18 +451,19 @@ namespace ParseSitesForApartments.Sites
                 DateTime dateTep = DateTime.Now;
                 string typeRepair = string.Empty;
                 string countLift = string.Empty;
+                string district = string.Empty;
 
                 var arr = line.Split(';');
                 street = arr[1];
                 number = arr[2];
                 building = arr[3];
-                letter = arr[4];
-                typeRoom = arr[5];
-                square = arr[6];
-                price = arr[7];
-                floor = arr[8];
-                metro = arr[9];
-                distance = arr[10];
+                typeRoom = arr[4];
+                square = arr[5];
+                price = arr[6];
+                floor = arr[7];
+                metro = arr[8];
+                distance = arr[9];
+                district = arr[10];
 
                 string select = "";
                 if (string.IsNullOrWhiteSpace(letter))
@@ -517,7 +515,7 @@ namespace ParseSitesForApartments.Sites
                 }
                 reader.Close();
 
-                sw.WriteLine($@"{street};{number};{building};{typeRoom};{square};{floor};{countFloor};{price};{metro};{distance};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTep.ToShortDateString()};{typeRepair};{countLift}");
+                sw.WriteLine($@"{district};{street};{number};{building};{typeRoom};{square};{floor};{countFloor};{price};{metro};{distance};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTep.ToShortDateString()};{typeRepair};{countLift}");
               }
             }
           }

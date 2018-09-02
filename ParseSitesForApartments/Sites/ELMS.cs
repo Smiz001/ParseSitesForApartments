@@ -15,6 +15,9 @@ namespace ParseSitesForApartments.Sites
   public class ELMS : BaseParse
   {
     private List<int> listDistrict = new List<int>() { 38, 12, 43, 13, 4, 20, 6, 14, 7, 15, 8, 39, 9 };
+
+    private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" },  { 14, "Приморский" },  { 15, "Фрунзенский" }, { 39, "Центральный" }, };
+
     private const string Filename = @"D:\ElmsProdam.csv";
     private const string FilenameWithinfo = @"D:\ElmsProdamWithInfo.csv";
     static object locker = new object();
