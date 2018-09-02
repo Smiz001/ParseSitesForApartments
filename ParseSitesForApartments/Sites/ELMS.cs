@@ -21,13 +21,13 @@ namespace ParseSitesForApartments.Sites
     private const string Filename = @"D:\ElmsProdam.csv";
     private const string FilenameWithinfo = @"D:\ElmsProdamWithInfo.csv";
     static object locker = new object();
-    private const int MaxPage = 10;
+    private const int MaxPage = 20;
 
     public override void ParsingAll()
     {
       using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
       {
-        sw.WriteLine($@"Нас. пункт;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
+        sw.WriteLine($@"Нас. пункт;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние;Район");
       }
       var studiiThread = new Thread(ParseStudii);
       studiiThread.Start();
@@ -53,12 +53,12 @@ namespace ParseSitesForApartments.Sites
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int i = 0; i < listDistrict.Count; i++)
+        foreach (var item in district)
         {
           for (int j = 0; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r0/1/is_auction/2/place/address/reg/2/dept/2/dist/{listDistrict[i]}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r0/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -68,7 +68,7 @@ namespace ParseSitesForApartments.Sites
             if (tableElements.Length == 0)
               break;
             else
-              ParseSheet(tableElements, "Студия");
+              ParseSheet(tableElements, "Студия", item.Value);
           }
         }
       }
@@ -80,12 +80,12 @@ namespace ParseSitesForApartments.Sites
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int i = 0; i < listDistrict.Count; i++)
+        foreach (var item in district)
         {
           for (int j = 0; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r1/1/is_auction/2/place/address/reg/2/dept/2/dist/{listDistrict[i]}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r1/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -95,7 +95,7 @@ namespace ParseSitesForApartments.Sites
             if (tableElements.Length == 0)
               break;
             else
-              ParseSheet(tableElements, "1 км. кв.");
+              ParseSheet(tableElements, "1 км. кв.", item.Value);
           }
         }
       }
@@ -107,12 +107,12 @@ namespace ParseSitesForApartments.Sites
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int i = 0; i < listDistrict.Count; i++)
+        foreach (var item in district)
         {
           for (int j = 0; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r2/1/is_auction/2/place/address/reg/2/dept/2/dist/{listDistrict[i]}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r2/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -122,7 +122,7 @@ namespace ParseSitesForApartments.Sites
             if (tableElements.Length == 0)
               break;
             else
-              ParseSheet(tableElements, "2 км. кв.");
+              ParseSheet(tableElements, "2 км. кв.",item.Value);
           }
         }
       }
@@ -134,12 +134,12 @@ namespace ParseSitesForApartments.Sites
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int i = 0; i < listDistrict.Count; i++)
+        foreach (var item in district)
         {
           for (int j = 0; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r3/1/is_auction/2/place/address/reg/2/dept/2/dist/{listDistrict[i]}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r3/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -149,7 +149,7 @@ namespace ParseSitesForApartments.Sites
             if (tableElements.Length == 0)
               break;
             else
-              ParseSheet(tableElements, "3 км. кв.");
+              ParseSheet(tableElements, "3 км. кв.",item.Value);
           }
         }
       }
@@ -161,12 +161,12 @@ namespace ParseSitesForApartments.Sites
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int i = 0; i < listDistrict.Count; i++)
+        foreach (var item in district)
         {
           for (int j = 0; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r4/1/is_auction/2/place/address/reg/2/dept/2/dist/{listDistrict[i]}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r4/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -176,7 +176,7 @@ namespace ParseSitesForApartments.Sites
             if (tableElements.Length == 0)
               break;
             else
-              ParseSheet(tableElements, "4 км. кв.");
+              ParseSheet(tableElements, "4 км. кв.",item.Value);
           }
         }
       }
@@ -188,12 +188,12 @@ namespace ParseSitesForApartments.Sites
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int i = 0; i < listDistrict.Count; i++)
+        foreach (var item in district)
         {
           for (int j = 0; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r5/1/is_auction/2/place/address/reg/2/dept/2/dist/{listDistrict[i]}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r5/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -203,14 +203,14 @@ namespace ParseSitesForApartments.Sites
             if (tableElements.Length == 0)
               break;
             else
-              ParseSheet(tableElements, "5 км. кв.");
+              ParseSheet(tableElements, "5 км. кв.",item.Value);
           }
         }
       }
       MessageBox.Show("Закончили 5 км. кв.");
     }
 
-    private void ParseSheet(IHtmlCollection<IElement> collection, string typeRoom)
+    private void ParseSheet(IHtmlCollection<IElement> collection, string typeRoom, string district)
     {
       for (int i = 0; i < collection.Length; i++)
       {
@@ -310,7 +310,7 @@ namespace ParseSitesForApartments.Sites
             using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
             {
               sw.BaseStream.Position = sw.BaseStream.Length;
-              sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance}");
+              sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance};{district}");
             }
             Monitor.Exit(locker);
           }
@@ -334,7 +334,7 @@ namespace ParseSitesForApartments.Sites
             {
               connection.Open();
 
-              sw.WriteLine($@"Улица;Номер;Корпус;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Расстояние;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов");
+              sw.WriteLine($@"Район;Улица;Номер;Корпус;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Расстояние;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов");
               string line;
               sr.ReadLine();
               while ((line = sr.ReadLine()) != null)
@@ -368,6 +368,7 @@ namespace ParseSitesForApartments.Sites
                 DateTime dateTep = DateTime.Now;
                 string typeRepair = string.Empty;
                 string countLift = string.Empty;
+                string district = string.Empty;
 
                 var arr = line.Split(';');
                 street = arr[1];
@@ -380,6 +381,7 @@ namespace ParseSitesForApartments.Sites
                 floor = arr[8];
                 metro = arr[9];
                 distance = arr[10];
+                district = arr[11];
 
                 string select = "";
                 if(string.IsNullOrWhiteSpace(letter))
@@ -431,7 +433,7 @@ namespace ParseSitesForApartments.Sites
                 }
                 reader.Close();
 
-                sw.WriteLine($@"{street};{number};{building};{typeRoom};{square};{floor};{countFloor};{price};{metro};{distance};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTep.ToShortDateString()};{typeRepair};{countLift}");
+                sw.WriteLine($@"{district};{street};{number};{building};{typeRoom};{square};{floor};{countFloor};{price};{metro};{distance};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTep.ToShortDateString()};{typeRepair};{countLift}");
               }
             }
           }

@@ -1072,5 +1072,11 @@ namespace ParseSitesForApartments.Sites
         }
       }
     }
+
+
+    public void ParseSdam()
+    {
+
+    }
   }
 }
