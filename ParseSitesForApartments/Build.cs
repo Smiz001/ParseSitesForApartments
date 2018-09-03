@@ -22,22 +22,25 @@ namespace ParseSitesForApartments
       var build = obj as Build;
       if (build == null)
         return false;
-      if(build.Street==this.Street)
+      else
       {
-        if(build.Number == this.Number)
+        if (build.Street == this.Street)
         {
-          if(build.Building == this.Building)
+          if (build.Number == this.Number)
           {
-            if(build.Liter == this.Liter)
+            if (build.Building == this.Building)
             {
-              if(build.CountRoom == this.CountRoom)
+              if (build.Liter == this.Liter)
               {
-                if(build.Square == this.Square)
+                if (build.CountRoom == this.CountRoom)
                 {
-                  if(build.Floor == this.Floor)
+                  if (build.Square == this.Square)
                   {
-                    if (build.Price == this.Price)
-                      return true;
+                    if (build.Floor == this.Floor)
+                    {
+                      if (build.Price == this.Price)
+                        return true;
+                    }
                   }
                 }
               }

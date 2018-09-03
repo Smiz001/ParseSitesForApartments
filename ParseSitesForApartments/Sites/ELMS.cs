@@ -18,7 +18,7 @@ namespace ParseSitesForApartments.Sites
 
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" }, { 14, "Приморский" }, { 15, "Фрунзенский" }, { 39, "Центральный" }, };
 
-    private static List<Build> listBuild = new List<Build>();
+    private List<Build> listBuild = new List<Build>();
 
     private const string Filename = @"D:\ElmsProdam.csv";
     private const string FilenameWithinfo = @"D:\ElmsProdamWithInfo.csv";
@@ -48,6 +48,9 @@ namespace ParseSitesForApartments.Sites
       Thread.Sleep(55000);
       var fiveThread = new Thread(ParseFiveRoom);
       fiveThread.Start();
+      Thread.Sleep(55000);
+      //var studiiNovThread = new Thread(ParsingStudiiNov);
+      //studiiNovThread.Start();
     }
 
     public void ParseStudii()
@@ -80,7 +83,6 @@ namespace ParseSitesForApartments.Sites
         {
           MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
       }
       MessageBox.Show("Закончили студии");
     }
@@ -272,7 +274,7 @@ namespace ParseSitesForApartments.Sites
             if (square.Length > 0)
               build.Square = square[0].TextContent;
 
-            if(collection[i].GetElementsByClassName("address-geo").Length > 0)
+            if (collection[i].GetElementsByClassName("address-geo").Length > 0)
             {
               var adr = collection[i].GetElementsByClassName("address-geo")[0].TextContent.Split(',');
               if (adr.Length == 3)
@@ -319,7 +321,7 @@ namespace ParseSitesForApartments.Sites
             {
               build.Distance = regex.Match(distance[0].TextContent.Replace("\n", "").Trim()).Value;
             }
-            
+
             var pr = collection[i].GetElementsByClassName("price");
             if (pr.Length > 0)
             {
@@ -354,15 +356,12 @@ namespace ParseSitesForApartments.Sites
             build.Street = build.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
             Monitor.Enter(locker);
-            bool flag = true;
-            if (listBuild.Count == 0)
-              flag = false;
-
-            foreach (var item in listBuild)
+            bool flag = false;
+            foreach (var bl in listBuild)
             {
-              if (!item.Equals(build))
+              if (build.Equals(bl))
               {
-                flag = false;
+                flag = true;
                 break;
               }
             }
@@ -509,9 +508,213 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
+    public void ParsingStudiiNov()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          foreach (var item in district)
+          {
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/by_room/1";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheetNov(tableElements, "Студия", item.Value);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили студии");
+    }
+
+    private void ParseSheetNov(IHtmlCollection<IElement> collection, string typeRoom, string district)
+    {
+      for (int i = 0; i < collection.Length; i++)
+      {
+        var listBuilding = new List<Build>();
+
+        string street = "";
+        string number = "";
+        string building = "";
+        string liter = "";
+        string metro = "";
+        string distance = "";
+        #region Адрес
+
+        if (collection[i].GetElementsByClassName("address-geo").Length > 0)
+        {
+          var adr = collection[i].GetElementsByClassName("address-geo")[1].TextContent.Split(',');
+          if (adr.Length == 3)
+          {
+            street = adr[0] + " " + adr[1];
+            number = adr[2];
+          }
+          else
+          {
+            street = adr[0];
+            if (adr.Length > 1)
+              number = adr[1].Trim();
+          }
+        }
+        var regex = new Regex(@"(к\d+)");
+        building = regex.Match(number).Value;
+        if (!string.IsNullOrEmpty(building))
+        {
+          number = number.Replace(building, "");
+          building = building.Replace("к", "");
+        }
+        regex = new Regex(@"(\D)");
+        liter = regex.Match(number).Value;
+        if (!string.IsNullOrEmpty(liter))
+          number = number.Replace(liter, "");
+
+        var met = collection[i].GetElementsByClassName("metroline-2");
+        if (met.Length > 0)
+          metro = met[0].TextContent;
+
+        regex = new Regex(@"(\d+\s+\d+\s+метров)|(\d+\s+метров)");
+        var dis = collection[i].GetElementsByClassName("ellipsis em");
+        if (dis.Length > 0)
+        {
+          distance = dis[0].TextContent.Replace("\n", "").Trim();
+        }
+        if (!string.IsNullOrEmpty(distance))
+          metro = metro.Replace(distance, "").Trim();
+        #endregion
+
+        var pr = collection[i].GetElementsByClassName("price");
+        if (pr.Length > 0)
+        {
+          string priceStr = pr[0].TextContent.Replace(" a", "").Replace(" ", "");
+          if (!string.IsNullOrEmpty(priceStr))
+          {
+            var build = new Build { CountRoom = typeRoom, Street = street, Number = number, Building = building, Liter = liter, Metro = metro, Distance = distance };
+            int price;
+            if (int.TryParse(priceStr, out price))
+            {
+              build.Price = price;
+            }
+
+            if (collection[i].GetElementsByClassName("w-image").Length > 0)
+            {
+              var divImage = collection[i].GetElementsByClassName("w-image")[0];
+              var square = collection[i].GetElementsByClassName("space-all");
+              if (square.Length > 0)
+                build.Square = square[0].TextContent;
+            }
+
+            regex = new Regex(@"(\d+)");
+            var floor = collection[i].GetElementsByClassName("w-floor");
+            if (floor.Length > 0)
+            {
+              var ms = regex.Matches(floor[0].TextContent);
+              if (ms.Count > 0)
+                build.Floor = ms[0].Value;
+            }
+            listBuilding.Add(build);
+          }
+          else
+          {
+            var rows = collection[i].GetElementsByClassName("w-kv-row");
+            for (int j = 0; j < rows.Length; j++)
+            {
+              var build = new Build { CountRoom = typeRoom, Street = street, Number = number, Building = building, Liter = liter, Metro = metro, Distance = distance };
+              var floor = rows[j].GetElementsByClassName("circle-floor");
+              if (floor.Length > 0)
+                build.Floor = floor[0].TextContent.Trim();
+              var sq = rows[j].GetElementsByClassName("w-kv-area");
+              if (sq.Length > 0)
+                build.Square = sq[0].TextContent.Trim();
+              var price = rows[j].GetElementsByClassName("w-kv-price");
+              if (price.Length > 0)
+              {
+                regex = new Regex(@"(\d+\s+\d+\s+\d+)");
+                priceStr = regex.Match(price[0].TextContent).Value.Replace(" ", "");
+                int pri;
+                if (int.TryParse(priceStr, out pri))
+                {
+                  build.Price = pri;
+                }
+              }
+              listBuilding.Add(build);
+            }
+          }
+        }
+
+        foreach (var item in listBuilding)
+        {
+          string town = string.Empty;
+          if (item.Street.Contains("(Горелово)"))
+          {
+            town = "Горелово";
+            item.Street = item.Street.Replace("(Горелово)", "");
+          }
+          else if (item.Street.Contains("Красное Село"))
+          {
+            town = "Красное Село";
+            item.Street = item.Street.Replace(town, "");
+          }
+          else if (item.Street.Contains("Парголово"))
+          {
+            town = "Парголово";
+            item.Street = item.Street.Replace(town, "");
+          }
+          else
+            town = "Санкт-Петербург";
+
+
+          item.Street = item.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
+          if (!string.IsNullOrEmpty(item.Number))
+          {
+            Monitor.Enter(locker);
+            bool flag = false;
+            foreach (var bl in listBuild)
+            {
+              if (item.Equals(bl))
+              {
+                flag = true;
+                break;
+              }
+            }
+            if (!flag)
+            {
+              listBuild.Add(item);
+              using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+              {
+                sw.BaseStream.Position = sw.BaseStream.Length;
+                sw.WriteLine($@"{town};{item.Street};{item.Number};{item.Building};{item.Liter};{item.CountRoom};{item.Square};{item.Price};{item.Floor};{item.Metro};{item.Distance};{district}");
+              }
+            }
+            Monitor.Exit(locker);
+          }
+        }
+      }
+    }
+
+
     public override void ParsingSdam()
     {
       throw new NotImplementedException();
+    }
+
+    public void ParseStudiiSdam()
+    {
+
     }
   }
 }
