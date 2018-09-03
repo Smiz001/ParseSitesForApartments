@@ -33,24 +33,24 @@ namespace ParseSitesForApartments.Sites
       }
       var studiiThread = new Thread(ParseStudii);
       studiiThread.Start();
-      Thread.Sleep(55000);
-      var oneThread = new Thread(ParseOneRoom);
-      oneThread.Start();
-      Thread.Sleep(55000);
-      var twoThread = new Thread(ParseTwoRoom);
-      twoThread.Start();
-      Thread.Sleep(55000);
-      var threeThread = new Thread(ParseThreeRoom);
-      threeThread.Start();
-      Thread.Sleep(55000);
-      var fourThread = new Thread(ParseFourRoom);
-      fourThread.Start();
-      Thread.Sleep(55000);
-      var fiveThread = new Thread(ParseFiveRoom);
-      fiveThread.Start();
-      Thread.Sleep(55000);
-      //var studiiNovThread = new Thread(ParsingStudiiNov);
-      //studiiNovThread.Start();
+      //Thread.Sleep(55000);
+      //var oneThread = new Thread(ParseOneRoom);
+      //oneThread.Start();
+      //Thread.Sleep(55000);
+      //var twoThread = new Thread(ParseTwoRoom);
+      //twoThread.Start();
+      //Thread.Sleep(55000);
+      //var threeThread = new Thread(ParseThreeRoom);
+      //threeThread.Start();
+      //Thread.Sleep(55000);
+      //var fourThread = new Thread(ParseFourRoom);
+      //fourThread.Start();
+      //Thread.Sleep(55000);
+      //var fiveThread = new Thread(ParseFiveRoom);
+      //fiveThread.Start();
+      //Thread.Sleep(55000);
+      var studiiNovThread = new Thread(ParsingStudiiNov);
+      studiiNovThread.Start();
     }
 
     public void ParseStudii()
@@ -521,6 +521,171 @@ namespace ParseSitesForApartments.Sites
             {
               Thread.Sleep(random.Next(2000, 3000));
               string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/by_room/1";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheetNov(tableElements, "Студия", item.Value);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили студии");
+    }
+    public void ParsingOneNov()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          foreach (var item in district)
+          {
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r1/1/by_room/1";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheetNov(tableElements, "Студия", item.Value);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили студии");
+    }
+    public void ParsingTwoNov()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          foreach (var item in district)
+          {
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r2/1/by_room/1";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheetNov(tableElements, "Студия", item.Value);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили студии");
+    }
+    public void ParsingThreeNov()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          foreach (var item in district)
+          {
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r3/1/by_room/1";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheetNov(tableElements, "Студия", item.Value);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили студии");
+    }
+    public void ParsingFourNov()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          foreach (var item in district)
+          {
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r4/1/by_room/1";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheetNov(tableElements, "Студия", item.Value);
+            }
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили студии");
+    }
+    public void ParsingFiveNov()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          foreach (var item in district)
+          {
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r5/1/by_room/1";
               webClient.Encoding = Encoding.GetEncoding("windows-1251");
               var responce = webClient.DownloadString(sdutii);
               var parser = new HtmlParser();
