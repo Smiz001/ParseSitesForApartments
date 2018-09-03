@@ -526,5 +526,10 @@ namespace ParseSitesForApartments.Sites
         MessageBox.Show("Нет файла с данными");
       }
     }
+
+    public override void ParsingSdam()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

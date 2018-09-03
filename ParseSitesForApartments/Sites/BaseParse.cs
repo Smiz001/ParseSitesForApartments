@@ -8,6 +8,7 @@ namespace ParseSitesForApartments.Sites
 {
   public abstract class BaseParse
   {
-    public abstract void  ParsingAll();
+    public abstract void ParsingAll();
+    public abstract void ParsingSdam();
   }
 }

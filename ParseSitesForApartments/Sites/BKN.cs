@@ -1078,5 +1078,10 @@ namespace ParseSitesForApartments.Sites
     {
 
     }
+
+    public override void ParsingSdam()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

@@ -1,11 +1,9 @@
 ﻿using AngleSharp.Dom;
-using AngleSharp.Dom.Html;
 using AngleSharp.Parser.Html;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -14,7 +12,7 @@ using System.Windows.Forms;
 
 namespace ParseSitesForApartments.Sites
 {
-  public class Avito
+  public class Avito:BaseParse
   {
     private int minPage = 1;
     private int maxPage = 100;
@@ -674,6 +672,16 @@ namespace ParseSitesForApartments.Sites
       {
         MessageBox.Show("Нет файла с данными");
       }
+    }
+
+    public override void ParsingAll()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdam()
+    {
+      throw new NotImplementedException();
     }
   }
 }
