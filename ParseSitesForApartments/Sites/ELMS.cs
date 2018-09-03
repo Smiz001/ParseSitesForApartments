@@ -18,6 +18,8 @@ namespace ParseSitesForApartments.Sites
 
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" }, { 14, "Приморский" }, { 15, "Фрунзенский" }, { 39, "Центральный" }, };
 
+    private static List<Build> listBuild = new List<Build>();
+
     private const string Filename = @"D:\ElmsProdam.csv";
     private const string FilenameWithinfo = @"D:\ElmsProdamWithInfo.csv";
     static object locker = new object();
@@ -352,10 +354,27 @@ namespace ParseSitesForApartments.Sites
             build.Street = build.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
             Monitor.Enter(locker);
-            using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+            bool flag = true;
+            if (listBuild.Count == 0)
+              flag = false;
+
+            foreach (var item in listBuild)
             {
-              sw.BaseStream.Position = sw.BaseStream.Length;
-              sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance};{district}");
+              if (!item.Equals(build))
+              {
+                flag = false;
+                break;
+              }
+            }
+            if (!flag)
+            {
+              listBuild.Add(build);
+
+              using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+              {
+                sw.BaseStream.Position = sw.BaseStream.Length;
+                sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance};{district}");
+              }
             }
             Monitor.Exit(locker);
           }
