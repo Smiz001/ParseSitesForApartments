@@ -609,7 +609,7 @@ WHERE ID ='{item.Id}'";
     private void button16_Click(object sender, EventArgs e)
     {
       var yandex = new Yandex();
-      using (var swMain = new StreamWriter(@"D:\CoordMetro.xml", false, System.Text.Encoding.UTF8))
+      using (var swMain = new StreamWriter(@"D:\CoordMetro.csv", false, System.Text.Encoding.UTF8))
       {
         foreach (var item in metroStantions)
         {
@@ -641,7 +641,7 @@ WHERE ID ='{item.Id}'";
             }
             File.Delete(@"D:\Coord.xml");
           }
-          swMain.WriteLine($"{item.Name};{item.XCoor}'{item.YCoor}");
+          swMain.WriteLine($"{item.Name};{item.XCoor};{item.YCoor}");
         }
       }
     }
