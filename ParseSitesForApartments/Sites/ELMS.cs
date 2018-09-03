@@ -16,7 +16,7 @@ namespace ParseSitesForApartments.Sites
   {
     private List<int> listDistrict = new List<int>() { 38, 12, 43, 13, 4, 20, 6, 14, 7, 15, 8, 39, 9 };
 
-    private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" },  { 14, "Приморский" },  { 15, "Фрунзенский" }, { 39, "Центральный" }, };
+    private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" }, { 14, "Приморский" }, { 15, "Фрунзенский" }, { 39, "Центральный" }, };
 
     private const string Filename = @"D:\ElmsProdam.csv";
     private const string FilenameWithinfo = @"D:\ElmsProdamWithInfo.csv";
@@ -47,30 +47,38 @@ namespace ParseSitesForApartments.Sites
       var fiveThread = new Thread(ParseFiveRoom);
       fiveThread.Start();
     }
-    
+
     public void ParseStudii()
     {
       using (var webClient = new WebClient())
       {
-        var random = new Random();
-        foreach (var item in district)
+        try
         {
-          for (int j = 0; j < MaxPage; j++)
+          var random = new Random();
+          foreach (var item in district)
           {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r0/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r0/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
 
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheet(tableElements, "Студия", item.Value);
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheet(tableElements, "Студия", item.Value);
+            }
           }
         }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
       }
       MessageBox.Show("Закончили студии");
     }
@@ -79,24 +87,31 @@ namespace ParseSitesForApartments.Sites
     {
       using (var webClient = new WebClient())
       {
-        var random = new Random();
-        foreach (var item in district)
+        try
         {
-          for (int j = 0; j < MaxPage; j++)
+          var random = new Random();
+          foreach (var item in district)
           {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r1/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r1/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
 
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheet(tableElements, "1 км. кв.", item.Value);
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheet(tableElements, "1 км. кв.", item.Value);
+            }
           }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
       MessageBox.Show("Закончили 1 км. кв.");
@@ -106,24 +121,31 @@ namespace ParseSitesForApartments.Sites
     {
       using (var webClient = new WebClient())
       {
-        var random = new Random();
-        foreach (var item in district)
+        try
         {
-          for (int j = 0; j < MaxPage; j++)
+          var random = new Random();
+          foreach (var item in district)
           {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r2/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r2/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
 
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheet(tableElements, "2 км. кв.",item.Value);
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheet(tableElements, "2 км. кв.", item.Value);
+            }
           }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
       MessageBox.Show("Закончили 2 км. кв.");
@@ -133,24 +155,31 @@ namespace ParseSitesForApartments.Sites
     {
       using (var webClient = new WebClient())
       {
-        var random = new Random();
-        foreach (var item in district)
+        try
         {
-          for (int j = 0; j < MaxPage; j++)
+          var random = new Random();
+          foreach (var item in district)
           {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r3/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r3/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
 
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheet(tableElements, "3 км. кв.",item.Value);
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheet(tableElements, "3 км. кв.", item.Value);
+            }
           }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
       MessageBox.Show("Закончили 3 км. кв.");
@@ -160,24 +189,31 @@ namespace ParseSitesForApartments.Sites
     {
       using (var webClient = new WebClient())
       {
-        var random = new Random();
-        foreach (var item in district)
+        try
         {
-          for (int j = 0; j < MaxPage; j++)
+          var random = new Random();
+          foreach (var item in district)
           {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r4/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r4/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
 
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheet(tableElements, "4 км. кв.",item.Value);
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheet(tableElements, "4 км. кв.", item.Value);
+            }
           }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
       MessageBox.Show("Закончили 4 км. кв.");
@@ -187,24 +223,31 @@ namespace ParseSitesForApartments.Sites
     {
       using (var webClient = new WebClient())
       {
-        var random = new Random();
-        foreach (var item in district)
+        try
         {
-          for (int j = 0; j < MaxPage; j++)
+          var random = new Random();
+          foreach (var item in district)
           {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r5/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+            for (int j = 1; j < MaxPage; j++)
+            {
+              Thread.Sleep(random.Next(2000, 3000));
+              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r5/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+              webClient.Encoding = Encoding.GetEncoding("windows-1251");
+              var responce = webClient.DownloadString(sdutii);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
 
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheet(tableElements, "5 км. кв.",item.Value);
+              var tableElements = document.GetElementsByClassName("row1");
+              if (tableElements.Length == 0)
+                break;
+              else
+                ParseSheet(tableElements, "5 км. кв.", item.Value);
+            }
           }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
       MessageBox.Show("Закончили 5 км. кв.");
@@ -227,21 +270,24 @@ namespace ParseSitesForApartments.Sites
             if (square.Length > 0)
               build.Square = square[0].TextContent;
 
-            var adr = collection[i].GetElementsByClassName("address-geo")[0].TextContent.Split(',');
-            if (adr.Length == 3)
+            if(collection[i].GetElementsByClassName("address-geo").Length > 0)
             {
-              build.Street = adr[0] + " " + adr[1];
-              build.Number = adr[2];
-            }
-            else
-            {
-              build.Street = adr[0];
-              if (adr.Length > 1)
-                build.Number = adr[1].Trim();
+              var adr = collection[i].GetElementsByClassName("address-geo")[0].TextContent.Split(',');
+              if (adr.Length == 3)
+              {
+                build.Street = adr[0] + " " + adr[1];
+                build.Number = adr[2];
+              }
+              else
+              {
+                build.Street = adr[0];
+                if (adr.Length > 1)
+                  build.Number = adr[1].Trim();
+              }
             }
             var regex = new Regex(@"(к\d+)");
             build.Building = regex.Match(build.Number).Value;
-            if(!string.IsNullOrEmpty(build.Building))
+            if (!string.IsNullOrEmpty(build.Building))
             {
               build.Number = build.Number.Replace(build.Building, "");
               build.Building = build.Building.Replace("к", "");
@@ -271,8 +317,7 @@ namespace ParseSitesForApartments.Sites
             {
               build.Distance = regex.Match(distance[0].TextContent.Replace("\n", "").Trim()).Value;
             }
-
-            //year = collection[i].GetElementsByClassName("w-year")[0].TextContent;
+            
             var pr = collection[i].GetElementsByClassName("price");
             if (pr.Length > 0)
             {
@@ -304,7 +349,7 @@ namespace ParseSitesForApartments.Sites
               town = "Санкт-Петербург";
 
 
-            build.Street = build.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б","").Trim();
+            build.Street = build.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
             Monitor.Enter(locker);
             using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
@@ -315,7 +360,7 @@ namespace ParseSitesForApartments.Sites
             Monitor.Exit(locker);
           }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
           MessageBox.Show(ex.Message);
         }
@@ -324,11 +369,11 @@ namespace ParseSitesForApartments.Sites
 
     public void GetInfoAboutBuilding()
     {
-      if(File.Exists(Filename))
+      if (File.Exists(Filename))
       {
         using (var sr = new StreamReader(Filename, Encoding.UTF8))
         {
-          using (var sw = new StreamWriter(FilenameWithinfo,true, Encoding.UTF8))
+          using (var sw = new StreamWriter(FilenameWithinfo, true, Encoding.UTF8))
           {
             using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
             {
@@ -384,9 +429,9 @@ namespace ParseSitesForApartments.Sites
                 district = arr[11];
 
                 string select = "";
-                if(string.IsNullOrWhiteSpace(letter))
+                if (string.IsNullOrWhiteSpace(letter))
                 {
-                  if(string.IsNullOrWhiteSpace(building))
+                  if (string.IsNullOrWhiteSpace(building))
                   {
                     select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{street}', '{number}'";
                   }
@@ -409,7 +454,7 @@ namespace ParseSitesForApartments.Sites
 
                 var command = new SqlCommand(select, connection);
                 var reader = command.ExecuteReader();
-                while(reader.Read())
+                while (reader.Read())
                 {
                   dateBuild = reader.GetString(1);
                   dateRecon = reader.GetString(3);

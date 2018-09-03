@@ -27,85 +27,6 @@ namespace ParseSitesForApartments
     {
       var avito = new Avito();
       avito.Parsing0_3Rooms();
-      /*
-      List<Build> list = new List<Build>();
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
-        {
-          connection.Open();
-          using (var sw = new StreamWriter(@"D:\AvitoProdam.csv", true, System.Text.Encoding.UTF8))
-          {
-            for (int i = pageMin; i < pageMaz; i++)
-            {
-              Thread.Sleep(random.Next(5000, 10000));
-              string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam?p={i}";
-              webClient.Encoding = System.Text.Encoding.UTF8;
-              var responce = webClient.DownloadString(prodam);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var elem = document.GetElementsByClassName("item_table-header");
-              var adresses = document.GetElementsByClassName("address");
-              for (int k = 0; k < elem.Length; k++)
-              {
-                var build = new Build();
-                var price = int.Parse(elem[k].GetElementsByClassName("price")[0].TextContent.Trim('\n').Trim('₽').Trim().Replace(" ", ""));
-                build.Price = price;
-                var aboutBuild = elem[k].GetElementsByClassName("item-description-title-link")[0].TextContent.Split(',').ToList();
-                for (int j = 0; j < aboutBuild.Count; j++)
-                {
-                  aboutBuild[j] = aboutBuild[j].Trim();
-                }
-                build.CountRoom = aboutBuild[0];
-                build.Square = aboutBuild[1];
-                build.Floor = aboutBuild[2];
-
-                var adress = adresses[k];
-
-                if (adress.ChildNodes.Length > 1)
-                  build.Metro = adress.ChildNodes[2].NodeValue.Trim();
-                if (adresses[k].GetElementsByClassName("c-2").Length > 0)
-                  build.Distance = adresses[k].GetElementsByClassName("c-2")[0].TextContent;
-
-                var adArr = adress.TextContent.Split(',');
-                if (adArr.Length > 2)
-                {
-                  var street = adArr[adArr.Length - 2];
-                  build.Street = street.Replace("проспект", "").Replace("пр.", "").Replace("пр-т", "").Replace("ул.", "").Replace("улица", "").Replace("ул", "").Replace("Санкт-Петербург", "").Replace("пр-кт", "").Replace("Колпино", "").Replace("Красное Село", "").Trim();
-
-                }
-                else if (adArr.Length == 2)
-                {
-                  var street = adArr[1].Trim().Split(' ')[0];
-                }
-
-                if (adArr.Length > 1)
-                  build.Number = adArr[adArr.Length - 1].Trim();
-
-                string select = $@"SELECT [BuldingDate]
-      ,[RepairDate]
-  FROM [ParseBulding].[dbo].[InfoAboutBulding]
-  where LOWER(Street) Like ('%{build.Street}%')
-  and Number = '{build.Number}'";
-
-                var command = new SqlCommand(select, connection);
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                  build.DateBuild = reader.GetString(0);
-                  build.DateRepair = reader.GetString(1);
-                  break;
-                }
-                reader.Close();
-                sw.WriteLine($@"{build.Street};{build.Number};{build.Metro};{build.Distance};{build.Price};{build.CountRoom};{build.Square};{build.Floor};{build.DateBuild};{build.DateRepair}");
-              }
-            }
-          }
-        }
-      }
-      */
     }
 
     private void button2_Click(object sender, EventArgs e)
@@ -681,14 +602,57 @@ WHERE ID ='{item.Id}'";
       var avito = new Avito();
       avito.GetInfoAboutBuilding();
     }
-  }
 
-  class BuildForCoordinate
-  {
-    public string Street { get; set; }
-    public string Number { get; set; }
-    public string Bulding { get; set; }
-    public string Letter { get; set; }
-    public Guid Id { get; set; }
+
+    private List<Metro> metroStantions = new List<Metro>() { new Metro { Name = "Автово" }, new Metro { Name = "Адмиралтейская" }, new Metro { Name = "Академическая" }, new Metro { Name = "Балтийская" }, new Metro { Name = "Беговая" }, new Metro { Name = "Бухарестская" }, new Metro { Name = "Василеостровская" }, new Metro { Name = "Владимирская" }, new Metro { Name = "Волковская" }, new Metro { Name = "Выборгская" }, new Metro { Name = "Горьковская" }, new Metro { Name = "Гостиный двор" }, new Metro { Name = "Гражданский проспект" }, new Metro { Name = "Девяткино" }, new Metro { Name = "Достоевская" }, new Metro { Name = "Елизаровская" }, new Metro { Name = "Звёздная" }, new Metro { Name = "Звенигородская" }, new Metro { Name = "Кировский завод" }, new Metro { Name = "Комендантский проспект" }, new Metro { Name = "Крестовский остров" }, new Metro { Name = "Купчино" }, new Metro { Name = "Ладожская" }, new Metro { Name = "Ленинский проспект" }, new Metro { Name = "Лесная" }, new Metro { Name = "Лиговский проспект" }, new Metro { Name = "Ломоносовская" }, new Metro { Name = "Маяковская" }, new Metro { Name = "Международная" }, new Metro { Name = "Московская" }, new Metro { Name = "Московские ворота" }, new Metro { Name = "Нарвская" }, new Metro { Name = "Невский проспект" }, new Metro { Name = "Новокрестовская" }, new Metro { Name = "Новочеркасская" }, new Metro { Name = "Обводный канал" }, new Metro { Name = "Обухово" }, new Metro { Name = "Озерки" }, new Metro { Name = "Парк Победы" }, new Metro { Name = "Парнас" }, new Metro { Name = "Петроградская" }, new Metro { Name = "Пионерская" }, new Metro { Name = "Площадь Александра Невского 1" }, new Metro { Name = "Площадь Восстания" }, new Metro { Name = "Площадь Ленина" }, new Metro { Name = "Площадь Мужества" }, new Metro { Name = "Политехническая" }, new Metro { Name = "Приморская" }, new Metro { Name = "Пролетарская" }, new Metro { Name = "Проспект Большевиков" }, new Metro { Name = "Проспект Ветеранов" }, new Metro { Name = "Проспект Просвещения" }, new Metro { Name = "Пушкинская" }, new Metro { Name = "Рыбацкое" }, new Metro { Name = "Садовая" }, new Metro { Name = "Сенная площадь" }, new Metro { Name = "Спасская" }, new Metro { Name = "Спортивная" }, new Metro { Name = "Старая Деревня" }, new Metro { Name = "Технологический институт 1" }, new Metro { Name = "Удельная" }, new Metro { Name = "Улица Дыбенко" }, new Metro { Name = "Фрунзенская" }, new Metro { Name = "Чёрная речка" }, new Metro { Name = "Чернышевская" }, new Metro { Name = "Чкаловская" }, new Metro { Name = "Электросила" } };
+
+    private void button16_Click(object sender, EventArgs e)
+    {
+      var yandex = new Yandex();
+      using (var swMain = new StreamWriter(@"D:\CoordMetro.xml", false, System.Text.Encoding.UTF8))
+      {
+        foreach (var item in metroStantions)
+        {
+          string address = $@"Санкт-Петербург метро {item.Name}";
+
+          var doc1 = yandex.SearchObjectByAddress(address);
+          using (var sw = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
+          {
+            sw.WriteLine(doc1);
+          }
+
+          XmlDocument doc = new XmlDocument();
+          doc.Load(@"D:\Coord.xml");
+          var root = doc.DocumentElement;
+          var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
+          if (GeoObjectCollection.ChildNodes.Count > 1)
+          {
+            var featureMember = GeoObjectCollection.ChildNodes[1];
+            if (featureMember.ChildNodes.Count > 0)
+            {
+              var GeoObject = featureMember.ChildNodes[0];
+              if (GeoObject.ChildNodes.Count > 4)
+              {
+                var Point = GeoObject.ChildNodes[4];
+                var coor = Point.InnerText.Split(' ');
+                item.XCoor = float.Parse(coor[1].Replace(".", ","));
+                item.YCoor = float.Parse(coor[0].Replace(".", ","));
+              }
+            }
+            File.Delete(@"D:\Coord.xml");
+          }
+          swMain.WriteLine($"{item.Name};{item.XCoor}'{item.YCoor}");
+        }
+      }
+    }
+
+    class BuildForCoordinate
+    {
+      public string Street { get; set; }
+      public string Number { get; set; }
+      public string Bulding { get; set; }
+      public string Letter { get; set; }
+      public Guid Id { get; set; }
+    }
   }
 }
