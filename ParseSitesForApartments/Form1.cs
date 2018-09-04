@@ -666,5 +666,11 @@ WHERE ID ='{item.Id}'";
       var bn = new BN();
       bn.ParsingSdamAll();
     }
+
+    private void button19_Click(object sender, EventArgs e)
+    {
+      var bkn = new BKN();
+      bkn.ParsingSdamAll();
+    }
   }
 }
