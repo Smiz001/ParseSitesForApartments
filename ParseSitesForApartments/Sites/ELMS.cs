@@ -21,6 +21,7 @@ namespace ParseSitesForApartments.Sites
     private List<Build> listBuild = new List<Build>();
 
     private const string Filename = @"D:\ElmsProdam.csv";
+    private const string FilenameSdam = @"D:\ElmsSdam.csv";
     private const string FilenameWithinfo = @"D:\ElmsProdamWithInfo.csv";
     static object locker = new object();
     private const int MaxPage = 20;
@@ -890,15 +891,343 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
-
-    public override void ParsingSdam()
+    public override void ParsingSdamAll()
     {
-      throw new NotImplementedException();
+      using (var sw = new StreamWriter(new FileStream(FilenameSdam, FileMode.Create), Encoding.UTF8))
+      {
+        sw.WriteLine($@"Нас. пункт;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
+      }
+
+      var studiiThread = new Thread(ParseStudiiSdam);
+      studiiThread.Start();
+      Thread.Sleep(55000);
+      var oneThread = new Thread(ParseOneSdam);
+      oneThread.Start();
+      Thread.Sleep(55000);
+      var twoThread = new Thread(ParseTwoSdam);
+      twoThread.Start();
+      Thread.Sleep(55000);
+      var threeThread = new Thread(ParseThreeSdam);
+      threeThread.Start();
+      Thread.Sleep(55000);
+      var fourThread = new Thread(ParseFourSdam);
+      fourThread.Start();
+      Thread.Sleep(55000);
+      var fiveThread = new Thread(ParseFiveSdam);
+      fiveThread.Start();
     }
 
     public void ParseStudiiSdam()
     {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          for (int j = 1; j < MaxPage; j++)
+          {
+            Thread.Sleep(random.Next(2000, 3000));
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            webClient.Encoding = Encoding.GetEncoding("windows-1251");
+            var responce = webClient.DownloadString(sdutii);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
 
+            var tableElements = document.GetElementsByClassName("row1");
+            if (tableElements.Length == 0)
+              break;
+            else
+              ParseSheetSdam(tableElements, "Студия");
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили студии сдам");
+    }
+    public void ParseOneSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          for (int j = 1; j < MaxPage; j++)
+          {
+            Thread.Sleep(random.Next(2000, 3000));
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            webClient.Encoding = Encoding.GetEncoding("windows-1251");
+            var responce = webClient.DownloadString(sdutii);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var tableElements = document.GetElementsByClassName("row1");
+            if (tableElements.Length == 0)
+              break;
+            else
+              ParseSheetSdam(tableElements, "1 км. кв.");
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили 1 км. кв. сдам");
+    }
+    public void ParseTwoSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          for (int j = 1; j < MaxPage; j++)
+          {
+            Thread.Sleep(random.Next(2000, 3000));
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            webClient.Encoding = Encoding.GetEncoding("windows-1251");
+            var responce = webClient.DownloadString(sdutii);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var tableElements = document.GetElementsByClassName("row1");
+            if (tableElements.Length == 0)
+              break;
+            else
+              ParseSheetSdam(tableElements, "2 км. кв.");
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили 2 км. кв. сдам");
+    }
+    public void ParseThreeSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          for (int j = 1; j < MaxPage; j++)
+          {
+            Thread.Sleep(random.Next(2000, 3000));
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            webClient.Encoding = Encoding.GetEncoding("windows-1251");
+            var responce = webClient.DownloadString(sdutii);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var tableElements = document.GetElementsByClassName("row1");
+            if (tableElements.Length == 0)
+              break;
+            else
+              ParseSheetSdam(tableElements, "3 км. кв.");
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили 3 км. кв. сдам");
+    }
+    public void ParseFourSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          for (int j = 1; j < MaxPage; j++)
+          {
+            Thread.Sleep(random.Next(2000, 3000));
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            webClient.Encoding = Encoding.GetEncoding("windows-1251");
+            var responce = webClient.DownloadString(sdutii);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var tableElements = document.GetElementsByClassName("row1");
+            if (tableElements.Length == 0)
+              break;
+            else
+              ParseSheetSdam(tableElements, "4 км. кв.");
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили 4 км. кв. сдам");
+    }
+    public void ParseFiveSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        try
+        {
+          var random = new Random();
+          for (int j = 1; j < MaxPage; j++)
+          {
+            Thread.Sleep(random.Next(2000, 3000));
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            webClient.Encoding = Encoding.GetEncoding("windows-1251");
+            var responce = webClient.DownloadString(sdutii);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var tableElements = document.GetElementsByClassName("row1");
+            if (tableElements.Length == 0)
+              break;
+            else
+              ParseSheetSdam(tableElements, "5 км. кв.");
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
+      MessageBox.Show("Закончили 5 км. кв. сдам");
+    }
+
+
+    private void ParseSheetSdam(IHtmlCollection<IElement> collection, string typeRoom)
+    {
+      for (int i = 0; i < collection.Length; i++)
+      {
+        var build = new Build
+        {
+          CountRoom = typeRoom
+        };
+        try
+        {
+          if (collection[i].GetElementsByClassName("w-image").Length > 0)
+          {
+            var divImage = collection[i].GetElementsByClassName("w-image")[0];
+            var square = collection[i].GetElementsByClassName("space-all");
+            if (square.Length > 0)
+              build.Square = square[0].TextContent;
+
+            if (collection[i].GetElementsByClassName("address-geo").Length > 0)
+            {
+              var adr = collection[i].GetElementsByClassName("address-geo")[0].TextContent.Split(',');
+              if (adr.Length == 3)
+              {
+                build.Street = adr[0] + " " + adr[1];
+                build.Number = adr[2];
+              }
+              else
+              {
+                build.Street = adr[0];
+                if (adr.Length > 1)
+                  build.Number = adr[1].Trim();
+              }
+            }
+            var regex = new Regex(@"(к\d+)");
+            build.Building = regex.Match(build.Number).Value;
+            if (!string.IsNullOrEmpty(build.Building))
+            {
+              build.Number = build.Number.Replace(build.Building, "");
+              build.Building = build.Building.Replace("к", "");
+            }
+            regex = new Regex(@"(\D)");
+            build.Liter = regex.Match(build.Number).Value;
+            if (!string.IsNullOrEmpty(build.Liter))
+              build.Number = build.Number.Replace(build.Liter, "");
+
+
+            var metro = collection[i].GetElementsByClassName("metroline-2");
+            if (metro.Length > 0)
+              build.Metro = metro[0].TextContent;
+
+            regex = new Regex(@"(\d+)");
+            var floor = collection[i].GetElementsByClassName("w-floor");
+            if (floor.Length > 0)
+            {
+              var ms = regex.Matches(floor[0].TextContent);
+              if (ms.Count > 0)
+                build.Floor = ms[0].Value;
+            }
+
+            regex = new Regex(@"(\d+\s+\d+\s+метров)|(\d+\s+метров)");
+            var distance = collection[i].GetElementsByClassName("ellipsis em");
+            if (distance.Length > 0)
+            {
+              build.Distance = regex.Match(distance[0].TextContent.Replace("\n", "").Trim()).Value;
+            }
+
+            var pr = collection[i].GetElementsByClassName("price");
+            if (pr.Length > 0)
+            {
+              string priceStr = pr[0].TextContent.Replace(" a", "").Replace("a/мес", "").Replace(" ", "").Trim();
+              int price;
+              if (int.TryParse(priceStr, out price))
+              {
+                build.Price = price;
+              }
+            }
+
+            string town = string.Empty;
+            if (build.Street.Contains("(Горелово)"))
+            {
+              town = "Горелово";
+              build.Street = build.Street.Replace("(Горелово)", "");
+            }
+            else if (build.Street.Contains("Красное Село"))
+            {
+              town = "Красное Село";
+              build.Street = build.Street.Replace(town, "");
+            }
+            else if (build.Street.Contains("Парголово"))
+            {
+              town = "Парголово";
+              build.Street = build.Street.Replace(town, "");
+            }
+            else
+              town = "Санкт-Петербург";
+
+
+            build.Street = build.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
+
+            Monitor.Enter(locker);
+            bool flag = false;
+            foreach (var bl in listBuild)
+            {
+              if (build.Equals(bl))
+              {
+                flag = true;
+                break;
+              }
+            }
+            if (!flag)
+            {
+              if (!string.IsNullOrEmpty(build.Number))
+              {
+                listBuild.Add(build);
+
+                using (var sw = new StreamWriter(new FileStream(FilenameSdam, FileMode.Open), Encoding.UTF8))
+                {
+                  sw.BaseStream.Position = sw.BaseStream.Length;
+                  sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance}");
+                }
+              }
+            }
+            Monitor.Exit(locker);
+          }
+        }
+        catch (Exception ex)
+        {
+          MessageBox.Show(ex.Message);
+        }
+      }
     }
   }
 }

@@ -527,7 +527,7 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
-    public override void ParsingSdam()
+    public override void ParsingSdamAll()
     {
       throw new NotImplementedException();
     }

@@ -654,5 +654,11 @@ WHERE ID ='{item.Id}'";
       public string Letter { get; set; }
       public Guid Id { get; set; }
     }
+
+    private void button17_Click(object sender, EventArgs e)
+    {
+      var elms = new ELMS();
+      elms.ParsingSdamAll();
+    }
   }
 }
