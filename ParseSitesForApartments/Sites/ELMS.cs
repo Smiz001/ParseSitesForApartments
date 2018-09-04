@@ -33,24 +33,40 @@ namespace ParseSitesForApartments.Sites
       }
       var studiiThread = new Thread(ParseStudii);
       studiiThread.Start();
-      //Thread.Sleep(55000);
-      //var oneThread = new Thread(ParseOneRoom);
-      //oneThread.Start();
-      //Thread.Sleep(55000);
-      //var twoThread = new Thread(ParseTwoRoom);
-      //twoThread.Start();
-      //Thread.Sleep(55000);
-      //var threeThread = new Thread(ParseThreeRoom);
-      //threeThread.Start();
-      //Thread.Sleep(55000);
-      //var fourThread = new Thread(ParseFourRoom);
-      //fourThread.Start();
-      //Thread.Sleep(55000);
-      //var fiveThread = new Thread(ParseFiveRoom);
-      //fiveThread.Start();
-      //Thread.Sleep(55000);
+      Thread.Sleep(55000);
+      var oneThread = new Thread(ParseOneRoom);
+      oneThread.Start();
+      Thread.Sleep(55000);
+      var twoThread = new Thread(ParseTwoRoom);
+      twoThread.Start();
+      Thread.Sleep(55000);
+      var threeThread = new Thread(ParseThreeRoom);
+      threeThread.Start();
+      Thread.Sleep(55000);
+      var fourThread = new Thread(ParseFourRoom);
+      fourThread.Start();
+      Thread.Sleep(55000);
+      var fiveThread = new Thread(ParseFiveRoom);
+      fiveThread.Start();
+      Thread.Sleep(55000);
+
       var studiiNovThread = new Thread(ParsingStudiiNov);
       studiiNovThread.Start();
+      Thread.Sleep(55000);
+      var oneNovThread = new Thread(ParsingOneNov);
+      oneNovThread.Start();
+      Thread.Sleep(55000);
+      var twoNovThread = new Thread(ParsingTwoNov);
+      twoNovThread.Start();
+      Thread.Sleep(55000);
+      var threeNovThread = new Thread(ParsingThreeNov);
+      threeNovThread.Start();
+      Thread.Sleep(55000);
+      var fourNovThread = new Thread(ParsingFourNov);
+      fourNovThread.Start();
+      Thread.Sleep(55000);
+      var fiveNovThread = new Thread(ParsingFiveNov);
+      fiveNovThread.Start();
     }
 
     public void ParseStudii()
@@ -78,12 +94,12 @@ namespace ParseSitesForApartments.Sites
                 ParseSheet(tableElements, "Студия", item.Value);
             }
           }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
       }
+        catch (Exception ex)
+      {
+        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
       MessageBox.Show("Закончили студии");
     }
 
@@ -367,12 +383,15 @@ namespace ParseSitesForApartments.Sites
             }
             if (!flag)
             {
-              listBuild.Add(build);
-
-              using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+              if (!string.IsNullOrEmpty(build.Number))
               {
-                sw.BaseStream.Position = sw.BaseStream.Length;
-                sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance};{district}");
+                listBuild.Add(build);
+
+                using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+                {
+                  sw.BaseStream.Position = sw.BaseStream.Length;
+                  sw.WriteLine($@"{town};{build.Street};{build.Number};{build.Building};{build.Liter};{build.CountRoom};{build.Square};{build.Price};{build.Floor};{build.Metro};{build.Distance};{district}");
+                }
               }
             }
             Monitor.Exit(locker);
@@ -563,7 +582,7 @@ namespace ParseSitesForApartments.Sites
               if (tableElements.Length == 0)
                 break;
               else
-                ParseSheetNov(tableElements, "Студия", item.Value);
+                ParseSheetNov(tableElements, "1 км. кв.", item.Value);
             }
           }
         }
@@ -572,7 +591,7 @@ namespace ParseSitesForApartments.Sites
           MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
-      MessageBox.Show("Закончили студии");
+      MessageBox.Show("Закончили 1 км. кв. нов.");
     }
     public void ParsingTwoNov()
     {
@@ -596,7 +615,7 @@ namespace ParseSitesForApartments.Sites
               if (tableElements.Length == 0)
                 break;
               else
-                ParseSheetNov(tableElements, "Студия", item.Value);
+                ParseSheetNov(tableElements, "2 км. кв.", item.Value);
             }
           }
         }
@@ -605,7 +624,7 @@ namespace ParseSitesForApartments.Sites
           MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
-      MessageBox.Show("Закончили студии");
+      MessageBox.Show("Закончили 2 км. кв. нов.");
     }
     public void ParsingThreeNov()
     {
@@ -629,7 +648,7 @@ namespace ParseSitesForApartments.Sites
               if (tableElements.Length == 0)
                 break;
               else
-                ParseSheetNov(tableElements, "Студия", item.Value);
+                ParseSheetNov(tableElements, "3 км. кв.", item.Value);
             }
           }
         }
@@ -638,7 +657,7 @@ namespace ParseSitesForApartments.Sites
           MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
-      MessageBox.Show("Закончили студии");
+      MessageBox.Show("Закончили 3 км. кв. нов.");
     }
     public void ParsingFourNov()
     {
@@ -662,7 +681,7 @@ namespace ParseSitesForApartments.Sites
               if (tableElements.Length == 0)
                 break;
               else
-                ParseSheetNov(tableElements, "Студия", item.Value);
+                ParseSheetNov(tableElements, "4 км. кв.", item.Value);
             }
           }
         }
@@ -671,7 +690,7 @@ namespace ParseSitesForApartments.Sites
           MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
-      MessageBox.Show("Закончили студии");
+      MessageBox.Show("Закончили 4 км. кв. нов.");
     }
     public void ParsingFiveNov()
     {
@@ -695,7 +714,7 @@ namespace ParseSitesForApartments.Sites
               if (tableElements.Length == 0)
                 break;
               else
-                ParseSheetNov(tableElements, "Студия", item.Value);
+                ParseSheetNov(tableElements, "5 км. кв.", item.Value);
             }
           }
         }
@@ -704,7 +723,7 @@ namespace ParseSitesForApartments.Sites
           MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
-      MessageBox.Show("Закончили студии");
+      MessageBox.Show("Закончили 5 км. кв. нов.");
     }
 
     private void ParseSheetNov(IHtmlCollection<IElement> collection, string typeRoom, string district)
@@ -721,7 +740,7 @@ namespace ParseSitesForApartments.Sites
         string distance = "";
         #region Адрес
 
-        if (collection[i].GetElementsByClassName("address-geo").Length > 0)
+        if (collection[i].GetElementsByClassName("address-geo").Length > 1)
         {
           var adr = collection[i].GetElementsByClassName("address-geo")[1].TextContent.Split(',');
           if (adr.Length == 3)
