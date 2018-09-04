@@ -235,83 +235,8 @@ WHERE NAME ='{ar[6]}'";
 
     private void button3_Click(object sender, EventArgs e)
     {
-      using (var webClient = new WebClient())
-      {
-        Random random = new Random();
-        using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
-        {
-          connection.Open();
-          using (var sw = new StreamWriter(@"D:\AvitoSdam.csv", true, System.Text.Encoding.UTF8))
-          {
-            for (int i = pageMin; i < pageMaz; i++)
-            {
-              Thread.Sleep(random.Next(5000, 10000));
-              string sdam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam?p={i}";
-              webClient.Encoding = System.Text.Encoding.UTF8;
-              var responce = webClient.DownloadString(sdam);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var elem = document.GetElementsByClassName("item_table-header");
-              var adresses = document.GetElementsByClassName("address");
-              for (int k = 0; k < elem.Length; k++)
-              {
-                var build = new Build();
-                var price = (elem[k].GetElementsByClassName("price")[0].TextContent.Trim('\n').Trim('₽').Trim().Replace(" ", "").Replace("\n", " "));
-
-                var aboutBuild = elem[k].GetElementsByClassName("item-description-title-link")[0].TextContent.Split(',').ToList();
-                for (int j = 0; j < aboutBuild.Count; j++)
-                {
-                  aboutBuild[j] = aboutBuild[j].Trim();
-                }
-
-                build.CountRoom = aboutBuild[0];
-                build.Square = aboutBuild[1];
-                build.Floor = aboutBuild[2];
-
-                var adress = adresses[k];
-
-                if (adress.ChildNodes.Length > 1)
-                  build.Metro = adress.ChildNodes[2].NodeValue.Trim();
-                if (adresses[k].GetElementsByClassName("c-2").Length > 0)
-                  build.Distance = adresses[k].GetElementsByClassName("c-2")[0].TextContent;
-
-                var adArr = adress.TextContent.Split(',');
-                if (adArr.Length > 2)
-                {
-                  var street = adArr[adArr.Length - 2];
-                  build.Street = street.Replace("проспект", "").Replace("пр.", "").Replace("пр-т", "").Replace("ул.", "").Replace("улица", "").Replace("ул", "").Replace("Санкт-Петербург", "").Replace("пр-кт", "").Replace("Колпино", "").Replace("Красное Село", "").Trim();
-
-                }
-                else if (adArr.Length == 2)
-                {
-                  var street = adArr[1].Trim().Split(' ')[0];
-                }
-
-                if (adArr.Length > 1)
-                  build.Number = adArr[adArr.Length - 1].Trim();
-
-                string select = $@"SELECT [BuldingDate]
-      ,[RepairDate]
-  FROM [ParseBulding].[dbo].[InfoAboutBulding]
-  where LOWER(Street) Like ('%{build.Street}%')
-  and Number = '{build.Number}'";
-
-                var command = new SqlCommand(select, connection);
-                var reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-                  build.DateBuild = reader.GetString(0);
-                  build.DateRepair = reader.GetString(1);
-                  break;
-                }
-                reader.Close();
-                sw.WriteLine($@"{build.Street};{build.Number};{build.Metro};{build.Distance};{price};{build.CountRoom};{build.Square};{build.Floor};{build.DateBuild};{build.DateRepair}");
-              }
-            }
-          }
-        }
-      }
+      var avito = new Avito();
+      avito.ParsingSdamAll();
     }
 
     private void button4_Click(object sender, EventArgs e)
