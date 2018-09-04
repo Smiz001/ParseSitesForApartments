@@ -900,19 +900,19 @@ namespace ParseSitesForApartments.Sites
 
       var studiiThread = new Thread(ParseStudiiSdam);
       studiiThread.Start();
-      Thread.Sleep(55000);
+      Thread.Sleep(30000);
       var oneThread = new Thread(ParseOneSdam);
       oneThread.Start();
-      Thread.Sleep(55000);
+      Thread.Sleep(30000);
       var twoThread = new Thread(ParseTwoSdam);
       twoThread.Start();
-      Thread.Sleep(55000);
+      Thread.Sleep(30000);
       var threeThread = new Thread(ParseThreeSdam);
       threeThread.Start();
-      Thread.Sleep(55000);
+      Thread.Sleep(30000);
       var fourThread = new Thread(ParseFourSdam);
       fourThread.Start();
-      Thread.Sleep(55000);
+      Thread.Sleep(30000);
       var fiveThread = new Thread(ParseFiveSdam);
       fiveThread.Start();
     }
@@ -957,7 +957,7 @@ namespace ParseSitesForApartments.Sites
           for (int j = 1; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r1/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -987,7 +987,7 @@ namespace ParseSitesForApartments.Sites
           for (int j = 1; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r2/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -1017,7 +1017,7 @@ namespace ParseSitesForApartments.Sites
           for (int j = 1; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r3/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -1047,7 +1047,7 @@ namespace ParseSitesForApartments.Sites
           for (int j = 1; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r4/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
@@ -1077,7 +1077,7 @@ namespace ParseSitesForApartments.Sites
           for (int j = 1; j < MaxPage; j++)
           {
             Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r5/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
             webClient.Encoding = Encoding.GetEncoding("windows-1251");
             var responce = webClient.DownloadString(sdutii);
             var parser = new HtmlParser();
