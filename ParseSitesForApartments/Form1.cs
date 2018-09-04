@@ -660,5 +660,11 @@ WHERE ID ='{item.Id}'";
       var elms = new ELMS();
       elms.ParsingSdamAll();
     }
+
+    private void button18_Click(object sender, EventArgs e)
+    {
+      var bn = new BN();
+      bn.ParsingSdamAll();
+    }
   }
 }
