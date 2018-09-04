@@ -717,373 +717,132 @@ namespace ParseSitesForApartments.Sites
       Thread.Sleep(55000);
     }
 
+    private bool LinkProcessing(string link, string typeRoom)
+    {
+      try
+      {
+        using (var webClient = new WebClient())
+        {
+          var random = new Random();
+          Thread.Sleep(random.Next(2000, 4000));
+          ServicePointManager.Expect100Continue = true;
+          ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+          ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+          webClient.Encoding = Encoding.UTF8;
+          var responce = webClient.DownloadString(link);
+          var parser = new HtmlParser();
+          var document = parser.Parse(responce);
+
+          var collections = document.GetElementsByClassName("description item_table-description");
+          if (collections.Length > 0)
+            ParsingSheetSdam(typeRoom, collections);
+        }
+      }
+      catch
+      {
+        return false;
+      }
+      return true;
+    }
+
     public void ParsingStudioSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/studii?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("Студия", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-            //MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/studii?p={i}";
+        if (!LinkProcessing(prodam, "Студия"))
+          break;
       }
       MessageBox.Show("Закончил студии");
     }
     public void ParsingOneSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/1-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("1 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-           // MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/1-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "1 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 1 км. кв.");
     }
     public void ParsingTwoSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/2-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("2 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-            //MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/2-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "2 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 2 км. кв.");
     }
     public void ParsingThreeSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/3-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("3 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-            //MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/3-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "3 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 3 км. кв.");
     }
     public void ParsingFourSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/4-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("4 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-//MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/4-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "4 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 4 км. кв.");
     }
     public void ParsingFiveSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/5-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("5 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-            //MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/5-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "5 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 5 км. кв.");
     }
     public void ParsingSixSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/6-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("6 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-            //MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/6-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "6 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 6 км. кв.");
     }
     public void ParsingSevenSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/7-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("7 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-            //MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/7-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "7 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 7 км. кв.");
     }
     public void ParsingEightSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/8-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("8 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-            //MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/8-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "8 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 8 км. кв.");
     }
     public void ParsingNineSdam()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          try
-          {
-            Thread.Sleep(random.Next(5000, 6000));
-            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/9-komnatnye?p={i}";
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-            webClient.Encoding = System.Text.Encoding.UTF8;
-            var responce = webClient.DownloadString(prodam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var collections = document.GetElementsByClassName("description item_table-description");
-            if (collections.Length > 0)
-              ParsingSheetSdam("9 км. кв.", collections);
-            else
-              break;
-          }
-          catch (Exception ex)
-          {
-            //MessageBox.Show($@"{ex.Message}; page - {i}");
-            break;
-          }
-        }
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/9-komnatnye?p={i}";
+        if (!LinkProcessing(prodam, "9 км. кв."))
+          break;
       }
       MessageBox.Show("Закончил 9 км. кв.");
     }
