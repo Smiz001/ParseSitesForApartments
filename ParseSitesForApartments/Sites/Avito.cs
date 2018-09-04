@@ -708,7 +708,7 @@ namespace ParseSitesForApartments.Sites
           Random random = new Random();
           for (int i = minPage; i < maxPage; i++)
           {
-            Thread.Sleep(random.Next(5000, 6000));
+            Thread.Sleep(random.Next(9000, 12000));
             string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/studii?p={i}";
 
             ServicePointManager.Expect100Continue = true;
