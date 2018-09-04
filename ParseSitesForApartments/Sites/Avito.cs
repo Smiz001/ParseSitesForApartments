@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace ParseSitesForApartments.Sites
 {
-  public class Avito:BaseParse
+  public class Avito : BaseParse
   {
     private int minPage = 1;
     private int maxPage = 100;
@@ -20,7 +20,7 @@ namespace ParseSitesForApartments.Sites
     private const string Filename = @"D:\AvitoProdam.csv";
     private const string FilenameSdam = @"D:\AvitoSdam.csv";
     private const string FilenameWithinfo = @"D:\AvitoProdamWithInfo.csv";
-    private List<string> stantions = new List<string>() { "Автово","Адмиралтейская","Академическая","Балтийская", "Беговая", "Бухарестская","Василеостровская","Владимирская","Волковская","Выборгская","Горьковская","Гостиный двор","Гражданский проспект","Девяткино","Достоевская","Елизаровская","Звёздная","Звенигородская","Кировский завод","Комендантский проспект","Крестовский остров","Купчино","Ладожская","Ленинский проспект","Лесная","Лиговский проспект","Ломоносовская","Маяковская","Международная","Московская","Московские ворота","Нарвская","Невский проспект", "Новокрестовская", "Новочеркасская","Обводный канал","Обухово","Озерки","Парк Победы","Парнас","Петроградская","Пионерская","Площадь Александра Невского","Площадь Восстания","Площадь Ленина","Площадь Мужества","Политехническая","Приморская","Пролетарская","Проспект Большевиков","Проспект Ветеранов","Проспект Просвещения","Пушкинская","Рыбацкое","Садовая","Сенная площадь","Спасская","Спортивная","Старая Деревня","Технологический институт","Удельная","Улица Дыбенко","Фрунзенская","Чёрная речка","Чернышевская","Чкаловская","Электросила"};
+    private List<string> stantions = new List<string>() { "Автово", "Адмиралтейская", "Академическая", "Балтийская", "Беговая", "Бухарестская", "Василеостровская", "Владимирская", "Волковская", "Выборгская", "Горьковская", "Гостиный двор", "Гражданский проспект", "Девяткино", "Достоевская", "Елизаровская", "Звёздная", "Звенигородская", "Кировский завод", "Комендантский проспект", "Крестовский остров", "Купчино", "Ладожская", "Ленинский проспект", "Лесная", "Лиговский проспект", "Ломоносовская", "Маяковская", "Международная", "Московская", "Московские ворота", "Нарвская", "Невский проспект", "Новокрестовская", "Новочеркасская", "Обводный канал", "Обухово", "Озерки", "Парк Победы", "Парнас", "Петроградская", "Пионерская", "Площадь Александра Невского", "Площадь Восстания", "Площадь Ленина", "Площадь Мужества", "Политехническая", "Приморская", "Пролетарская", "Проспект Большевиков", "Проспект Ветеранов", "Проспект Просвещения", "Пушкинская", "Рыбацкое", "Садовая", "Сенная площадь", "Спасская", "Спортивная", "Старая Деревня", "Технологический институт", "Удельная", "Улица Дыбенко", "Фрунзенская", "Чёрная речка", "Чернышевская", "Чкаловская", "Электросила" };
 
     private static object locker = new object();
 
@@ -326,7 +326,7 @@ namespace ParseSitesForApartments.Sites
         regex = new Regex(@"(\d+\/\d+)");
         var floor = regex.Match(aboutBuild).Value;
         regex = new Regex(@"(\/\d+)");
-        build.Floor = floor.Replace(regex.Match(floor).Value,"");
+        build.Floor = floor.Replace(regex.Match(floor).Value, "");
 
         var adress = collection[k].GetElementsByClassName("address");
         int count = 0;
@@ -337,7 +337,7 @@ namespace ParseSitesForApartments.Sites
           var distance = collection[k].GetElementsByClassName("c-2");
           if (distance.Length > 0)
             build.Distance = distance[0].TextContent.Trim();
-          adres = adres.Replace(build.Distance,"").Replace("Санкт-Петербург,","").Replace("посёлок Парголово,", "").Replace("СПб Красное село", "").Replace("г. Ломоносов,", "").Replace("Россия,", "").Replace("Сестрорецк г,", "").Replace("Сестрорецк", "").Replace("Парголово п,", "").Replace("Колпино,", "").Replace("Мурино,", "").Replace("посёлок Шушары,", "").Replace("г. Петергоф,", "");
+          adres = adres.Replace(build.Distance, "").Replace("Санкт-Петербург,", "").Replace("посёлок Парголово,", "").Replace("СПб Красное село", "").Replace("г. Ломоносов,", "").Replace("Россия,", "").Replace("Сестрорецк г,", "").Replace("Сестрорецк", "").Replace("Парголово п,", "").Replace("Колпино,", "").Replace("Мурино,", "").Replace("посёлок Шушары,", "").Replace("г. Петергоф,", "");
 
           #region Удаление лишнего
           regex = new Regex(@"(\,\s+подъезд\s+\d+)|(\,\s+подъезд\d+)");
@@ -359,9 +359,9 @@ namespace ParseSitesForApartments.Sites
             build.Metro = ar[0];
             build.Street = ar[1];
             build.Number = ar[2];
-            build.Number = build.Number.Replace("А","").Replace("А", "").Replace("дом ", "").Replace("д.","").Trim();
+            build.Number = build.Number.Replace("А", "").Replace("А", "").Replace("дом ", "").Replace("д.", "").Trim();
           }
-          else if(ar.Length == 1)
+          else if (ar.Length == 1)
           {
             regex = new Regex(@"(д\. \d+\s+к\.\d+)|(д\.\s+\d+\s+к\.\d+)");
             build.Number = regex.Match(ar[0]).Value;
@@ -371,7 +371,7 @@ namespace ParseSitesForApartments.Sites
               regex = new Regex(@"(к\.\d+)");
               build.Building = regex.Match(build.Number).Value;
               build.Number = build.Number.Replace(build.Building, "").Replace("д. ", "").Replace("д. ", "");
-              build.Building = build.Building.Replace("к.","");
+              build.Building = build.Building.Replace("к.", "");
             }
             else
             {
@@ -473,11 +473,11 @@ namespace ParseSitesForApartments.Sites
                 }
               }
             }
-            build.Street = build.Street.Replace("Ул.","").Replace("г.", "").Replace(".", "").Trim();
+            build.Street = build.Street.Replace("Ул.", "").Replace("г.", "").Replace(".", "").Trim();
           }
-          else if(ar.Length == 2)
+          else if (ar.Length == 2)
           {
-            if(stantions.Contains(ar[0].Trim()))
+            if (stantions.Contains(ar[0].Trim()))
             {
               build.Metro = ar[0].Trim();
               build.Street = ar[1];
@@ -498,7 +498,7 @@ namespace ParseSitesForApartments.Sites
 
         regex = new Regex(@"(к\d+)");
         build.Building = regex.Match(build.Number).Value;
-        if(string.IsNullOrWhiteSpace(build.Building))
+        if (string.IsNullOrWhiteSpace(build.Building))
         {
           regex = new Regex(@"(к \d+)");
           build.Building = regex.Match(build.Number).Value;
@@ -519,18 +519,18 @@ namespace ParseSitesForApartments.Sites
           else
           {
             build.Number = build.Number.Replace(build.Building, "");
-            build.Building = build.Building.Replace("к","");
+            build.Building = build.Building.Replace("к", "");
           }
         }
         else
         {
-          build.Number = build.Number.Replace(build.Building,"");
+          build.Number = build.Number.Replace(build.Building, "");
           build.Building = build.Building.Replace("к", "");
         }
 
         regex = new Regex(@"(\D$)");
         build.Liter = regex.Match(build.Number).Value;
-        if(!string.IsNullOrEmpty(build.Liter))
+        if (!string.IsNullOrEmpty(build.Liter))
         {
           build.Number = build.Number.Replace(build.Liter, "");
         }
@@ -539,9 +539,9 @@ namespace ParseSitesForApartments.Sites
 
         regex = new Regex(@"(^пр\.)");
         var pr = regex.Match(build.Street).Value;
-        if(!string.IsNullOrWhiteSpace(pr))
+        if (!string.IsNullOrWhiteSpace(pr))
         {
-          build.Street = build.Street.Replace(pr,"").Trim() + $" {pr}";
+          build.Street = build.Street.Replace(pr, "").Trim() + $" {pr}";
         }
 
         Monitor.Enter(locker);
@@ -677,7 +677,7 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingAll()
     {
-     
+
     }
 
     public override void ParsingSdamAll()
@@ -688,27 +688,45 @@ namespace ParseSitesForApartments.Sites
       }
       var studiiThread = new Thread(ParsingStudioSdam);
       studiiThread.Start();
-      //Thread.Sleep(55000);
-      //var oneThread = new Thread(ParsingOneRoom);
-      //oneThread.Start();
-      //Thread.Sleep(55000);
-      //var twoThread = new Thread(ParsingTwoRoom);
-      //twoThread.Start();
-      //Thread.Sleep(55000);
-      //var threeThread = new Thread(ParsingThreeRoom);
-      //threeThread.Start();
+      Thread.Sleep(55000);
+      var oneThread = new Thread(ParsingOneSdam);
+      oneThread.Start();
+      Thread.Sleep(55000);
+      var twoThread = new Thread(ParsingTwoSdam);
+      twoThread.Start();
+      Thread.Sleep(55000);
+      var threeThread = new Thread(ParsingThreeSdam);
+      threeThread.Start();
+      var fourThread = new Thread(ParsingFourSdam);
+      fourThread.Start();
+      Thread.Sleep(55000);
+      var fiveThread = new Thread(ParsingFiveSdam);
+      fiveThread.Start();
+      Thread.Sleep(55000);
+      var sixThread = new Thread(ParsingSixSdam);
+      sixThread.Start();
+      Thread.Sleep(55000);
+      var sevenThread = new Thread(ParsingSevenSdam);
+      sevenThread.Start();
+      Thread.Sleep(55000);
+      var eightThread = new Thread(ParsingEightSdam);
+      eightThread.Start();
+      Thread.Sleep(55000);
+      var nineThread = new Thread(ParsingNineSdam);
+      nineThread.Start();
+      Thread.Sleep(55000);
     }
 
     public void ParsingStudioSdam()
     {
-      try
+      using (var webClient = new WebClient())
       {
-        using (var webClient = new WebClient())
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
         {
-          Random random = new Random();
-          for (int i = minPage; i < maxPage; i++)
+          try
           {
-            Thread.Sleep(random.Next(9000, 12000));
+            Thread.Sleep(random.Next(5000, 6000));
             string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/studii?p={i}";
 
             ServicePointManager.Expect100Continue = true;
@@ -727,13 +745,347 @@ namespace ParseSitesForApartments.Sites
             else
               break;
           }
+          catch (Exception ex)
+          {
+            //MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
         }
       }
-      catch (Exception ex)
+      MessageBox.Show("Закончил студии");
+    }
+    public void ParsingOneSdam()
+    {
+      using (var webClient = new WebClient())
       {
-        MessageBox.Show(ex.Message);
-      }
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/1-komnatnye?p={i}";
 
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("1 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+           // MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 1 км. кв.");
+    }
+    public void ParsingTwoSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/2-komnatnye?p={i}";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("2 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+            //MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 2 км. кв.");
+    }
+    public void ParsingThreeSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/3-komnatnye?p={i}";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("3 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+            //MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 3 км. кв.");
+    }
+    public void ParsingFourSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/4-komnatnye?p={i}";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("4 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+//MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 4 км. кв.");
+    }
+    public void ParsingFiveSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/5-komnatnye?p={i}";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("5 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+            //MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 5 км. кв.");
+    }
+    public void ParsingSixSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/6-komnatnye?p={i}";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("6 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+            //MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 6 км. кв.");
+    }
+    public void ParsingSevenSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/7-komnatnye?p={i}";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("7 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+            //MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 7 км. кв.");
+    }
+    public void ParsingEightSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/8-komnatnye?p={i}";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("8 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+            //MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 8 км. кв.");
+    }
+    public void ParsingNineSdam()
+    {
+      using (var webClient = new WebClient())
+      {
+        Random random = new Random();
+        for (int i = minPage; i < maxPage; i++)
+        {
+          try
+          {
+            Thread.Sleep(random.Next(5000, 6000));
+            string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/sdam/na_dlitelnyy_srok/9-komnatnye?p={i}";
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = System.Text.Encoding.UTF8;
+            var responce = webClient.DownloadString(prodam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+
+            var collections = document.GetElementsByClassName("description item_table-description");
+            if (collections.Length > 0)
+              ParsingSheetSdam("9 км. кв.", collections);
+            else
+              break;
+          }
+          catch (Exception ex)
+          {
+            //MessageBox.Show($@"{ex.Message}; page - {i}");
+            break;
+          }
+        }
+      }
+      MessageBox.Show("Закончил 9 км. кв.");
     }
 
     private void ParsingSheetSdam(string typeRoom, IHtmlCollection<IElement> collection)
@@ -743,7 +1095,7 @@ namespace ParseSitesForApartments.Sites
         var build = new Build();
         build.CountRoom = typeRoom;
 
-        string price = collection[k].GetElementsByClassName("price")[0].TextContent.Trim('\n').Trim('₽').Replace(" ", "").Replace("₽\nвмесяц","");
+        string price = collection[k].GetElementsByClassName("price")[0].TextContent.Trim('\n').Trim('₽').Replace(" ", "").Replace("₽\nвмесяц", "");
         build.Price = int.Parse(price);
 
         var aboutBuild = collection[k].GetElementsByClassName("item-description-title-link")[0].TextContent;
