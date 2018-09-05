@@ -908,7 +908,7 @@ namespace ParseSitesForApartments.Sites
               using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
               {
                 sw.BaseStream.Position = sw.BaseStream.Length;
-                sw.WriteLine($@"{town};{item.Building.Street};{item.Building.Number};{item.Building};{item.Building.Liter};{item.CountRoom};{item.Square};{item.Price};{item.Floor};{item.Building.Metro};{item.Building.Distance};{district}");
+                sw.WriteLine($@"{town};{item.Building.Street};{item.Building.Number};{item.Building.Structure};{item.Building.Liter};{item.CountRoom};{item.Square};{item.Price};{item.Floor};{item.Building.Metro};{item.Building.Distance};{district}");
               }
             }
             Monitor.Exit(locker);

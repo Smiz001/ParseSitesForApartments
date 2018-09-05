@@ -431,6 +431,7 @@ WHERE NAME ='{ar[6]}'";
 
     private void button10_Click(object sender, EventArgs e)
     {
+      /*
       var yandex = new Yandex();
       using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
       {
@@ -494,6 +495,57 @@ WHERE ID ='{item.Id}'";
             }
           }
           File.Delete(@"D:\Coord.xml");
+        }
+      }
+      */
+      GetCoordBuilding(@"D:\ElmsBuilding.csv", @"D:\ElmsBuildingWithCoor.csv");
+    }
+    private void GetCoordBuilding(string inputFile, string outputFile)
+    {
+      if(!string.IsNullOrEmpty(inputFile))
+      {
+        if (File.Exists(inputFile))
+        {
+          using (var sr = new StreamReader(inputFile, Encoding.UTF8))
+          {
+            using (var sw = new StreamWriter(outputFile, true, Encoding.UTF8))
+            {
+              var yandex = new Yandex();
+              string line;
+              sr.ReadLine();
+              while ((line = sr.ReadLine()) != null)
+              {
+                var arr = line.Split(';');
+                var doc1 = yandex.SearchObjectByAddress($@"Санкт-Петербург {arr[0]}, {arr[1]}к{arr[2]} лит.{arr[3]}");
+                using (var sw1 = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
+                {
+                  sw1.WriteLine(doc1);
+                }
+
+                XmlDocument doc = new XmlDocument();
+                doc.Load(@"D:\Coord.xml");
+                var root = doc.DocumentElement;
+                var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
+                if (GeoObjectCollection.ChildNodes.Count > 1)
+                {
+                  var featureMember = GeoObjectCollection.ChildNodes[1];
+                  if (featureMember.ChildNodes.Count > 0)
+                  {
+                    var GeoObject = featureMember.ChildNodes[0];
+                    if (GeoObject.ChildNodes.Count > 4)
+                    {
+                      var Point = GeoObject.ChildNodes[4];
+                      var coor = Point.InnerText.Split(' ');
+                      float x = float.Parse(coor[1].Replace(".", ","));
+                      float y = float.Parse(coor[0].Replace(".", ","));
+                      sw.WriteLine($@"{arr[0]};{arr[1]};{arr[2]};{arr[3]};{x};{y}");
+                    }
+                  }
+                }
+                File.Delete(@"D:\Coord.xml");
+              }
+            }
+          }
         }
       }
     }
