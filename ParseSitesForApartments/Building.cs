@@ -14,5 +14,36 @@ namespace ParseSitesForApartments
     public string Structure { get; set; } = string.Empty;
     public string Liter { get; set; } = string.Empty;
     public string Street { get; set; } = string.Empty;
+
+
+    public override bool Equals(object obj)
+    {
+      var building = obj as Building;
+      if (building != null)
+      {
+        if (building.Street == this.Street)
+        {
+          if (building.Number == this.Number)
+          {
+            if (building.Structure == this.Structure)
+            {
+              if (building.Liter == this.Liter)
+                return true;
+            }
+          }
+        }
+      }
+      return false;
+    }
+
+    public override int GetHashCode()
+    {
+      var hashCode = -1541394451;
+      hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Number);
+      hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Structure);
+      hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Liter);
+      hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Street);
+      return hashCode;
+    }
   }
 }
