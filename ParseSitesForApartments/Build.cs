@@ -2,7 +2,7 @@
 
 namespace ParseSitesForApartments
 {
-  public class Build
+  public class Flat
   {
     public string Metro { get; set; } = string.Empty;
     public string Distance { get; set; } = string.Empty;
@@ -19,26 +19,26 @@ namespace ParseSitesForApartments
 
     public override bool Equals(object obj)
     {
-      var build = obj as Build;
-      if (build == null)
+      var flat = obj as Flat;
+      if (flat == null)
         return false;
       else
       {
-        if (build.Street == this.Street)
+        if (flat.Street == this.Street)
         {
-          if (build.Number == this.Number)
+          if (flat.Number == this.Number)
           {
-            if (build.Building == this.Building)
+            if (flat.Building == this.Building)
             {
-              if (build.Liter == this.Liter)
+              if (flat.Liter == this.Liter)
               {
-                if (build.CountRoom == this.CountRoom)
+                if (flat.CountRoom == this.CountRoom)
                 {
-                  if (build.Square == this.Square)
+                  if (flat.Square == this.Square)
                   {
-                    if (build.Floor == this.Floor)
+                    if (flat.Floor == this.Floor)
                     {
-                      if (build.Price == this.Price)
+                      if (flat.Price == this.Price)
                         return true;
                     }
                   }
