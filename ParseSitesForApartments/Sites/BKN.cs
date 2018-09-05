@@ -440,10 +440,13 @@ namespace ParseSitesForApartments.Sites
             flat.Building.Metro = flat.Building.Metro.Replace(flat.Building.Distance, "").Replace("●", "").Replace(",", "").Trim();
 
           Monitor.Enter(locker);
-          using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+          if(!string.IsNullOrEmpty(flat.Building.Number))
           {
-            sw.BaseStream.Position = sw.BaseStream.Length;
-            sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+            using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+            {
+              sw.BaseStream.Position = sw.BaseStream.Length;
+              sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+            }
           }
           Monitor.Exit(locker);
         }
