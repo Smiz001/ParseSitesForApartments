@@ -41,7 +41,6 @@
       this.button12 = new System.Windows.Forms.Button();
       this.button11 = new System.Windows.Forms.Button();
       this.button13 = new System.Windows.Forms.Button();
-      this.button14 = new System.Windows.Forms.Button();
       this.button15 = new System.Windows.Forms.Button();
       this.button16 = new System.Windows.Forms.Button();
       this.button17 = new System.Windows.Forms.Button();
@@ -55,7 +54,7 @@
       this.button1.Name = "button1";
       this.button1.Size = new System.Drawing.Size(134, 23);
       this.button1.TabIndex = 0;
-      this.button1.Text = "Авито Продам 0-3";
+      this.button1.Text = "Авито Продам";
       this.button1.UseVisualStyleBackColor = true;
       this.button1.Click += new System.EventHandler(this.button1_Click);
       // 
@@ -71,7 +70,7 @@
       // 
       // button3
       // 
-      this.button3.Location = new System.Drawing.Point(12, 70);
+      this.button3.Location = new System.Drawing.Point(12, 41);
       this.button3.Name = "button3";
       this.button3.Size = new System.Drawing.Size(134, 23);
       this.button3.TabIndex = 2;
@@ -81,7 +80,7 @@
       // 
       // button4
       // 
-      this.button4.Location = new System.Drawing.Point(12, 99);
+      this.button4.Location = new System.Drawing.Point(12, 70);
       this.button4.Name = "button4";
       this.button4.Size = new System.Drawing.Size(134, 23);
       this.button4.TabIndex = 3;
@@ -91,7 +90,7 @@
       // 
       // button5
       // 
-      this.button5.Location = new System.Drawing.Point(12, 128);
+      this.button5.Location = new System.Drawing.Point(12, 99);
       this.button5.Name = "button5";
       this.button5.Size = new System.Drawing.Size(134, 23);
       this.button5.TabIndex = 4;
@@ -179,19 +178,9 @@
       this.button13.UseVisualStyleBackColor = true;
       this.button13.Click += new System.EventHandler(this.button13_Click);
       // 
-      // button14
-      // 
-      this.button14.Location = new System.Drawing.Point(12, 41);
-      this.button14.Name = "button14";
-      this.button14.Size = new System.Drawing.Size(134, 23);
-      this.button14.TabIndex = 14;
-      this.button14.Text = "Авито Продам 4-9";
-      this.button14.UseVisualStyleBackColor = true;
-      this.button14.Click += new System.EventHandler(this.button14_Click);
-      // 
       // button15
       // 
-      this.button15.Location = new System.Drawing.Point(12, 157);
+      this.button15.Location = new System.Drawing.Point(12, 128);
       this.button15.Name = "button15";
       this.button15.Size = new System.Drawing.Size(134, 23);
       this.button15.TabIndex = 15;
@@ -249,7 +238,6 @@
       this.Controls.Add(this.button17);
       this.Controls.Add(this.button16);
       this.Controls.Add(this.button15);
-      this.Controls.Add(this.button14);
       this.Controls.Add(this.button13);
       this.Controls.Add(this.button11);
       this.Controls.Add(this.button12);
@@ -284,7 +272,6 @@
     private System.Windows.Forms.Button button12;
     private System.Windows.Forms.Button button11;
     private System.Windows.Forms.Button button13;
-    private System.Windows.Forms.Button button14;
     private System.Windows.Forms.Button button15;
     private System.Windows.Forms.Button button16;
     private System.Windows.Forms.Button button17;

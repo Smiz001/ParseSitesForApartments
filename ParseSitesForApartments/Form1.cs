@@ -26,7 +26,7 @@ namespace ParseSitesForApartments
     private void button1_Click(object sender, EventArgs e)
     {
       var avito = new Avito();
-      avito.Parsing0_3Rooms();
+      avito.ParsingAll();
     }
 
     private void button2_Click(object sender, EventArgs e)
@@ -514,12 +514,6 @@ WHERE ID ='{item.Id}'";
     {
       var bn = new BN();
       bn.GetInfoAboutBuilding();
-    }
-
-    private void button14_Click(object sender, EventArgs e)
-    {
-      var avito = new Avito();
-      avito.Parsing4_9Rooms();
     }
 
     private void button15_Click(object sender, EventArgs e)
