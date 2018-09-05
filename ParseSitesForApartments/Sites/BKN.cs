@@ -451,15 +451,12 @@ namespace ParseSitesForApartments.Sites
 
           flat.Building.Street = flat.Building.Street.Replace("ул.", "").Replace("просп.", "").Replace("пр-кт", "").Replace("пер.", "").Replace("шос.", "").Replace("пр.", "").Replace("лит. а", "").Replace("лит. А", "").Replace("стр. 3", "").Replace("стр. 1", "").Replace("стр. 2", "").Replace("б-р.", "").Replace(" б", "").Replace("пр-д", "").Replace("тер.", "").Replace("пл.", "").Replace(",", "").Replace(".", "").Replace("-1","").Trim();
 
-
-          if (string.IsNullOrEmpty(flat.Building.Structure))
+          regex = new Regex(@"(к\d+)");
+          var struc = regex.Match(flat.Building.Street).Value;
+          if (string.IsNullOrEmpty(struc))
           {
-            regex = new Regex(@"(к\d+)");
-            var struc = regex.Match(flat.Building.Street).Value;
-            if (string.IsNullOrEmpty(struc))
-            {
-              flat.Building.Structure = struc.Replace("к", "");
-            }
+            flat.Building.Structure = struc.Replace("к", "");
+            flat.Building.Street = flat.Building.Street.Replace(struc, "");
           }
 
           regex = new Regex(@"(кП\d+)");

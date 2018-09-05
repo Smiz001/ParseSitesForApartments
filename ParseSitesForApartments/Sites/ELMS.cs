@@ -1242,7 +1242,7 @@ namespace ParseSitesForApartments.Sites
                 using (var sw = new StreamWriter(new FileStream(FilenameSdam, FileMode.Open), Encoding.UTF8))
                 {
                   sw.BaseStream.Position = sw.BaseStream.Length;
-                  sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+                  sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
                 }
               }
             }
