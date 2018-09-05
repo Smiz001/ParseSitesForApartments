@@ -54,148 +54,99 @@ namespace ParseSitesForApartments.Sites
 
     public void ParsingStudioVtorichka( )
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/studii?page={i}";
-
-          webClient.Encoding = Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
-
-          var apartment = document.GetElementsByClassName("main Apartments");
-          if (apartment.Length > 0)
-            ParsingSheet("Студия", apartment);
-          else
-            break;
-        }
+        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/studii?page={i}";
+        if (!LinkProcessingProdam(prodam, "Студия"))
+          break;
       }
-      //MessageBox.Show("Закончили Студии");
+      MessageBox.Show("Закончили Студии");
     }
 
     public void ParsingOneRoomVtorichka()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/kvartiri/odnokomnatnye-kvartiry?page={i}";
-
-          webClient.Encoding = System.Text.Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
-
-          var apartment = document.GetElementsByClassName("main Apartments");
-          if (apartment.Length > 0)
-            ParsingSheet("1 км. кв.", apartment);
-          else
-            break;
-        }
+        string prodam = $@"https://www.bkn.ru/prodazha/kvartiri/odnokomnatnye-kvartiry?page={i}";
+        if (!LinkProcessingProdam(prodam, "1 км. кв."))
+          break;
       }
-     // MessageBox.Show("Закончили 1");
+      MessageBox.Show("Закончили 1");
     }
 
     public void ParsingTwoRoomVtorichka()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/dvuhkomnatnye-kvartiry?page={i}";
-
-          webClient.Encoding = System.Text.Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
-          var apartment = document.GetElementsByClassName("main Apartments");
-          if (apartment.Length > 0)
-            ParsingSheet("2 км. кв.", apartment);
-          else
-            break;
-        }
+        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/dvuhkomnatnye-kvartiry?page={i}";
+        if (!LinkProcessingProdam(prodam, "2 км. кв."))
+          break;
       }
-      //MessageBox.Show("Закончили 2");
+      MessageBox.Show("Закончили 2");
     }
 
     public void ParsingThreeRoomVtorichka()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/trehkomnatnye-kvartiry?page={i}";
-
-          webClient.Encoding = System.Text.Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
-          var apartment = document.GetElementsByClassName("main Apartments");
-          if (apartment.Length > 0)
-            ParsingSheet("3 км. кв.", apartment);
-          else
-            break;
-        }
+        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/trehkomnatnye-kvartiry?page={i}";
+        if (!LinkProcessingProdam(prodam, "3 км. кв."))
+          break;
       }
-     // MessageBox.Show("Закончили 3");
+      MessageBox.Show("Закончили 3");
     }
 
     public void ParsingFourRoomVtorichka()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/chetyrehkomnatnye-kvartiry?page={i}";
-
-          webClient.Encoding = System.Text.Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
-          var apartment = document.GetElementsByClassName("main Apartments");
-          if (apartment.Length > 0)
-            ParsingSheet("4 км. кв.", apartment);
-          else
-            break;
-        }
+        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/chetyrehkomnatnye-kvartiry?page={i}";
+        if (!LinkProcessingProdam(prodam, "4 км. кв."))
+          break;
       }
-      //MessageBox.Show("Закончили 4");
+      MessageBox.Show("Закончили 4");
     }
 
     public void ParsingFiveAndMoreRoomVtorichka()
     {
-      using (var webClient = new WebClient())
+      for (int i = minPage; i < maxPage; i++)
       {
-        Random random = new Random();
-        for (int i = minPage; i < maxPage; i++)
-        {
-          Thread.Sleep(random.Next(5000, 6000));
-          string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/pyatikomnatnye-kvartiry?page={i}";
+        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/pyatikomnatnye-kvartiry?page={i}";
+        if (!LinkProcessingProdam(prodam, "4 км. кв."))
+          break;
+      }
+      MessageBox.Show("Закончили 5+");
+    }
 
-          webClient.Encoding = System.Text.Encoding.UTF8;
-          var responce = webClient.DownloadString(prodam);
+    private bool LinkProcessingProdam(string link, string typeRoom)
+    {
+      try
+      {
+        using (var webClient = new WebClient())
+        {
+          var random = new Random();
+          Thread.Sleep(random.Next(2000, 4000));
+          //ServicePointManager.Expect100Continue = true;
+          //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+          //ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+          webClient.Encoding = Encoding.UTF8;
+          var responce = webClient.DownloadString(link);
           var parser = new HtmlParser();
           var document = parser.Parse(responce);
-          var apartment = document.GetElementsByClassName("main Apartments");
-          if (apartment.Length > 0)
-            ParsingSheet("5 км. кв.", apartment);
+
+          var collections = document.GetElementsByClassName("main Apartments");
+          if (collections.Length > 0)
+            ParsingSheet(typeRoom, collections);
           else
-            break;
+            return false;
         }
       }
-     // MessageBox.Show("Закончили 5+");
+      catch
+      {
+        return false;
+      }
+      return true;
     }
 
     private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection)
