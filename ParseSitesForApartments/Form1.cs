@@ -516,7 +516,7 @@ WHERE ID ='{item.Id}'";
               while ((line = sr.ReadLine()) != null)
               {
                 var arr = line.Split(';');
-                var doc1 = yandex.SearchObjectByAddress($@"Санкт-Петербург {arr[0]}, {arr[1]}к{arr[2]} лит.{arr[3]}");
+                var doc1 = yandex.SearchObjectByAddress($@"Санкт-Петербург {arr[1]}, {arr[2]}к{arr[3]} лит.{arr[4]}");
                 using (var sw1 = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
                 {
                   sw1.WriteLine(doc1);
@@ -538,7 +538,7 @@ WHERE ID ='{item.Id}'";
                       var coor = Point.InnerText.Split(' ');
                       float x = float.Parse(coor[1].Replace(".", ","));
                       float y = float.Parse(coor[0].Replace(".", ","));
-                      sw.WriteLine($@"{arr[0]};{arr[1]};{arr[2]};{arr[3]};{x};{y}");
+                      sw.WriteLine($@"{arr[0]};{arr[1]};{arr[2]};{arr[3]};{arr[4]};{x};{y}");
                     }
                   }
                 }
