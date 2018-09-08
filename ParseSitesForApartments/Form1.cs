@@ -643,5 +643,40 @@ WHERE ID ='{item.Id}'";
       var bkn = new BKN();
       bkn.ParsingSdamAll();
     }
+
+    private void button14_Click(object sender, EventArgs e)
+    {
+      using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
+      {
+        connection.Open();
+        using (var sr = new StreamReader(@"D:\CoordMetro.csv", Encoding.UTF8))
+        {
+          string line = "";
+
+          while ((line = sr.ReadLine()) != null)
+          {
+            var arr = line.Split(';');
+            var metro = new Metro() { Name = arr[0], XCoor = float.Parse(arr[1]), YCoor = float.Parse(arr[2]) };
+            string select = $@"SELECT [ID]
+  FROM [ParseBulding].[dbo].[District]
+  WHERE LOWER(Name) = LOWER('{arr[3].Replace("район","").Trim()}')";
+
+            var command = new SqlCommand(select, connection);
+            var reader = command.ExecuteReader();
+            if(reader.Read())
+            {
+              metro.IdDistrict = reader.GetGuid(0);
+            }
+            reader.Close();
+
+            string insert = $@" insert into [dbo].[Metro] (Id, Name, XCoor, YCoor, IdRegion)
+ values ('{metro.Id}','{metro.Name}',{metro.XCoor.ToString().Replace(",",".")},{metro.YCoor.ToString().Replace(",", ".")},'{metro.IdDistrict}')";
+
+            command = new SqlCommand(insert, connection);
+            command.ExecuteNonQuery();
+          }
+        }
+      }
+    }
   }
 }

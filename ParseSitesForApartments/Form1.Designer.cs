@@ -46,6 +46,7 @@
       this.button17 = new System.Windows.Forms.Button();
       this.button18 = new System.Windows.Forms.Button();
       this.button19 = new System.Windows.Forms.Button();
+      this.button14 = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // button1
@@ -228,11 +229,22 @@
       this.button19.UseVisualStyleBackColor = true;
       this.button19.Click += new System.EventHandler(this.button19_Click);
       // 
+      // button14
+      // 
+      this.button14.Location = new System.Drawing.Point(12, 386);
+      this.button14.Name = "button14";
+      this.button14.Size = new System.Drawing.Size(170, 23);
+      this.button14.TabIndex = 20;
+      this.button14.Text = "Перекачка данных мето в базу";
+      this.button14.UseVisualStyleBackColor = true;
+      this.button14.Click += new System.EventHandler(this.button14_Click);
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(800, 450);
+      this.Controls.Add(this.button14);
       this.Controls.Add(this.button19);
       this.Controls.Add(this.button18);
       this.Controls.Add(this.button17);
@@ -277,6 +289,7 @@
     private System.Windows.Forms.Button button17;
     private System.Windows.Forms.Button button18;
     private System.Windows.Forms.Button button19;
+    private System.Windows.Forms.Button button14;
   }
 }
 
