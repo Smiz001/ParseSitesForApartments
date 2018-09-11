@@ -28,7 +28,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "Студия"))
           break;
       }
@@ -38,7 +38,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "1 км. кв."))
           break;
       }
@@ -48,7 +48,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "2 км. кв."))
           break;
       }
@@ -58,7 +58,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "3 км. кв."))
           break;
       }
@@ -68,7 +68,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "4 км. кв."))
           break;
       }
@@ -78,7 +78,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "5 км. кв."))
           break;
       }
@@ -88,7 +88,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "6 км. кв."))
           break;
       }
@@ -98,7 +98,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "7 км. кв."))
           break;
       }
@@ -108,7 +108,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "8 км. кв."))
           break;
       }
@@ -118,7 +118,7 @@ namespace ParseSitesForApartments.Sites
     {
       for (int i = minPage; i < maxPage; i++)
       {
-        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye?p={i}";
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye/vtorichka?p={i}";
         if (!LinkProcessingProdam(prodam, "9 км. кв."))
           break;
       }
@@ -146,6 +146,107 @@ namespace ParseSitesForApartments.Sites
         }
       }
     }
+
+    public void ParsingStudioNew()
+    {
+      for (int i = minPage; i < maxPage; i++)
+      {
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii/novostroyka?p={i}";
+        if (!LinkProcessingProdam(prodam, "Студия Н"))
+          break;
+      }
+      MessageBox.Show("Закончил студии Н");
+    }
+    public void ParsingOneRoomNew()
+    {
+      for (int i = minPage; i < maxPage; i++)
+      {
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye/novostroyka?p={i}";
+        if (!LinkProcessingProdam(prodam, "1 км. кв. Н"))
+          break;
+      }
+      MessageBox.Show("Закончил 1 км. кв. Н");
+    }
+    public void ParsingTwoRoomNew()
+    {
+      for (int i = minPage; i < maxPage; i++)
+      {
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye/novostroyka?p={i}";
+        if (!LinkProcessingProdam(prodam, "2 км. кв. Н"))
+          break;
+      }
+      MessageBox.Show("Закончил 2 км. кв. Н");
+    }
+    public void ParsingThreeRoomNew()
+    {
+      for (int i = minPage; i < maxPage; i++)
+      {
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye/novostroyka?p={i}";
+        if (!LinkProcessingProdam(prodam, "3 км. кв. Н"))
+          break;
+      }
+      MessageBox.Show("Закончил 3 км. кв. Н");
+    }
+    public void ParsingFourRoomNew()
+    {
+      for (int i = minPage; i < maxPage; i++)
+      {
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye/novostroyka?p={i}";
+        if (!LinkProcessingProdam(prodam, "4 км. кв. Н"))
+          break;
+      }
+      MessageBox.Show("Закончил 4 км. кв. Н");
+    }
+    public void ParsingFiveRoomNew()
+    {
+      for (int i = minPage; i < maxPage; i++)
+      {
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye/novostroyka?p={i}";
+        if (!LinkProcessingProdam(prodam, "5 км. кв. Н"))
+          break;
+      }
+      MessageBox.Show("Закончил 5 км. кв.");
+    }
+    public void ParsingSixRoomNew()
+    {
+      for (int i = minPage; i < maxPage; i++)
+      {
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye/novostroyka?p={i}";
+        if (!LinkProcessingProdam(prodam, "6 км. кв. Н"))
+          break;
+      }
+      MessageBox.Show("Закончил 6 км. кв. Н");
+    }
+    public void ParsingSevenRoomNew()
+    {
+      for (int i = minPage; i < maxPage; i++)
+      {
+        string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye/novostroyka?p={i}";
+        if (!LinkProcessingProdam(prodam, "7 км. кв. Н"))
+          break;
+      }
+      MessageBox.Show("Закончил 7 км. кв. Н");
+    }
+    //public void ParsingEightRoomNew()
+    //{
+    //  for (int i = minPage; i < maxPage; i++)
+    //  {
+    //    string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye?p={i}";
+    //    if (!LinkProcessingProdam(prodam, "8 км. кв."))
+    //      break;
+    //  }
+    //  MessageBox.Show("Закончил 8 км. кв.");
+    //}
+    //public void ParsingNineRoomNew()
+    //{
+    //  for (int i = minPage; i < maxPage; i++)
+    //  {
+    //    string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye?p={i}";
+    //    if (!LinkProcessingProdam(prodam, "9 км. кв."))
+    //      break;
+    //  }
+    //  MessageBox.Show("Закончил 9 км. кв.");
+    //}
 
     private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection)
     {
@@ -531,6 +632,7 @@ namespace ParseSitesForApartments.Sites
       Thread.Sleep(55000);
       var threeThread = new Thread(ParsingThreeRoom);
       threeThread.Start();
+      Thread.Sleep(55000);
       var fourThread = new Thread(ParsingFourRoom);
       fourThread.Start();
       Thread.Sleep(55000);
@@ -549,6 +651,31 @@ namespace ParseSitesForApartments.Sites
       var nineThread = new Thread(ParsingNineRoom);
       nineThread.Start();
       Thread.Sleep(55000);
+
+      var studiiThreadNew = new Thread(ParsingStudioNew);
+      studiiThreadNew.Start();
+      Thread.Sleep(55000);
+      var oneThreadNew = new Thread(ParsingOneRoomNew);
+      oneThreadNew.Start();
+      Thread.Sleep(55000);
+      var twoThreadNew = new Thread(ParsingTwoRoomNew);
+      twoThreadNew.Start();
+      Thread.Sleep(55000);
+      var threeThreadNew = new Thread(ParsingThreeRoomNew);
+      threeThreadNew.Start();
+      Thread.Sleep(55000);
+      var fourThreadNew = new Thread(ParsingFourRoomNew);
+      fourThreadNew.Start();
+      Thread.Sleep(55000);
+      var fiveThreadNew = new Thread(ParsingFiveRoomNew);
+      fiveThreadNew.Start();
+      Thread.Sleep(55000);
+      var sixThreadNew = new Thread(ParsingSixRoomNew);
+      sixThreadNew.Start();
+      Thread.Sleep(55000);
+      var sevenThreadNew = new Thread(ParsingSevenRoomNew);
+      sevenThreadNew.Start();
+
     }
 
     private bool LinkProcessingProdam(string link, string typeRoom)

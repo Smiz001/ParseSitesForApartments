@@ -18,6 +18,7 @@ namespace ParseSitesForApartments.Sites
     private const string Filename = @"D:\BNProdam.csv";
     private const string FilenameSdam = @"D:\BNSdam.csv";
     private const string FilenameWithinfo = @"D:\BNProdamWithInfo.csv";
+    private const string FilenameSdamWithInfo = @"D:\BNSdamWithInfo.csv";
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 4, "Калининский" }, { 5, "Кировский" }, { 6, "Колпинский" }, { 7, "Красногвардейский" }, { 8, "Красносельский" }, { 9, "Кронштадтский" }, { 10, "Курортный" }, { 11, "Московский" }, { 12, "Невский" }, { 13, "Петроградский" }, { 14, "Петродворцовый" }, { 15, "Приморский" }, { 16, "Пушкинский" }, { 17, "Фрунзенский" }, { 18, "Центральный" }, };
 
     public override void ParsingAll()
@@ -36,9 +37,20 @@ namespace ParseSitesForApartments.Sites
       threeThread.Start();
       var fourThread = new Thread(ParseFourRoom);
       fourThread.Start();
+
+      var studiiThreadOld = new Thread(ParseStudiiOld);
+      studiiThreadOld.Start();
+      var oneThreadOld = new Thread(ParseOneRoomOld);
+      oneThreadOld.Start();
+      var twoThreadOld = new Thread(ParseTwoRoomOld);
+      twoThreadOld.Start();
+      var threeThreadOld = new Thread(ParseThreeRoomOld);
+      threeThreadOld.Start();
+      var fourThreadOld = new Thread(ParseFourRoomOld);
+      fourThreadOld.Start();
     }
 
-    public void ParseStudii()
+    public void ParseStudiiOld()
     {
       int minPage = 1;
       int maxPage = 17;
@@ -50,7 +62,7 @@ namespace ParseSitesForApartments.Sites
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-0-city_district-{k}/?cpu=kkv-0-city_district-1&kkv%5B0%5D=0&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
+            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-0-city_district-{k}/?from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
@@ -64,7 +76,7 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили студии");
     }
-    public void ParseOneRoom()
+    public void ParseOneRoomOld()
     {
       int minPage = 1;
       int maxPage = 17;
@@ -77,7 +89,7 @@ namespace ParseSitesForApartments.Sites
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{k}/?cpu=kkv-1-city_district-13&kkv%5B0%5D=1&city_district%5B0%5D=13&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
+            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{k}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
             try
             {
@@ -99,7 +111,7 @@ namespace ParseSitesForApartments.Sites
 
       MessageBox.Show("Закончили 1 км. кв.");
     }
-    public void ParseTwoRoom()
+    public void ParseTwoRoomOld()
     {
       int minPage = 1;
       int maxPage = 17;
@@ -112,7 +124,7 @@ namespace ParseSitesForApartments.Sites
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{k}/?cpu=kkv-2-city_district-13&kkv%5B0%5D=2&city_district%5B0%5D=13&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
+            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{k}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
@@ -127,6 +139,150 @@ namespace ParseSitesForApartments.Sites
 
       MessageBox.Show("Закончили 2 км. кв.");
     }
+    public void ParseThreeRoomOld()
+    {
+      int minPage = 1;
+      int maxPage = 17;
+
+      using (var webClient = new WebClient())
+      {
+        var random = new Random();
+        for (int k = 1; k < district.Count; k++)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            Thread.Sleep(random.Next(2000, 4000));
+            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-3-city_district-{k}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+            webClient.Encoding = Encoding.UTF8;
+            var responce = webClient.DownloadString(sdam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+            ParseSheet("3 км. кв.", document, district[k]);
+            if (document.GetElementsByClassName("object--item").Length < 30)
+              break;
+
+          }
+        }
+      }
+      MessageBox.Show("Закончили 3 км. кв.");
+    }
+    public void ParseFourRoomOld()
+    {
+      int minPage = 1;
+      int maxPage = 17;
+
+      using (var webClient = new WebClient())
+      {
+        var random = new Random();
+        for (int k = 1; k < district.Count; k++)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            Thread.Sleep(random.Next(2000, 4000));
+            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{k}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+            webClient.Encoding = Encoding.UTF8;
+            var responce = webClient.DownloadString(sdam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+            ParseSheet("4 км. кв.", document, district[k]);
+            if (document.GetElementsByClassName("object--item").Length < 30)
+              break;
+
+          }
+        }
+      }
+      MessageBox.Show("Закончили 4+ км. кв.");
+    }
+
+    public void ParseStudii()
+    {
+      int minPage = 1;
+      int maxPage = 17;
+      using (var webClient = new WebClient())
+      {
+        var random = new Random();
+        for (int k = 1; k < district.Count; k++)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            Thread.Sleep(random.Next(2000, 4000));
+            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-0-city_district-{k}/?cpu=kkv-0-city_district-1&kkv%5B0%5D=0&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+            webClient.Encoding = Encoding.UTF8;
+            var responce = webClient.DownloadString(sdam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+            ParseSheet("Студия Н", document, district[k]);
+            if (document.GetElementsByClassName("object--item").Length < 30)
+              break;
+
+          }
+        }
+      }
+      MessageBox.Show("Закончили студии Н");
+    }
+    public void ParseOneRoom()
+    {
+      int minPage = 1;
+      int maxPage = 17;
+
+      using (var webClient = new WebClient())
+      {
+        var random = new Random();
+        for (int k = 1; k < district.Count; k++)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            Thread.Sleep(random.Next(2000, 4000));
+            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-1-city_district-{k}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+            webClient.Encoding = Encoding.UTF8;
+            try
+            {
+              var responce = webClient.DownloadString(sdam);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+              ParseSheet("1 км. кв. Н", document, district[k]);
+              if (document.GetElementsByClassName("object--item").Length < 30)
+                break;
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message);
+            }
+
+          }
+        }
+      }
+
+      MessageBox.Show("Закончили 1 км. кв. Н");
+    }
+    public void ParseTwoRoom()
+    {
+      int minPage = 1;
+      int maxPage = 17;
+
+      using (var webClient = new WebClient())
+      {
+        var random = new Random();
+        for (int k = 1; k < district.Count; k++)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            Thread.Sleep(random.Next(2000, 4000));
+            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-2-city_district-{k}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+            webClient.Encoding = Encoding.UTF8;
+            var responce = webClient.DownloadString(sdam);
+            var parser = new HtmlParser();
+            var document = parser.Parse(responce);
+            ParseSheet("2 км. кв.", document, district[k]);
+            if (document.GetElementsByClassName("object--item").Length < 30)
+              break;
+
+          }
+        }
+      }
+
+      MessageBox.Show("Закончили 2 км. кв. Н");
+    }
     public void ParseThreeRoom()
     {
       int minPage = 1;
@@ -140,19 +296,19 @@ namespace ParseSitesForApartments.Sites
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-3-city_district-{k}/?cpu=kkv-3-city_district-13&kkv%5B0%5D=3&city_district%5B0%5D=13&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
+            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-3-city_district-{i}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
             webClient.Encoding = Encoding.UTF8;
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("3 км. кв.", document, district[k]);
+            ParseSheet("3 км. кв. Н", document, district[k]);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
           }
         }
       }
-      MessageBox.Show("Закончили 3 км. кв.");
+      MessageBox.Show("Закончили 3 км. кв. Н");
     }
     public void ParseFourRoom()
     {
@@ -167,20 +323,21 @@ namespace ParseSitesForApartments.Sites
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{k}/?cpu=kkv-4-city_district-13&kkv%5B0%5D=4&city_district%5B0%5D=13&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptPortion=1&formName=secondary&page={i}";
+            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{k}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
             webClient.Encoding = Encoding.UTF8;
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("4 км. кв.", document, district[k]);
+            ParseSheet("4 км. кв. Н", document, district[k]);
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
           }
         }
       }
-      MessageBox.Show("Закончили 4+ км. кв.");
+      MessageBox.Show("Закончили 4+ км. кв. Н");
     }
+
     private void ParseSheet(string typeRoom, IHtmlDocument document, string districtName)
     {
       var apartaments = document.GetElementsByClassName("object--item");
@@ -191,7 +348,7 @@ namespace ParseSitesForApartments.Sites
         if (apartaments[i].GetElementsByClassName("object__square").Length > 0)
           flat.Square = apartaments[i].GetElementsByClassName("object__square")[0].TextContent.Trim();
         flat.CountRoom = typeRoom;
-        if (typeRoom == "4 км. кв.")
+        if (typeRoom == "4 км. кв." || typeRoom == "4 км. кв. Н")
         {
           var rx = new Regex(@"(\d+)");
           if (apartaments[i].GetElementsByClassName("object--title").Length > 0)
@@ -465,6 +622,127 @@ namespace ParseSitesForApartments.Sites
                 metro = arr[8];
                 distance = arr[9];
                 district = arr[10];
+
+                string select = "";
+                if (string.IsNullOrWhiteSpace(letter))
+                {
+                  if (string.IsNullOrWhiteSpace(building))
+                  {
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{street}', '{number}'";
+                  }
+                  else
+                  {
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{street}', '{number}', '{building}'";
+                  }
+                }
+                else
+                {
+                  if (string.IsNullOrWhiteSpace(building))
+                  {
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{street}', '{number}', '{letter}'";
+                  }
+                  else
+                  {
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{street}', '{number}', '{building}', '{letter}'";
+                  }
+                }
+
+                var command = new SqlCommand(select, connection);
+                var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                  dateBuild = reader.GetString(1);
+                  dateRecon = reader.GetString(3);
+                  dateRepair = reader.GetString(4);
+                  buildingSquare = reader.GetDouble(5).ToString();
+                  livingSquare = reader.GetDouble(6).ToString();
+                  noLivingSqaure = reader.GetDouble(7).ToString();
+                  countFloor = reader.GetInt32(9).ToString();
+                  residents = reader.GetInt32(10).ToString();
+                  mansardaSquare = reader.GetDouble(11).ToString();
+                  otoplenie = reader.GetBoolean(12).ToString();
+                  gvs = reader.GetBoolean(13).ToString();
+                  es = reader.GetBoolean(14).ToString();
+                  gs = reader.GetBoolean(15).ToString();
+                  typeApartaments = reader.GetString(16);
+                  countApartaments = reader.GetString(17);
+                  countInternal = reader.GetInt32(18).ToString();
+                  dateTep = reader.GetDateTime(19);
+                  typeRepair = reader.GetString(21);
+                  countLift = reader.GetInt32(22).ToString();
+                }
+                reader.Close();
+
+                sw.WriteLine($@"{district};{street};{number};{building};{typeRoom};{square};{floor};{countFloor};{price};{metro};{distance};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTep.ToShortDateString()};{typeRepair};{countLift}");
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        MessageBox.Show("Нет файла с данными");
+      }
+    }
+
+    public void GetInfoAboutBuildingSdam()
+    {
+      if (File.Exists(Filename))
+      {
+        using (var sr = new StreamReader(FilenameSdam, Encoding.UTF8))
+        {
+          using (var sw = new StreamWriter(FilenameSdamWithInfo, true, Encoding.UTF8))
+          {
+            using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
+            {
+              connection.Open();
+
+              sw.WriteLine($@"Район;Улица;Номер;Корпус;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Расстояние;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов");
+              string line;
+              sr.ReadLine();
+              while ((line = sr.ReadLine()) != null)
+              {
+                string street = string.Empty;
+                string number = string.Empty;
+                string building = string.Empty;
+                string letter = string.Empty;
+                string typeRoom = string.Empty;
+                string square = string.Empty;
+                string floor = string.Empty;
+                string countFloor = string.Empty;
+                string price = string.Empty;
+                string metro = string.Empty;
+                string distance = string.Empty;
+                string dateBuild = string.Empty;
+                string dateRecon = string.Empty;
+                string dateRepair = string.Empty;
+                string buildingSquare = string.Empty;
+                string livingSquare = string.Empty;
+                string noLivingSqaure = string.Empty;
+                string residents = string.Empty;
+                string mansardaSquare = string.Empty;
+                string otoplenie = string.Empty;
+                string gvs = string.Empty;
+                string es = string.Empty;
+                string gs = string.Empty;
+                string typeApartaments = string.Empty;
+                string countApartaments = string.Empty;
+                string countInternal = string.Empty;
+                DateTime dateTep = DateTime.Now;
+                string typeRepair = string.Empty;
+                string countLift = string.Empty;
+                string district = string.Empty;
+
+                var arr = line.Split(';');
+                street = arr[1];
+                number = arr[2];
+                building = arr[3];
+                typeRoom = arr[4];
+                square = arr[5];
+                price = arr[6];
+                floor = arr[7];
+                metro = arr[8];
+                distance = arr[9];
 
                 string select = "";
                 if (string.IsNullOrWhiteSpace(letter))
