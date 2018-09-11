@@ -553,25 +553,29 @@ WHERE ID ='{item.Id}'";
     private void button12_Click(object sender, EventArgs e)
     {
       var elms = new ELMS();
-      elms.GetInfoAboutBuilding();
+      var union = new UnionParseInfoWithDataBase(elms);
+      union.UnionInfoProdam();
     }
 
     private void button11_Click(object sender, EventArgs e)
     {
       var bkn = new BKN();
-      bkn.GetInfoAboutBuilding();
+      var union = new UnionParseInfoWithDataBase(bkn);
+      union.UnionInfoProdam();
     }
 
     private void button13_Click(object sender, EventArgs e)
     {
       var bn = new BN();
-      bn.GetInfoAboutBuilding();
+      var union = new UnionParseInfoWithDataBase(bn);
+      union.UnionInfoProdam();
     }
 
     private void button15_Click(object sender, EventArgs e)
     {
       var avito = new Avito();
-      avito.GetInfoAboutBuilding();
+      var union = new UnionParseInfoWithDataBase(avito);
+      union.UnionInfoProdam();
     }
 
 
@@ -717,19 +721,17 @@ WHERE ID ='{item.Id}'";
     private void button21_Click(object sender, EventArgs e)
     {
       var bkn = new BKN();
-      bkn.GetInfoAboutBuildingSdam();
+      
     }
 
     private void button22_Click(object sender, EventArgs e)
     {
       var bn = new BN();
-      bn.GetInfoAboutBuildingSdam();
     }
 
     private void button23_Click(object sender, EventArgs e)
     {
       var elms = new ELMS();
-      elms.GetInfoAboutBuildingSdam();
     }
   }
 }
