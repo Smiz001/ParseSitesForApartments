@@ -19,13 +19,16 @@ namespace ParseSitesForApartments.Sites
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" }, { 14, "Приморский" }, { 15, "Фрунзенский" }, { 39, "Центральный" }, };
 
     private List<Flat> listBuild = new List<Flat>();
-
-    private const string Filename = @"D:\ElmsProdam.csv";
-    private const string FilenameSdam = @"D:\ElmsSdam.csv";
-    private const string FilenameWithinfo = @"D:\ElmsProdamWithInfo.csv";
-    private const string FilenameWithinfoSdam = @"D:\ElmsProdamWithInfoSdam.csv";
     static object locker = new object();
     private const int MaxPage = 20;
+
+    public override string Filename => @"D:\ElmsProdam.csv";
+
+    public override string FilenameSdam => @"D:\ElmsSdam.csv";
+
+    public override string FilenameWithinfo => @"D:\ElmsProdamWithInfo.csv";
+
+    public override string FilenameWithinfoSdam => @"D:\ElmsProdamWithInfoSdam.csv";
 
     public override void ParsingAll()
     {
@@ -618,7 +621,7 @@ namespace ParseSitesForApartments.Sites
                 {
                   dateBuild = reader.GetString(1);
                   dateRecon = reader.GetString(3);
-                  dateRepair = reader.GetString(4);
+                  dateRepair = reader.GetString(4).Replace("  ","");
                   buildingSquare = reader.GetDouble(5).ToString();
                   livingSquare = reader.GetDouble(6).ToString();
                   noLivingSqaure = reader.GetDouble(7).ToString();
@@ -629,8 +632,8 @@ namespace ParseSitesForApartments.Sites
                   gvs = reader.GetBoolean(13).ToString();
                   es = reader.GetBoolean(14).ToString();
                   gs = reader.GetBoolean(15).ToString();
-                  typeApartaments = reader.GetString(16);
-                  countApartaments = reader.GetString(17);
+                  typeApartaments = reader.GetString(16).Replace("  ", "");
+                  countApartaments = reader.GetString(17).Replace("  ", "");
                   countInternal = reader.GetInt32(18).ToString();
                   dateTep = reader.GetDateTime(19);
                   typeRepair = reader.GetString(21);

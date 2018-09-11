@@ -15,11 +15,15 @@ namespace ParseSitesForApartments.Sites
   public class BN : BaseParse
   {
     static object locker = new object();
-    private const string Filename = @"D:\BNProdam.csv";
-    private const string FilenameSdam = @"D:\BNSdam.csv";
-    private const string FilenameWithinfo = @"D:\BNProdamWithInfo.csv";
-    private const string FilenameSdamWithInfo = @"D:\BNSdamWithInfo.csv";
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 4, "Калининский" }, { 5, "Кировский" }, { 6, "Колпинский" }, { 7, "Красногвардейский" }, { 8, "Красносельский" }, { 9, "Кронштадтский" }, { 10, "Курортный" }, { 11, "Московский" }, { 12, "Невский" }, { 13, "Петроградский" }, { 14, "Петродворцовый" }, { 15, "Приморский" }, { 16, "Пушкинский" }, { 17, "Фрунзенский" }, { 18, "Центральный" }, };
+
+    public override string Filename => @"D:\BNProdam.csv";
+
+    public override string FilenameSdam => @"D:\BNSdam.csv";
+
+    public override string FilenameWithinfo => @"D:\BNProdamWithInfo.csv";
+
+    public override string FilenameWithinfoSdam => @"D:\BNSdamWithInfo.csv";
 
     public override void ParsingAll()
     {

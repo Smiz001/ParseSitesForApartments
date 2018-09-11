@@ -15,13 +15,17 @@ namespace ParseSitesForApartments.Sites
   {
     private int minPage = 1;
     private int maxPage = 100;
-    private const string Filename = @"D:\BKNProdam.csv";
-    private const string FilenameSdam = @"D:\BKNSdam.csv";
-    private const string FilenameWithinfo = @"D:\BKNProdamWithInfo.csv";
-    private const string FilenameWithinfoSdam = @"D:\BKNSdamWithInfo.csv";
     private const string Apartaments = "main Apartments";
     private const string NewApartaments = "main NewApartment";
     private static object locker = new object();
+
+    public override string Filename => @"D:\BKNProdam.csv";
+
+    public override string FilenameSdam => @"D:\BKNSdam.csv";
+
+    public override string FilenameWithinfo => @"D:\BKNProdamWithInfo.csv";
+
+    public override string FilenameWithinfoSdam => @"D:\BKNSdamWithInfo.csv";
 
     public override void ParsingAll()
     {

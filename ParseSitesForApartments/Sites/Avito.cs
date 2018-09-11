@@ -16,13 +16,15 @@ namespace ParseSitesForApartments.Sites
   {
     private int minPage = 1;
     private int maxPage = 100;
-
-    private const string Filename = @"D:\AvitoProdam.csv";
-    private const string FilenameSdam = @"D:\AvitoSdam.csv";
-    private const string FilenameWithinfo = @"D:\AvitoProdamWithInfo.csv";
+    
     private List<string> stantions = new List<string>() { "Автово", "Адмиралтейская", "Академическая", "Балтийская", "Беговая", "Бухарестская", "Василеостровская", "Владимирская", "Волковская", "Выборгская", "Горьковская", "Гостиный двор", "Гражданский проспект", "Девяткино", "Достоевская", "Елизаровская", "Звёздная", "Звенигородская", "Кировский завод", "Комендантский проспект", "Крестовский остров", "Купчино", "Ладожская", "Ленинский проспект", "Лесная", "Лиговский проспект", "Ломоносовская", "Маяковская", "Международная", "Московская", "Московские ворота", "Нарвская", "Невский проспект", "Новокрестовская", "Новочеркасская", "Обводный канал", "Обухово", "Озерки", "Парк Победы", "Парнас", "Петроградская", "Пионерская", "Площадь Александра Невского", "Площадь Восстания", "Площадь Ленина", "Площадь Мужества", "Политехническая", "Приморская", "Пролетарская", "Проспект Большевиков", "Проспект Ветеранов", "Проспект Просвещения", "Пушкинская", "Рыбацкое", "Садовая", "Сенная площадь", "Спасская", "Спортивная", "Старая Деревня", "Технологический институт", "Удельная", "Улица Дыбенко", "Фрунзенская", "Чёрная речка", "Чернышевская", "Чкаловская", "Электросила" };
 
     private static object locker = new object();
+
+    public override string Filename { get => @"D:\AvitoProdam.csv"; }
+    public override string FilenameSdam { get => @"D:\AvitoSdam.csv";  }
+    public override string FilenameWithinfo { get => @"D:\AvitoProdamWithInfo.csv"; }
+    public override string FilenameWithinfoSdam { get => @"D:\AvitoSdamWithInfo.csv"; }
 
     public void ParsingStudio()
     {

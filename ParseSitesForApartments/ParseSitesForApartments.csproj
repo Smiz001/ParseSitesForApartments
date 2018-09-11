@@ -65,6 +65,7 @@
     <Compile Include="Sites\BKN.cs" />
     <Compile Include="Sites\BN.cs" />
     <Compile Include="Sites\ELMS.cs" />
+    <Compile Include="UnionParseInfoWithDataBase.cs" />
     <Compile Include="Yandex.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
