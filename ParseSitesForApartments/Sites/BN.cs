@@ -26,7 +26,7 @@ namespace ParseSitesForApartments.Sites
     {
       using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
       {
-        sw.WriteLine($@"Район;Улица;Номер;Корпус;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км)");
+        sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км)");
       }
       var studiiThread = new Thread(ParseStudii);
       studiiThread.Start();
@@ -555,10 +555,13 @@ namespace ParseSitesForApartments.Sites
           flat.Building.Street = flat.Building.Street.Replace(str, "");
 
         Monitor.Enter(locker);
-        using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+        if (!string.IsNullOrEmpty(flat.Building.Number))
         {
-          sw.BaseStream.Position = sw.BaseStream.Length;
-          sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.CountRoom};{flat.Square};{flat.Price};{ flat.Floor};{flat.Building.Metro};{flat.Building.Distance};{districtName}");
+          using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+          {
+            sw.BaseStream.Position = sw.BaseStream.Length;
+            sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.CountRoom};{flat.Square};{flat.Price};{ flat.Floor};{flat.Building.Metro};{flat.Building.Distance};{districtName}");
+          }
         }
         Monitor.Exit(locker);
       }
