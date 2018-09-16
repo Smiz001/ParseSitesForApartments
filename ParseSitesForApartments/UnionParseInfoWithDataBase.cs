@@ -25,13 +25,6 @@ namespace ParseSitesForApartments
 
     public void UnionInfoProdam()
     {
-      string error = $@"D:\ErrorParse.txt";
-      if (!File.Exists(error))
-      {
-        var stream = File.Create(error);
-        stream.Close();
-      }
-
       if (File.Exists(baseSite.Filename))
       {
         using (var sr = new StreamReader(baseSite.Filename, Encoding.UTF8))
@@ -42,7 +35,7 @@ namespace ParseSitesForApartments
             {
               connection.Open();
 
-              sw.WriteLine($@"Район;Улица;Номер;Корпус;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Расстояние;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком, Время пешком");
+              sw.WriteLine($@"Район;Улица;Номер;Корпус;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком");
               string line;
               sr.ReadLine();
               string select = "";
@@ -179,7 +172,7 @@ namespace ParseSitesForApartments
     ,[YCoor]
 	  ,Id
   FROM [ParseBulding].[dbo].[Metro]
-  WHERE LOWER(NAME) = LOWER('{metro}')";
+  WHERE NAME like '%{metro}%'";
                         
                         Log.Debug("----------------------------");
                         Log.Debug(select);
@@ -239,6 +232,13 @@ where ID='{IdBuilding}'";
                                   var regex = new Regex(@"(\d+,\d+)");
                                   var km = regex.Match(dis).Value;
                                   km = km.Replace(".", "").Replace(",", "") + "00";
+                                  if (km == "00")
+                                  {
+                                    regex = new Regex(@"(\d+)");
+                                    km = regex.Match(dis).Value;
+                                    km = km.Replace(".", "").Replace(",", "") + "000";
+                                  }
+
                                   dis = km + " м";
                                 }
                                 update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
@@ -251,44 +251,6 @@ where ID='{IdBuilding}'";
                                 command.ExecuteNonQuery();
                               }
                             }
-
-                            //var regex = new Regex(@"(\d+ м)");
-                            //var mss = regex.Matches(responce);
-                            //if (mss.Count > 0)
-                            //{
-                            //  var dis = mss[0].Value;
-
-                            //  regex = new Regex(@"(\d+\s+мин)");
-                            //  var time = regex.Match(responce).Value;
-
-
-                            //}
-                            //var parser = new HtmlParser();
-                            //var document = parser.Parse(responce);
-
-                            //var dis = document.GetElementsByClassName("pedestrian-route-view__route-title");
-                            //                          if(dis.Length > 0 )
-                            //                          {
-                            //                            distanceOnFoot = dis[1].TextContent;
-                            //                            Log.Debug("----------------------------TextContent----------------------------");
-                            //                            Log.Debug(distanceOnFoot);
-                            //                            distanceOnFoot = dis[2].TextContent;
-                            //                            Log.Debug("----------------------------TextContent----------------------------");
-                            //                            Log.Debug(distanceOnFoot);
-                            //                            distanceOnFoot = dis[3].TextContent;
-                            //                            Log.Debug("----------------------------TextContent----------------------------");
-                            //                            Log.Debug(distanceOnFoot);
-                            //                            update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
-                            //set DistanceAndTimeOnFoot = '{dis[2].TextContent}'
-                            //where Street = '{street}'
-                            //AND Number = '{number}'
-                            //AND DateBulding = '{dateBuild}'";
-
-                            //                            Log.Debug("----------------------------");
-                            //                            Log.Debug(update);
-                            //                            command = new SqlCommand(update, connection);
-                            //                            command.ExecuteNonQuery();
-                            //                          }
                           }
                         }
                       }
@@ -309,7 +271,7 @@ where ID='{IdBuilding}'";
                     metroId = null;
                   }
 
-                  sw.WriteLine($@"{district};{street};{number};{building};{typeRoom};{square};{floor};{countFloor};{price};{metro};{distance};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTep.ToShortDateString()};{typeRepair};{countLift};{dis};{time}");
+                  sw.WriteLine($@"{district};{street};{number};{building};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTep.ToShortDateString()};{typeRepair};{countLift};{dis};{time}");
                 }
                 catch (SqlException ex)
                 {

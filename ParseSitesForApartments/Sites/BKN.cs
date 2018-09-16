@@ -469,6 +469,29 @@ namespace ParseSitesForApartments.Sites
           if (!string.IsNullOrWhiteSpace(flat.Building.Distance))
             flat.Building.Metro = flat.Building.Metro.Replace(flat.Building.Distance, "").Replace("●", "").Replace(",", "").Trim();
 
+          regex = new Regex(@"(\d+ пеш)");
+          var forDelete = regex.Match(flat.Building.Metro).Value;
+          if(!string.IsNullOrEmpty(forDelete))
+          {
+            flat.Building.Metro = flat.Building.Metro.Replace(forDelete, "");
+          }
+
+          regex = new Regex(@"(\d+ тр)");
+          forDelete = regex.Match(flat.Building.Metro).Value;
+          if (!string.IsNullOrEmpty(forDelete))
+          {
+            flat.Building.Metro = flat.Building.Metro.Replace(forDelete, "");
+          }
+
+          regex = new Regex(@"(\d+ ост, \d+ остановок)");
+          forDelete = regex.Match(flat.Building.Metro).Value;
+          if (!string.IsNullOrEmpty(forDelete))
+          {
+            flat.Building.Metro = flat.Building.Metro.Replace(forDelete, "");
+          }
+          flat.Building.Metro = flat.Building.Metro.Replace("Пл.", "").Replace("пр.", "").Replace("Пр.", "").Replace("●", "").Replace("Пл. А.", "").Trim();
+
+
           Monitor.Enter(locker);
           if (!string.IsNullOrEmpty(flat.Building.Number))
           {

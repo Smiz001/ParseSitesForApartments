@@ -96,12 +96,12 @@ namespace ParseSitesForApartments.Sites
                 ParseSheet(tableElements, "Студия", item.Value);
             }
           }
-      }
+        }
         catch (Exception ex)
-      {
-        MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        {
+          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
       }
-    }
       MessageBox.Show("Закончили студии");
     }
 
@@ -275,7 +275,7 @@ namespace ParseSitesForApartments.Sites
       MessageBox.Show("Закончили 5 км. кв.");
     }
 
-    private void ParseSheet(IHtmlCollection<IElement> collection, string typeRoom, string district)
+    private void  ParseSheet(IHtmlCollection<IElement> collection, string typeRoom, string district)
     {
       for (int i = 0; i < collection.Length; i++)
       {
@@ -373,30 +373,39 @@ namespace ParseSitesForApartments.Sites
 
             flat.Building.Street = flat.Building.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
-            Monitor.Enter(locker);
-            bool flag = false;
-            foreach (var bl in listBuild)
-            {
-              if (flat.Building.Equals(bl))
-              {
-                flag = true;
-                break;
-              }
-            }
-            if (!flag)
-            {
-              if (!string.IsNullOrEmpty(flat.Building.Number))
-              {
-                listBuild.Add(flat);
+            flat.Building.Metro = flat.Building.Metro.Replace(" и-т", "");
 
-                using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+            regex = new Regex(@"(\d+)");
+            var val = regex.Match(flat.Building.Liter).Value;
+            if(string.IsNullOrWhiteSpace(val))
+            {
+              Monitor.Enter(locker);
+              bool flag = false;
+              foreach (var bl in listBuild)
+              {
+                if (flat.Building.Equals(bl))
                 {
-                  sw.BaseStream.Position = sw.BaseStream.Length;
-                  sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance};{district}");
+                  flag = true;
+                  break;
                 }
               }
+              if (!flag)
+              {
+                if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+                {
+                  if(flat.Building.Liter != "-" && !flat.Building.Liter.Contains("/"))
+                  {
+                    listBuild.Add(flat);
+                    using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+                    {
+                      sw.BaseStream.Position = sw.BaseStream.Length;
+                      sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance};{district}");
+                    }
+                  }
+                }
+              }
+              Monitor.Exit(locker);
             }
-            Monitor.Exit(locker);
           }
         }
         catch (Exception ex)
@@ -770,26 +779,35 @@ namespace ParseSitesForApartments.Sites
           item.Building.Street = item.Building.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
           if (!string.IsNullOrEmpty(item.Building.Number))
           {
-            Monitor.Enter(locker);
-            bool flag = false;
-            foreach (var bl in listBuild)
+            regex = new Regex(@"(\d+)");
+            var val = regex.Match(item.Building.Liter).Value;
+            if (string.IsNullOrEmpty(val))
             {
-              if (item.Equals(bl))
+              Monitor.Enter(locker);
+              bool flag = false;
+              foreach (var bl in listBuild)
               {
-                flag = true;
-                break;
+                if (item.Equals(bl))
+                {
+                  flag = true;
+                  break;
+                }
               }
-            }
-            if (!flag)
-            {
-              listBuild.Add(item);
-              using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+              if (!flag)
               {
-                sw.BaseStream.Position = sw.BaseStream.Length;
-                sw.WriteLine($@"{town};{item.Building.Street};{item.Building.Number};{item.Building.Structure};{item.Building.Liter};{item.CountRoom};{item.Square};{item.Price};{item.Floor};{item.Building.Metro};{item.Building.Distance};{district}");
+                if (item.Building.Liter != "-" && !item.Building.Liter.Contains("/"))
+                {
+                  listBuild.Add(item);
+                  using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+                  {
+                    sw.BaseStream.Position = sw.BaseStream.Length;
+                    sw.WriteLine($@"{town};{item.Building.Street};{item.Building.Number};{item.Building.Structure};{item.Building.Liter};{item.CountRoom};{item.Square};{item.Price};{item.Floor};{item.Building.Metro};{item.Building.Distance};{district}");
+                  }
+                }
               }
+              Monitor.Exit(locker);
             }
-            Monitor.Exit(locker);
+           
           }
         }
       }
