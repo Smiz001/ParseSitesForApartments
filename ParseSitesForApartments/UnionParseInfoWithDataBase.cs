@@ -83,8 +83,10 @@ namespace ParseSitesForApartments
                   float ymetro = 0;
                   Guid IdBuilding = Guid.Empty;
                   Guid? metroId = Guid.Empty;
-                  string dis = string.Empty;
-                  string time = string.Empty;
+                  string disFoot = string.Empty;
+                  string timeFoor = string.Empty;
+                  string disCar = string.Empty;
+                  string timeCar = string.Empty;
 
                   var arr = line.Split(';');
                   district = arr[0];
@@ -202,6 +204,8 @@ where ID='{IdBuilding}'";
                         {
                           string url = $@"https://2gis.ru/spb/routeSearch/rsType/pedestrian/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.352666%2C59.920495%2Fzoom%2F17%2FrouteTab";
 
+                          string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
+
                           Log.Debug("----------------------------URL----------------------------");
                           Log.Debug(url);
                           using (var webClient = new WebClient())
@@ -224,25 +228,129 @@ where ID='{IdBuilding}'";
                               var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
                               if(disDoc.Length > 0)
                               {
-                                time = timeDoc[0].TextContent;
-                                dis = disDoc[0].TextContent;
+                                timeFoor = timeDoc[0].TextContent;
+                                disFoot = disDoc[0].TextContent;
 
-                                if(dis.Contains("км"))
+                                if(disFoot.Contains("км"))
                                 {
                                   var regex = new Regex(@"(\d+,\d+)");
-                                  var km = regex.Match(dis).Value;
+                                  var km = regex.Match(disFoot).Value;
                                   km = km.Replace(".", "").Replace(",", "") + "00";
                                   if (km == "00")
                                   {
                                     regex = new Regex(@"(\d+)");
-                                    km = regex.Match(dis).Value;
+                                    km = regex.Match(disFoot).Value;
                                     km = km.Replace(".", "").Replace(",", "") + "000";
                                   }
 
-                                  dis = km + " м";
+                                  disFoot = km + " м";
                                 }
                                 update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
-set DistanceAndTimeOnFoot = '{dis},{time}'
+set DistanceAndTimeOnFoot = '{disFoot},{timeFoor}'
+where ID='{IdBuilding}'";
+
+                                Log.Debug("----------------------------");
+                                Log.Debug(update);
+                                command = new SqlCommand(update, connection);
+                                command.ExecuteNonQuery();
+                              }
+                            }
+                            responce = webClient.DownloadString(urlCar);
+                            document = parser.Parse(responce);
+                            timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+                            if(timeDoc.Length>0)
+                            {
+                              var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                              if(disDoc.Length>0)
+                              {
+                                if(timeDoc.Length == 2)
+                                {
+                                  timeCar = timeDoc[1].TextContent;
+                                  disCar = disDoc[1].TextContent;
+                                }
+                                else
+                                {
+                                  timeCar = timeDoc[0].TextContent;
+                                  disCar = disDoc[0].TextContent;
+                                }
+                                if (disCar.Contains("км"))
+                                {
+                                  var regex = new Regex(@"(\d+,\d+)");
+                                  var km = regex.Match(disCar).Value;
+                                  km = km.Replace(".", "").Replace(",", "") + "00";
+                                  if (km == "00")
+                                  {
+                                    regex = new Regex(@"(\d+)");
+                                    km = regex.Match(disCar).Value;
+                                    km = km.Replace(".", "").Replace(",", "") + "000";
+                                  }
+                                  disCar = km + " м";
+                                }
+                                update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+set DistanceAndTimeOnCar = '{disCar},{timeCar}'
+where ID='{IdBuilding}'";
+
+                                Log.Debug("----------------------------");
+                                Log.Debug(update);
+                                command = new SqlCommand(update, connection);
+                                command.ExecuteNonQuery();
+                              }
+                            }
+                          }
+                        }
+                        else if(string.IsNullOrEmpty(distanceOnCar))
+                        {
+                          //Если пустое расстояние
+                          string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
+                          
+                          using (var webClient = new WebClient())
+                          {
+                            var random = new Random();
+                            Thread.Sleep(random.Next(2000, 4000));
+
+                            ServicePointManager.Expect100Continue = true;
+                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+                            webClient.Encoding = Encoding.UTF8;
+                            var responce = webClient.DownloadString(urlCar);
+                            var parser = new HtmlParser();
+                            var document = parser.Parse(responce);
+
+                            var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+                            if (timeDoc.Length > 0)
+                            {
+                              var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                              if (disDoc.Length > 0)
+                              {
+                                timeCar = timeDoc[0].TextContent;
+                                disCar = disDoc[0].TextContent;
+
+                                if (timeDoc.Length == 2)
+                                {
+                                  timeCar = timeDoc[1].TextContent;
+                                  disCar = disDoc[1].TextContent;
+                                }
+                                else
+                                {
+                                  timeCar = timeDoc[0].TextContent;
+                                  disCar = disDoc[0].TextContent;
+                                }
+                                if (disCar.Contains("км"))
+                                {
+                                  var regex = new Regex(@"(\d+,\d+)");
+                                  var km = regex.Match(disCar).Value;
+                                  km = km.Replace(".", "").Replace(",", "") + "00";
+                                  if (km == "00")
+                                  {
+                                    regex = new Regex(@"(\d+)");
+                                    km = regex.Match(disCar).Value;
+                                    km = km.Replace(".", "").Replace(",", "") + "000";
+                                  }
+                                  disCar = km + " м";
+                                }
+                                update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+set DistanceAndTimeOnCar = '{disCar},{timeCar}'
 where ID='{IdBuilding}'";
 
                                 Log.Debug("----------------------------");
@@ -259,9 +367,15 @@ where ID='{IdBuilding}'";
                         arr = distanceOnFoot.Split(',');
                         if(arr.Length > 1)
                         {
-                          dis = arr[0];
-                          time = arr[1];
+                          disFoot = arr[0];
+                          timeFoor = arr[1];
                         }
+                        arr = distanceOnCar.Split(',');
+                        if(arr.Length > 0)
+                        {
+
+                        }
+
                       }
                     }
                   }
@@ -275,7 +389,7 @@ where ID='{IdBuilding}'";
                   if (dateTep != DateTime.Now)
                     dateTime = dateTep.ToShortDateString();
 
-                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{dis};{time}");
+                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoor}");
                 }
                 catch (SqlException ex)
                 {
