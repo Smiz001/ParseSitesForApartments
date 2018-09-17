@@ -554,28 +554,32 @@ WHERE ID ='{item.Id}'";
     {
       var elms = new ELMS();
       var union = new UnionParseInfoWithDataBase(elms);
-      union.UnionInfoProdam();
+      var thread = new Thread(union.UnionInfoProdam);
+      thread.Start();
     }
 
     private void button11_Click(object sender, EventArgs e)
     {
       var bkn = new BKN();
       var union = new UnionParseInfoWithDataBase(bkn);
-      union.UnionInfoProdam();
+      var thread = new Thread(union.UnionInfoProdam);
+      thread.Start();
     }
 
     private void button13_Click(object sender, EventArgs e)
     {
       var bn = new BN();
       var union = new UnionParseInfoWithDataBase(bn);
-      union.UnionInfoProdam();
+      var thread = new Thread(union.UnionInfoProdam);
+      thread.Start();
     }
 
     private void button15_Click(object sender, EventArgs e)
     {
       var avito = new Avito();
       var union = new UnionParseInfoWithDataBase(avito);
-      union.UnionInfoProdam();
+      var thread = new Thread(union.UnionInfoProdam);
+      thread.Start();
     }
 
 
