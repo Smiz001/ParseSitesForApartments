@@ -35,7 +35,7 @@ namespace ParseSitesForApartments
             {
               connection.Open();
 
-              sw.WriteLine($@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком");
+              sw.WriteLine($@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине");
               string line = "";
               sr.ReadLine();
               string select = "";
@@ -298,11 +298,14 @@ where ID='{IdBuilding}'";
                             }
                           }
                         }
-                        else if(string.IsNullOrEmpty(distanceOnCar))
+                      }
+                      else
+                      {
+                        if (string.IsNullOrEmpty(distanceOnCar))
                         {
                           //Если пустое расстояние
                           string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
-                          
+
                           using (var webClient = new WebClient())
                           {
                             var random = new Random();
@@ -349,7 +352,7 @@ where ID='{IdBuilding}'";
                                   }
                                   disCar = km + " м";
                                 }
-                                update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+                                string update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
 set DistanceAndTimeOnCar = '{disCar},{timeCar}'
 where ID='{IdBuilding}'";
 
@@ -361,9 +364,6 @@ where ID='{IdBuilding}'";
                             }
                           }
                         }
-                      }
-                      else
-                      {
                         arr = distanceOnFoot.Split(',');
                         if(arr.Length > 1)
                         {
@@ -371,13 +371,19 @@ where ID='{IdBuilding}'";
                           timeFoor = arr[1];
                         }
                         arr = distanceOnCar.Split(',');
-                        if(arr.Length > 0)
+                        if(arr.Length > 1)
                         {
-
+                          disCar = arr[0];
+                          timeCar = arr[1];
                         }
-
                       }
                     }
+                  }
+                  if(!string.IsNullOrEmpty(distanceOnCar) && string.IsNullOrEmpty(disCar))
+                  {
+                    var arrr = distanceOnCar.Split(',');
+                    disCar = arrr[0];
+                    timeCar = arrr[1];
                   }
 
                   if(metroId == Guid.Empty)
@@ -389,7 +395,7 @@ where ID='{IdBuilding}'";
                   if (dateTep != DateTime.Now)
                     dateTime = dateTep.ToShortDateString();
 
-                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoor}");
+                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoor};{disCar};{timeCar}");
                 }
                 catch (SqlException ex)
                 {
