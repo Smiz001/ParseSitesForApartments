@@ -290,7 +290,7 @@ namespace ParseSitesForApartments.Sites
             var divImage = collection[i].GetElementsByClassName("w-image")[0];
             var square = collection[i].GetElementsByClassName("space-all");
             if (square.Length > 0)
-              flat.Square = square[0].TextContent;
+              flat.Square = square[0].TextContent.Replace(".", ",");
 
             if (collection[i].GetElementsByClassName("address-geo").Length > 0)
             {

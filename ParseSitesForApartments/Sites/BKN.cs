@@ -167,7 +167,7 @@ namespace ParseSitesForApartments.Sites
         {
           var regex = new Regex(@"(\d+\,\d+\sм2)|(\d+\sм2)");
           var title = collection[j].GetElementsByClassName("title")[0].TextContent;
-          flat.Square = regex.Match(title).Value;
+          flat.Square = regex.Match(title).Value.Replace(".", ",");
           if (typeRoom == "5 км. кв.")
           {
             regex = new Regex(@"(\d\-)");

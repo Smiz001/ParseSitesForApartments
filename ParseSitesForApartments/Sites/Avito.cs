@@ -261,7 +261,7 @@ namespace ParseSitesForApartments.Sites
 
         var aboutBuild = collection[k].GetElementsByClassName("item-description-title-link")[0].TextContent;
         var regex = new Regex(@"(\d+\s+м²)");
-        flat.Square = regex.Match(aboutBuild).Value;
+        flat.Square = regex.Match(aboutBuild).Value.Replace(".",",");
         regex = new Regex(@"(\d+\/\d+)");
         var floor = regex.Match(aboutBuild).Value;
         regex = new Regex(@"(\/\d+)");

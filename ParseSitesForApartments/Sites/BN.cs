@@ -347,7 +347,7 @@ namespace ParseSitesForApartments.Sites
       {
         var flat = new Flat();
         if (apartaments[i].GetElementsByClassName("object__square").Length > 0)
-          flat.Square = apartaments[i].GetElementsByClassName("object__square")[0].TextContent.Trim();
+          flat.Square = apartaments[i].GetElementsByClassName("object__square")[0].TextContent.Trim().Replace(".", ",");
         flat.CountRoom = typeRoom;
         if (typeRoom == "4 км. кв." || typeRoom == "4 км. кв. Н")
         {
