@@ -252,207 +252,75 @@ namespace ParseSitesForApartments.Sites
 
     private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection)
     {
-      for (int k = 0; k < collection.Length; k++)
+      using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
       {
-        var flat = new Flat();
-        flat.CountRoom = typeRoom;
-
-        flat.Price = int.Parse(collection[k].GetElementsByClassName("price")[0].TextContent.Trim('\n').Trim('₽').Trim().Replace(" ", ""));
-
-        var aboutBuild = collection[k].GetElementsByClassName("item-description-title-link")[0].TextContent;
-        var regex = new Regex(@"(\d+\s+м²)");
-        flat.Square = regex.Match(aboutBuild).Value.Replace(".",",");
-        regex = new Regex(@"(\d+\/\d+)");
-        var floor = regex.Match(aboutBuild).Value;
-        regex = new Regex(@"(\/\d+)");
-        flat.Floor = floor.Replace(regex.Match(floor).Value, "");
-
-        var adress = collection[k].GetElementsByClassName("address");
-        int count = 0;
-        if (adress.Length > 0)
+        connection.Open();
+        for (int k = 0; k < collection.Length; k++)
         {
-          var adres = adress[0].TextContent.Trim();
+          var flat = new Flat();
+          flat.CountRoom = typeRoom;
 
-          var distance = collection[k].GetElementsByClassName("c-2");
-          if (distance.Length > 0)
-            flat.Building.Distance = distance[0].TextContent.Trim();
-          adres = adres.Replace(flat.Building.Distance, "").Replace("Санкт-Петербург,", "").Replace("посёлок Парголово,", "").Replace("СПб Красное село", "").Replace("г. Ломоносов,", "").Replace("Россия,", "").Replace("Сестрорецк г,", "").Replace("Сестрорецк", "").Replace("Парголово п,", "").Replace("Колпино,", "").Replace("Мурино,", "").Replace("посёлок Шушары,", "").Replace("г. Петергоф,", "");
+          flat.Price = int.Parse(collection[k].GetElementsByClassName("price")[0].TextContent.Trim('\n').Trim('₽').Trim().Replace(" ", ""));
 
-          #region Удаление лишнего
-          regex = new Regex(@"(\,\s+подъезд\s+\d+)|(\,\s+подъезд\d+)");
-          var gov = regex.Match(adres).Value;
-          if (!string.IsNullOrEmpty(gov))
-            adres = adres.Replace(gov, "");
+          var aboutBuild = collection[k].GetElementsByClassName("item-description-title-link")[0].TextContent;
+          var regex = new Regex(@"(\d+\s+м²)");
+          flat.Square = regex.Match(aboutBuild).Value.Replace(".", ",");
+          regex = new Regex(@"(\d+\/\d+)");
+          var floor = regex.Match(aboutBuild).Value;
+          regex = new Regex(@"(\/\d+)");
+          flat.Floor = floor.Replace(regex.Match(floor).Value, "");
 
-          regex = new Regex(@"(\,\s+стр\. \d+)|(\,\s+стр\.\s+\d+)|(\,\s+стр\.\d+)");
-          gov = regex.Match(adres).Value;
-          if (!string.IsNullOrEmpty(gov))
-            adres = adres.Replace(gov, "");
-
-          #endregion
-
-          var ar = adres.Split(',');
-          count = ar.Length;
-          if (ar.Length == 3)
+          var adress = collection[k].GetElementsByClassName("address");
+          if (adress.Length > 0)
           {
-            flat.Building.Metro = ar[0];
-            flat.Building.Street = ar[1];
-            flat.Building.Number = ar[2];
-            flat.Building.Number = flat.Building.Number.Replace("А", "").Replace("А", "").Replace("дом ", "").Replace("д.", "").Trim();
+            var adres = adress[0].TextContent.Trim();
+
+            var distance = collection[k].GetElementsByClassName("c-2");
+            if (distance.Length > 0)
+              flat.Building.Distance = distance[0].TextContent.Trim();
+            adres = adres.Replace(flat.Building.Distance, "").Replace("Санкт-Петербург,", "").Replace("посёлок Парголово,", "").Replace("СПб Красное село", "").Replace("г. Ломоносов,", "").Replace("Россия,", "").Replace("Сестрорецк г,", "").Replace("Сестрорецк", "").Replace("Парголово п,", "").Replace("Колпино,", "").Replace("Мурино,", "").Replace("посёлок Шушары,", "").Replace("г. Петергоф,", "");
+
+            #region Удаление лишнего
+            regex = new Regex(@"(\,\s+подъезд\s+\d+)|(\,\s+подъезд\d+)");
+            var gov = regex.Match(adres).Value;
+            if (!string.IsNullOrEmpty(gov))
+              adres = adres.Replace(gov, "");
+
+            regex = new Regex(@"(\,\s+стр\. \d+)|(\,\s+стр\.\s+\d+)|(\,\s+стр\.\d+)");
+            gov = regex.Match(adres).Value;
+            if (!string.IsNullOrEmpty(gov))
+              adres = adres.Replace(gov, "");
+
+            #endregion
+            var ar = adres.Split(',');
+            ProcessingBuilding(flat,ar,connection);
           }
-          else if (ar.Length == 1)
-          {
-            regex = new Regex(@"(д\. \d+\s+к\.\d+)|(д\.\s+\d+\s+к\.\d+)");
-            flat.Building.Number = regex.Match(ar[0]).Value;
-            if (!string.IsNullOrEmpty(flat.Building.Number))
-            {
-              flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-              regex = new Regex(@"(к\.\d+)");
-              flat.Building.Structure = regex.Match(flat.Building.Number).Value;
-              flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("д. ", "").Replace("д. ", "");
-              flat.Building.Structure = flat.Building.Structure.Replace("к.", "");
-            }
-            else
-            {
-              regex = new Regex(@"(д\.\d+\s+к\.\d+)");
-              flat.Building.Number = regex.Match(ar[0]).Value;
-              if (!string.IsNullOrEmpty(flat.Building.Number))
-              {
-                flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                regex = new Regex(@"(к\.\d+)");
-                flat.Building.Structure = regex.Match(flat.Building.Number).Value;
-                flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("д.", "").Trim();
-                flat.Building.Structure = flat.Building.Structure.Replace("к.", "");
-              }
-              else
-              {
-                regex = new Regex(@"(д\. \d+\s+корп\.\s+\d+)|(д\.\s+\d+\s+корп\.\s+\d+)");
-                flat.Building.Number = regex.Match(ar[0]).Value;
-                if (!string.IsNullOrEmpty(flat.Building.Number))
-                {
-                  flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                  regex = new Regex(@"(корп\.\s+\d+)");
-                  flat.Building.Structure = regex.Match(flat.Building.Number).Value;
-                  flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("д. ", "").Replace("д. ", "");
-                  flat.Building.Structure = flat.Building.Structure.Replace("корп.", "");
-                }
-                else
-                {
-                  regex = new Regex(@"(дом\s+\d+\s+корпус\s+\d+)");
-                  flat.Building.Number = regex.Match(ar[0]).Value;
-                  if (!string.IsNullOrEmpty(flat.Building.Number))
-                  {
-                    flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                    regex = new Regex(@"(корпус\s+\d+)");
-                    flat.Building.Structure = regex.Match(flat.Building.Number).Value;
-                    flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("дом ", "").Replace("дом ", "");
-                    flat.Building.Structure = flat.Building.Structure.Replace("корпус", "");
-                  }
-                  else
-                  {
-                    regex = new Regex(@"(дом\s+\d+\s+корп\.\s+\d+)");
-                    flat.Building.Number = regex.Match(ar[0]).Value;
-                    if (!string.IsNullOrEmpty(flat.Building.Number))
-                    {
-                      flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                      regex = new Regex(@"(корп\.\s+\d+)");
-                      flat.Building.Structure = regex.Match(flat.Building.Number).Value;
-                      flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("дом ", "").Replace("дом ", "");
-                      flat.Building.Structure = flat.Building.Structure.Replace("корп.", "");
-                    }
-                    else
-                    {
-                      regex = new Regex(@"(д\.\d+$)");
-                      flat.Building.Number = regex.Match(ar[0]).Value;
-                      if (!string.IsNullOrEmpty(flat.Building.Number))
-                      {
-                        flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                        flat.Building.Number = flat.Building.Number.Replace("д.", "");
-                      }
-                      else
-                      {
-                        regex = new Regex(@"(\d+с\d+$)");
-                        flat.Building.Number = regex.Match(ar[0]).Value;
-                        if (!string.IsNullOrEmpty(flat.Building.Number))
-                        {
-                          flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                        }
-                        else
-                        {
-                          regex = new Regex(@"(д\d+$)");
-                          flat.Building.Number = regex.Match(ar[0]).Value;
-                          if (!string.IsNullOrEmpty(flat.Building.Number))
-                          {
-                            flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                          }
-                          else
-                          {
-                            regex = new Regex(@"(\d+\/\d+)");
-                            flat.Building.Number = regex.Match(ar[0]).Value;
-                            if (!string.IsNullOrEmpty(flat.Building.Number))
-                            {
-                              flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                              flat.Building.Structure = flat.Building.Number.Split('/')[1];
-                              flat.Building.Number = flat.Building.Number.Split('/')[1];
-                            }
-                            else
-                            {
-                              regex = new Regex(@"(\d+$)");
-                              flat.Building.Number = regex.Match(ar[0]).Value;
-                              if (!string.IsNullOrEmpty(flat.Building.Number))
-                              {
-                                flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            flat.Building.Street = flat.Building.Street.Replace("Ул.", "").Replace("г.", "").Replace(".", "").Trim();
-          }
-          else if (ar.Length == 2)
-          {
-            if (stantions.Contains(ar[0].Trim()))
-            {
-              flat.Building.Metro = ar[0].Trim();
-              flat.Building.Street = ar[1];
-            }
-          }
-          else if (ar.Length == 4)
-          {
-            if (stantions.Contains(ar[0].Trim()))
-            {
-              flat.Building.Metro = ar[0].Trim();
-              flat.Building.Street = ar[1];
-            }
-          }
-          else
-            flat.Building.Street = adres;
-        }
 
 
-        regex = new Regex(@"(к\d+)");
-        flat.Building.Structure = regex.Match(flat.Building.Number).Value;
-        if (string.IsNullOrWhiteSpace(flat.Building.Structure))
-        {
-          regex = new Regex(@"(к \d+)");
+          regex = new Regex(@"(к\d+)");
           flat.Building.Structure = regex.Match(flat.Building.Number).Value;
           if (string.IsNullOrWhiteSpace(flat.Building.Structure))
           {
-            regex = new Regex(@"(кор\.\d+)");
+            regex = new Regex(@"(к \d+)");
             flat.Building.Structure = regex.Match(flat.Building.Number).Value;
             if (string.IsNullOrWhiteSpace(flat.Building.Structure))
             {
+              regex = new Regex(@"(кор\.\d+)");
+              flat.Building.Structure = regex.Match(flat.Building.Number).Value;
+              if (string.IsNullOrWhiteSpace(flat.Building.Structure))
+              {
 
+              }
+              else
+              {
+                flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Trim();
+                flat.Building.Structure = flat.Building.Structure.Replace("кор.", "");
+              }
             }
             else
             {
-              flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Trim();
-              flat.Building.Structure = flat.Building.Structure.Replace("кор.", "");
+              flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "");
+              flat.Building.Structure = flat.Building.Structure.Replace("к", "");
             }
           }
           else
@@ -460,39 +328,50 @@ namespace ParseSitesForApartments.Sites
             flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "");
             flat.Building.Structure = flat.Building.Structure.Replace("к", "");
           }
-        }
-        else
-        {
-          flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "");
-          flat.Building.Structure = flat.Building.Structure.Replace("к", "");
-        }
 
-        regex = new Regex(@"(\D$)");
-        flat.Building.Liter = regex.Match(flat.Building.Number).Value;
-        if (!string.IsNullOrEmpty(flat.Building.Liter))
-        {
-          flat.Building.Number = flat.Building.Number.Replace(flat.Building.Liter, "");
-        }
-
-        flat.Building.Street = flat.Building.Street.Replace("улица", "").Replace("ул. ", "").Replace("проезд", "").Replace("переулок", "").Replace("переулок", "").Replace("бульвар", "").Replace("б-р", "").Replace("проспект", "пр.").Replace("пр-кт", "пр.").Replace("Васильевского острова", "В.О.").Replace("Васильевского острова", "В.О.").Replace("Петроградской стороны", "П.С.").Replace("ш.", "").Replace("пер", "").Replace(" ул", "").Replace("аллея", "").Replace("дорога ", "").Replace("набережная ", "").Trim();
-
-        regex = new Regex(@"(^пр\.)");
-        var pr = regex.Match(flat.Building.Street).Value;
-        if (!string.IsNullOrWhiteSpace(pr))
-        {
-          flat.Building.Street = flat.Building.Street.Replace(pr, "").Trim() + $" {pr}";
-        }
-
-        Monitor.Enter(locker);
-        if(!string.IsNullOrEmpty(flat.Building.Number))
-        {
-          using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+          regex = new Regex(@"(\D$)");
+          flat.Building.Liter = regex.Match(flat.Building.Number).Value;
+          if (!string.IsNullOrEmpty(flat.Building.Liter))
           {
-            sw.BaseStream.Position = sw.BaseStream.Length;
-            sw.WriteLine($@";{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+            flat.Building.Number = flat.Building.Number.Replace(flat.Building.Liter, "");
           }
+
+
+          flat.Building.Street = flat.Building.Street.Replace("улица", "").Replace("ул. ", "").Replace("проезд", "").Replace("переулок", "").Replace("переулок", "").Replace("бульвар", "").Replace("б-р", "").Replace("проспект", "пр.").Replace("пр-кт", "пр.").Replace("Васильевского острова", "В.О.").Replace("Васильевского острова", "В.О.").Replace("Петроградской стороны", "П.С.").Replace("ш.", "").Replace("пер", "").Replace(" ул", "").Replace("аллея", "").Replace("дорога ", "").Replace("набережная ", "").Replace("пр-т","пр.").Trim();
+
+          regex = new Regex(@"(^пр\.)");
+          var pr = regex.Match(flat.Building.Street).Value;
+          if (!string.IsNullOrWhiteSpace(pr))
+          {
+            flat.Building.Street = flat.Building.Street.Replace(pr, "").Trim() + $" {pr}";
+          }
+
+          if (flat.Building.Distance.Contains("день") || flat.Building.Distance.Contains("дня") ||
+              flat.Building.Distance.Contains("минут") || flat.Building.Distance.Contains("час") ||
+              flat.Building.Distance.Contains("дней") || flat.Building.Distance.Contains("недел"))
+            flat.Building.Distance = string.Empty;
+
+
+          //Обработка некоторых улиц
+          if (flat.Building.Street.Contains("В.О."))
+            flat.Building.Street = "Большой пр. В.О.";
+          if (flat.Building.Street.Contains("П.С."))
+            flat.Building.Street = "Большой П.С. пр.";
+
+          Monitor.Enter(locker);
+          if (!string.IsNullOrEmpty(flat.Building.Number))
+          {
+            //if(!flat.Building.Number.Contains("ЖК"))
+            //{
+              using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+              {
+                sw.BaseStream.Position = sw.BaseStream.Length;
+                sw.WriteLine($@";{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+              }
+            //}
+          }
+          Monitor.Exit(locker);
         }
-        Monitor.Exit(locker);
       }
     }
 
@@ -581,13 +460,172 @@ namespace ParseSitesForApartments.Sites
             ParsingSheet(typeRoom, collections);
         }
       }
-      catch
+      catch(Exception ex)
       {
+        string msg = ex.Message;
         return false;
       }
       return true;
     }
 
+    private void ParseMetro(string parseMetro, Building building, SqlConnection connection)
+    {
+
+      string select = $@"SELECT [Name]
+  FROM [ParseBulding].[dbo].[Metro]
+  where Name Like '%{parseMetro}%'";
+      var command = new SqlCommand(select, connection);
+      var metroName = (string)command.ExecuteScalar();
+      if (!string.IsNullOrEmpty(metroName))
+      {
+        building.Metro = metroName;
+      }
+    }
+
+    private void ProcessingBuilding(Flat flat, string[] ar, SqlConnection connection)
+    {
+      if (ar.Length == 3)
+      {
+        ar[0] = ar[0].Replace("ин-т", "").Replace("Площадь А.", "").Replace("I", "").Replace("II", "").Trim();
+        ParseMetro(ar[0], flat.Building, connection);
+
+        flat.Building.Street = ar[1];
+        flat.Building.Number = ar[2];
+        flat.Building.Number = flat.Building.Number.Replace("А", "").Replace("А", "").Replace("дом ", "").Replace("д.", "").Trim();
+      }
+      else if (ar.Length == 1)
+      {
+        var regex = new Regex(@"(д\. \d+\s+к\.\d+)|(д\.\s+\d+\s+к\.\d+)");
+        flat.Building.Number = regex.Match(ar[0]).Value;
+        if (!string.IsNullOrEmpty(flat.Building.Number))
+        {
+          flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+          regex = new Regex(@"(к\.\d+)");
+          flat.Building.Structure = regex.Match(flat.Building.Number).Value;
+          flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("д. ", "").Replace("д. ", "");
+          flat.Building.Structure = flat.Building.Structure.Replace("к.", "");
+        }
+        else
+        {
+          regex = new Regex(@"(д\.\d+\s+к\.\d+)");
+          flat.Building.Number = regex.Match(ar[0]).Value;
+          if (!string.IsNullOrEmpty(flat.Building.Number))
+          {
+            flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+            regex = new Regex(@"(к\.\d+)");
+            flat.Building.Structure = regex.Match(flat.Building.Number).Value;
+            flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("д.", "").Trim();
+            flat.Building.Structure = flat.Building.Structure.Replace("к.", "");
+          }
+          else
+          {
+            regex = new Regex(@"(д\. \d+\s+корп\.\s+\d+)|(д\.\s+\d+\s+корп\.\s+\d+)");
+            flat.Building.Number = regex.Match(ar[0]).Value;
+            if (!string.IsNullOrEmpty(flat.Building.Number))
+            {
+              flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+              regex = new Regex(@"(корп\.\s+\d+)");
+              flat.Building.Structure = regex.Match(flat.Building.Number).Value;
+              flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("д. ", "").Replace("д. ", "");
+              flat.Building.Structure = flat.Building.Structure.Replace("корп.", "");
+            }
+            else
+            {
+              regex = new Regex(@"(дом\s+\d+\s+корпус\s+\d+)");
+              flat.Building.Number = regex.Match(ar[0]).Value;
+              if (!string.IsNullOrEmpty(flat.Building.Number))
+              {
+                flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+                regex = new Regex(@"(корпус\s+\d+)");
+                flat.Building.Structure = regex.Match(flat.Building.Number).Value;
+                flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("дом ", "").Replace("дом ", "");
+                flat.Building.Structure = flat.Building.Structure.Replace("корпус", "");
+              }
+              else
+              {
+                regex = new Regex(@"(дом\s+\d+\s+корп\.\s+\d+)");
+                flat.Building.Number = regex.Match(ar[0]).Value;
+                if (!string.IsNullOrEmpty(flat.Building.Number))
+                {
+                  flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+                  regex = new Regex(@"(корп\.\s+\d+)");
+                  flat.Building.Structure = regex.Match(flat.Building.Number).Value;
+                  flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "").Replace("дом ", "").Replace("дом ", "");
+                  flat.Building.Structure = flat.Building.Structure.Replace("корп.", "");
+                }
+                else
+                {
+                  regex = new Regex(@"(д\.\d+$)");
+                  flat.Building.Number = regex.Match(ar[0]).Value;
+                  if (!string.IsNullOrEmpty(flat.Building.Number))
+                  {
+                    flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+                    flat.Building.Number = flat.Building.Number.Replace("д.", "");
+                  }
+                  else
+                  {
+                    regex = new Regex(@"(\d+с\d+$)");
+                    flat.Building.Number = regex.Match(ar[0]).Value;
+                    if (!string.IsNullOrEmpty(flat.Building.Number))
+                    {
+                      flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+                    }
+                    else
+                    {
+                      regex = new Regex(@"(д\d+$)");
+                      flat.Building.Number = regex.Match(ar[0]).Value;
+                      if (!string.IsNullOrEmpty(flat.Building.Number))
+                      {
+                        flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+                      }
+                      else
+                      {
+                        regex = new Regex(@"(\d+\/\d+)");
+                        flat.Building.Number = regex.Match(ar[0]).Value;
+                        if (!string.IsNullOrEmpty(flat.Building.Number))
+                        {
+                          flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+                          flat.Building.Structure = flat.Building.Number.Split('/')[1];
+                          flat.Building.Number = flat.Building.Number.Split('/')[1];
+                        }
+                        else
+                        {
+                          regex = new Regex(@"(\d+$)");
+                          flat.Building.Number = regex.Match(ar[0]).Value;
+                          if (!string.IsNullOrEmpty(flat.Building.Number))
+                          {
+                            flat.Building.Street = ar[0].Replace(flat.Building.Number, "").Trim();
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        flat.Building.Street = flat.Building.Street.Replace("Ул.", "").Replace("г.", "").Replace(".", "").Trim();
+      }
+      else if (ar.Length == 2)
+      {
+        if (stantions.Contains(ar[0].Trim()))
+        {
+          ParseMetro(ar[0].Trim(), flat.Building, connection);
+          flat.Building.Street = ar[1];
+        }
+      }
+      else if (ar.Length == 4)
+      {
+        if (stantions.Contains(ar[0].Trim()))
+        {
+          ParseMetro(ar[0].Trim(), flat.Building, connection);
+          flat.Building.Street = ar[1];
+        }
+      }
+      //else
+      //  flat.Building.Street = adres;
+    }
     public override void ParsingSdamAll()
     {
       using (var sw = new StreamWriter(FilenameSdam, true, System.Text.Encoding.UTF8))

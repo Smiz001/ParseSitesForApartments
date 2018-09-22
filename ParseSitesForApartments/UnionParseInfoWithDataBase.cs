@@ -3,6 +3,7 @@ using log4net;
 using ParseSitesForApartments.Sites;
 using System;
 using System.Data.SqlClient;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Reflection;
@@ -135,12 +136,12 @@ namespace ParseSitesForApartments
                     dateBuild = reader.GetString(1);
                     dateRecon = reader.GetString(3);
                     dateRepair = reader.GetString(4).Replace("  ", "");
-                    buildingSquare = reader.GetDouble(5).ToString();
-                    livingSquare = reader.GetDouble(6).ToString();
-                    noLivingSqaure = reader.GetDouble(7).ToString();
+                    buildingSquare = reader.GetDouble(5).ToString(CultureInfo.CurrentCulture);
+                    livingSquare = reader.GetDouble(6).ToString(CultureInfo.CurrentCulture);
+                    noLivingSqaure = reader.GetDouble(7).ToString(CultureInfo.CurrentCulture);
                     countFloor = reader.GetInt32(9).ToString();
                     residents = reader.GetInt32(10).ToString();
-                    mansardaSquare = reader.GetDouble(11).ToString();
+                    mansardaSquare = reader.GetDouble(11).ToString(CultureInfo.CurrentCulture);
                     otoplenie = reader.GetBoolean(12).ToString();
                     gvs = reader.GetBoolean(13).ToString();
                     es = reader.GetBoolean(14).ToString();
@@ -390,6 +391,13 @@ where ID='{IdBuilding}'";
                   {
                     metroId = null;
                   }
+
+                  if(string.IsNullOrWhiteSpace(dateBuild))
+                  {
+
+                  }
+
+
 
                   string dateTime = string.Empty;
                   if (dateTep != DateTime.Now)
