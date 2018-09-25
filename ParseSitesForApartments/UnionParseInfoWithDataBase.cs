@@ -394,9 +394,10 @@ where ID='{IdBuilding}'";
                   //Поиск координат у домов которые не нашлись в базе и нахождения у них расстояния до метро
                   if(string.IsNullOrWhiteSpace(dateBuild))
                   {
+                    Metro metroObj;
                     if(xmetro < 1 || ymetro < 1)
                     {
-
+                      metroObj = GetCoorMetroFromBase(metro, connection);
                     }
                     var address = $@"Санкт-Петербург {street}, {number}к{building} лит.{letter}";
                     Log.Debug(address);
