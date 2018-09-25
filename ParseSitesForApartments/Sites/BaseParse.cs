@@ -8,6 +8,10 @@ namespace ParseSitesForApartments.Sites
 {
   public abstract class BaseParse
   {
+    public abstract string Filename{get;}
+    public abstract string FilenameSdam { get; }
+    public abstract string FilenameWithinfo { get; }
+    public abstract string FilenameWithinfoSdam { get; }
     public abstract void ParsingAll();
     public abstract void ParsingSdamAll();
   }

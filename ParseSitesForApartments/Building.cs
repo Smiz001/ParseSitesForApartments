@@ -45,5 +45,13 @@ namespace ParseSitesForApartments
       hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Street);
       return hashCode;
     }
+
+    public bool IsEmpty()
+    {
+      if (string.IsNullOrWhiteSpace(Street) && string.IsNullOrWhiteSpace(Number) && string.IsNullOrWhiteSpace(Metro))
+        return true;
+      else
+        return false;
+    }
   }
 }

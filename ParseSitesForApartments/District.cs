@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace ParseSitesForApartments
 {
-  public class Metro
+  public class District
   {
-    public string Name { get; set; } = string.Empty;
-    public float XCoor { get; set; }
-    public float YCoor { get; set; }
     public Guid Id { get; set; } = Guid.NewGuid();
-    public Guid IdDistrict { get; set; }
+    public string Name { get; set; } = string.Empty;
   }
 }
