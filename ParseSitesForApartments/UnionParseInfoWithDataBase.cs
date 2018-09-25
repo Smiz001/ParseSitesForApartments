@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace ParseSitesForApartments
 {
@@ -85,7 +86,7 @@ namespace ParseSitesForApartments
                   Guid IdBuilding = Guid.Empty;
                   Guid? metroId = Guid.Empty;
                   string disFoot = string.Empty;
-                  string timeFoor = string.Empty;
+                  string timeFoot = string.Empty;
                   string disCar = string.Empty;
                   string timeCar = string.Empty;
 
@@ -198,9 +199,7 @@ where ID='{IdBuilding}'";
 
                         command = new SqlCommand(update, connection);
                         command.ExecuteNonQuery();
-
-                        // string url = $@"https://yandex.ru/maps/2/saint-petersburg/?ll=30.217571%2C59.837282&z=14&mode=routes&rtext={x.ToString().Replace(",", ".")}%2C{y.ToString().Replace(",", ".")}~{xmetro.ToString().Replace(",",".")}%2C{ymetro.ToString().Replace(",", ".")}&rtt=pd";
-                        //string url = $@"https://www.google.com/maps/dir/{x.ToString().Replace(",", ".")}+{y.ToString().Replace(",", ".")}/{xmetro.ToString().Replace(",", ".")}+{ymetro.ToString().Replace(",", ".")}/@59.8823321,30.2011912,12z/data=!3m1!4b1!4m10!4m9!1m3!2m2!1d30.18184!2d59.83419!1m3!2m2!1d30.36056!2d59.93152!3e2";
+                        
                         if(xmetro >1 && ymetro > 1)
                         {
                           string url = $@"https://2gis.ru/spb/routeSearch/rsType/pedestrian/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.352666%2C59.920495%2Fzoom%2F17%2FrouteTab";
@@ -229,7 +228,7 @@ where ID='{IdBuilding}'";
                               var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
                               if(disDoc.Length > 0)
                               {
-                                timeFoor = timeDoc[0].TextContent;
+                                timeFoot = timeDoc[0].TextContent;
                                 disFoot = disDoc[0].TextContent;
 
                                 if(disFoot.Contains("км"))
@@ -247,7 +246,7 @@ where ID='{IdBuilding}'";
                                   disFoot = km + " м";
                                 }
                                 update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
-set DistanceAndTimeOnFoot = '{disFoot},{timeFoor}'
+set DistanceAndTimeOnFoot = '{disFoot},{timeFoot}'
 where ID='{IdBuilding}'";
 
                                 Log.Debug("----------------------------");
@@ -369,7 +368,7 @@ where ID='{IdBuilding}'";
                         if(arr.Length > 1)
                         {
                           disFoot = arr[0];
-                          timeFoor = arr[1];
+                          timeFoot = arr[1];
                         }
                         arr = distanceOnCar.Split(',');
                         if(arr.Length > 1)
@@ -386,24 +385,113 @@ where ID='{IdBuilding}'";
                     disCar = arrr[0];
                     timeCar = arrr[1];
                   }
-
                   if(metroId == Guid.Empty)
                   {
                     metroId = null;
                   }
 
+
+                  //Поиск координат у домов которые не нашлись в базе и нахождения у них расстояния до метро
                   if(string.IsNullOrWhiteSpace(dateBuild))
                   {
+                    var address = $@"Санкт-Петербург {street}, {number}к{building} лит.{letter}";
+                    Log.Debug(address);
+                    var coords = GetCoorForBuildig(address);
+                    if (coords != null)
+                    {
+                      string url = $@"https://2gis.ru/spb/routeSearch/rsType/pedestrian/from/{coords[1].ToString().Replace(",", ".")}%2C{coords[0].ToString().Replace(",", ".")}%7C{coords[0].ToString().Replace(",", ".")}%20{coords[1].ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.352666%2C59.920495%2Fzoom%2F17%2FrouteTab";
 
+                      string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{coords[1].ToString().Replace(",", ".")}%2C{coords[0].ToString().Replace(",", ".")}%7C{coords[0].ToString().Replace(",", ".")}%20{coords[1].ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
+
+                      using (var webClient = new WebClient())
+                      {
+                        var random = new Random();
+                        Thread.Sleep(random.Next(2000, 4000));
+
+                        ServicePointManager.Expect100Continue = true;
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+                        webClient.Encoding = Encoding.UTF8;
+                        Log.Debug(url);
+                        var responce = webClient.DownloadString(url);
+                        var parser = new HtmlParser();
+                        var document = parser.Parse(responce);
+
+                        var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+                        if (timeDoc.Length > 0)
+                        {
+                          var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                          if (disDoc.Length > 0)
+                          {
+                            timeFoot = timeDoc[0].TextContent;
+                            disFoot = disDoc[0].TextContent;
+
+                            if (disFoot.Contains("км"))
+                            {
+                              var regex = new Regex(@"(\d+,\d+)");
+                              var km = regex.Match(disFoot).Value;
+                              km = km.Replace(".", "").Replace(",", "") + "00";
+                              if (km == "00")
+                              {
+                                regex = new Regex(@"(\d+)");
+                                km = regex.Match(disFoot).Value;
+                                km = km.Replace(".", "").Replace(",", "") + "000";
+                              }
+
+                              disFoot = km + " м";
+                            }
+                          }
+                        }
+                        responce = webClient.DownloadString(urlCar);
+                        document = parser.Parse(responce);
+                        timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+                        if (timeDoc.Length > 0)
+                        {
+                          var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                          if (disDoc.Length > 0)
+                          {
+                            if (timeDoc.Length == 2)
+                            {
+                              timeCar = timeDoc[1].TextContent;
+                              disCar = disDoc[1].TextContent;
+                            }
+                            else
+                            {
+                              timeCar = timeDoc[0].TextContent;
+                              disCar = disDoc[0].TextContent;
+                            }
+                            if (disCar.Contains("км"))
+                            {
+                              var regex = new Regex(@"(\d+,\d+)");
+                              var km = regex.Match(disCar).Value;
+                              km = km.Replace(".", "").Replace(",", "") + "00";
+                              if (km == "00")
+                              {
+                                regex = new Regex(@"(\d+)");
+                                km = regex.Match(disCar).Value;
+                                km = km.Replace(".", "").Replace(",", "") + "000";
+                              }
+                              disCar = km + " м";
+                            }
+                          }
+                        }
+                      }
+
+                      string insert = $@"insert into [ParseBulding].[dbo].[MainInfoAboutBulding] (Id, Street, Number, Bulding, Letter, DistrictId, DateBulding, SeriesID,[CountCommApartament],[DateReconstruct],[DateRepair],[BuldingArea],[LivingArea],[NoLivingArea],[Stairs],[Storeys] ,[Residents],[MansardArea] ,[HeatingCentral],[HotWaterCentral],[ElectroCentral],[GascCntral],[FlatType],[FlatNum],[InternalNum],[TepCreateDate],[ManagCompanyId],[Failure],[RepairJob],[LiftCount],[BasementArea],[Xcoor],[Ycoor],[Metro],[DistanceAndTimeOnFoot],[DistanceAndTimeOnCar])
+values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D-9300-96D6A7364F68','','856E5C0B-F9C0-4F06-AD81-2405BF8357A6',0,'','',0,0,0,0,0,0,0,0,0,0,0,'','',null,null,'CE2CC208-8F15-44C5-94CC-29F5A971C196',0,'',0,0,'{coords[0]}','{coords[1]}','{metro}','{disFoot}, {timeFoot}','{disCar}, {timeCar}')";
+                      Log.Debug(insert);
+                      command = new SqlCommand(insert, connection);
+                      command.ExecuteNonQuery();
+                    }
                   }
-
-
+                  
 
                   string dateTime = string.Empty;
                   if (dateTep != DateTime.Now)
                     dateTime = dateTep.ToShortDateString();
 
-                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoor};{disCar};{timeCar}");
+                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoot};{disCar};{timeCar}");
                 }
                 catch (SqlException ex)
                 {
@@ -436,6 +524,41 @@ where ID='{IdBuilding}'";
       }
       MessageBox.Show("Готово");
     }
+
+    private float[] GetCoorForBuildig(string adress)
+    {
+      var yandex = new Yandex();
+      var doc1 = yandex.SearchObjectByAddress(adress);
+      using (var sw1 = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
+      {
+        sw1.WriteLine(doc1);
+      }
+
+      XmlDocument doc = new XmlDocument();
+      doc.Load(@"D:\Coord.xml");
+      var root = doc.DocumentElement;
+      var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
+      if (GeoObjectCollection.ChildNodes.Count > 1)
+      {
+        var featureMember = GeoObjectCollection.ChildNodes[1];
+        if (featureMember.ChildNodes.Count > 0)
+        {
+          var GeoObject = featureMember.ChildNodes[0];
+          if (GeoObject.ChildNodes.Count > 4)
+          {
+            var Point = GeoObject.ChildNodes[4];
+            var coor = Point.InnerText.Split(' ');
+            float x = float.Parse(coor[1].Replace(".", ","));
+            float y = float.Parse(coor[0].Replace(".", ","));
+            return new float[]{x,y};
+          }
+        }
+      }
+      File.Delete(@"D:\Coord.xml");
+      return null;
+    }
+
+
 
     public void UnionInfoSdam()
     {
