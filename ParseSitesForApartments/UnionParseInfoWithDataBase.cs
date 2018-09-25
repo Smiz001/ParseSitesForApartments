@@ -394,6 +394,10 @@ where ID='{IdBuilding}'";
                   //Поиск координат у домов которые не нашлись в базе и нахождения у них расстояния до метро
                   if(string.IsNullOrWhiteSpace(dateBuild))
                   {
+                    if(xmetro < 1 || ymetro < 1)
+                    {
+
+                    }
                     var address = $@"Санкт-Петербург {street}, {number}к{building} лит.{letter}";
                     Log.Debug(address);
                     var coords = GetCoorForBuildig(address);
@@ -558,7 +562,29 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
       return null;
     }
 
+    private Metro GetCoorMetroFromBase(string metroName, SqlConnection connection)
+    {
+      string select = $@"SELECT [XCoor]
+    ,[YCoor]
+	  ,Id
+  FROM [ParseBulding].[dbo].[Metro]
+  WHERE NAME like '%{metroName}%'";
 
+      Log.Debug("----------------------------");
+      Log.Debug(select);
+      var command = new SqlCommand(select, connection);
+      var reader = command.ExecuteReader();
+      Metro metro= null;
+      while (reader.Read())
+      {
+        metro = new Metro();
+        metro.XCoor = (float)reader.GetDouble(0);
+        metro.YCoor = (float)reader.GetDouble(1);
+        metro.Id = reader.GetGuid(2);
+      }
+      reader.Close();
+      return metro;
+    }
 
     public void UnionInfoSdam()
     {
