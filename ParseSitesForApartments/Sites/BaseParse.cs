@@ -12,6 +12,7 @@ namespace ParseSitesForApartments.Sites
     public abstract string FilenameSdam { get; }
     public abstract string FilenameWithinfo { get; }
     public abstract string FilenameWithinfoSdam { get; }
+    public abstract string NameSite { get; }
     public abstract void ParsingAll();
     public abstract void ParsingSdamAll();
   }

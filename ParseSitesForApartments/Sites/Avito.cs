@@ -25,6 +25,7 @@ namespace ParseSitesForApartments.Sites
     public override string FilenameSdam { get => @"D:\AvitoSdam.csv";  }
     public override string FilenameWithinfo { get => @"D:\AvitoProdamWithInfo.csv"; }
     public override string FilenameWithinfoSdam { get => @"D:\AvitoSdamWithInfo.csv"; }
+    public override string NameSite => "Avito";
 
     public void ParsingStudio()
     {

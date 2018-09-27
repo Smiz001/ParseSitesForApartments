@@ -21,6 +21,7 @@ namespace ParseSitesForApartments.Sites
     public override string FilenameSdam => @"D:\BNSdam.csv";
     public override string FilenameWithinfo => @"D:\BNProdamWithInfo.csv";
     public override string FilenameWithinfoSdam => @"D:\BNSdamWithInfo.csv";
+    public override string NameSite => "БН";
 
     public override void ParsingAll()
     {

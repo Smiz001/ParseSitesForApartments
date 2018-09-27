@@ -37,7 +37,7 @@ namespace ParseSitesForApartments
             {
               connection.Open();
 
-              sw.WriteLine($@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине");
+              sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
               string line = "";
               sr.ReadLine();
               string select = "";
@@ -499,7 +499,7 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
                   if (dateTep != DateTime.Now)
                     dateTime = dateTep.ToShortDateString();
 
-                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoot};{disCar};{timeCar}");
+                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoot};{disCar};{timeCar};{baseSite.NameSite}");
                 }
                 catch (SqlException ex)
                 {

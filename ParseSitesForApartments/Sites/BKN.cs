@@ -23,6 +23,7 @@ namespace ParseSitesForApartments.Sites
     public override string FilenameSdam => @"D:\BKNSdam.csv";
     public override string FilenameWithinfo => @"D:\BKNProdamWithInfo.csv";
     public override string FilenameWithinfoSdam => @"D:\BKNSdamWithInfo.csv";
+    public override string NameSite => "БКН";
 
     public override void ParsingAll()
     {
