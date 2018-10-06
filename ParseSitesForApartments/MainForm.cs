@@ -15,9 +15,9 @@ using System.Xml;
 
 namespace ParseSitesForApartments
 {
-  public partial class Form1 : Form
+  public partial class MainForm : Form
   {
-    public Form1()
+    public MainForm()
     {
       InitializeComponent();
     }
@@ -625,15 +625,6 @@ WHERE ID ='{item.Id}'";
       }
     }
 
-    class BuildForCoordinate
-    {
-      public string Street { get; set; }
-      public string Number { get; set; }
-      public string Bulding { get; set; }
-      public string Letter { get; set; }
-      public Guid Id { get; set; }
-    }
-
     private void button17_Click(object sender, EventArgs e)
     {
       var elms = new ELMS();
@@ -736,6 +727,11 @@ WHERE ID ='{item.Id}'";
     private void button23_Click(object sender, EventArgs e)
     {
       var elms = new ELMS();
+    }
+
+    private void MainForm_Load(object sender, EventArgs e)
+    {
+
     }
   }
 }
