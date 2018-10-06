@@ -17,5 +17,10 @@ namespace ParseSitesForApartments.Export
 
     public abstract void ExecuteWithBaseInfo();
     public abstract void Execute();
+
+    public void DownloadInfoAboutFlat(Flat flat)
+    {
+
+    }
   }
 }

@@ -10,9 +10,6 @@ namespace ParseSitesForApartments
     public string Floor { get; set; } = string.Empty;
     public Building Building { get; set; } = new Building();
 
-    public string DateBuild { get; set; } = string.Empty;
-    public string DateRepair { get; set; } = string.Empty;
-
     public override bool Equals(object obj)
     {
       var flat = obj as Flat;

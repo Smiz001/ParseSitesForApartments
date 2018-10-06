@@ -15,6 +15,17 @@ namespace ParseSitesForApartments
     public string Liter { get; set; } = string.Empty;
     public string Street { get; set; } = string.Empty;
 
+    public string DateBuild { get; set; } = string.Empty;
+    public string DateRepair { get; set; } = string.Empty;
+    public string DateReconstruct { get; set; } = string.Empty;
+    public List<Flat> FlatsOnSale { get; set; } = new List<Flat>();
+    public string DistanceOnFoot { get; set; } = string.Empty;
+    public string DistanceOnCar { get; set; } = string.Empty;
+    public Metro MetroObj { get; set; }
+    public string TimeOnFootToMetro { get; set; } = string.Empty;
+    public string TimeOnCarToMetro { get; set; } = string.Empty;
+    public District District { get; set; }
+
 
     public override bool Equals(object obj)
     {
