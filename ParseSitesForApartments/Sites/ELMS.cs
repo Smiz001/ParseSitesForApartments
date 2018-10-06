@@ -22,10 +22,10 @@ namespace ParseSitesForApartments.Sites
     static object locker = new object();
     private const int MaxPage = 20;
 
-    public override string Filename => @"D:\ElmsProdam.csv";
-    public override string FilenameSdam => @"D:\ElmsSdam.csv";
-    public override string FilenameWithinfo => @"D:\ElmsProdamWithInfo.csv";
-    public override string FilenameWithinfoSdam => @"D:\ElmsSdamWithInfo.csv";
+    public override string Filename => @"d:\ParserInfo\Appartament\ElmsProdam.csv";
+    public override string FilenameSdam => @"d:\ParserInfo\Appartament\ElmsSdam.csv";
+    public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\ElmsProdamWithInfo.csv";
+    public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\ElmsSdamWithInfo.csv";
     public override string NameSite => "ELMS";
 
     public override void ParsingAll()
@@ -288,7 +288,7 @@ namespace ParseSitesForApartments.Sites
         {
           if (collection[i].GetElementsByClassName("w-image").Length > 0)
           {
-            var divImage = collection[i].GetElementsByClassName("w-image")[0];
+            //var divImage = collection[i].GetElementsByClassName("w-image")[0];
             var square = collection[i].GetElementsByClassName("space-all");
             if (square.Length > 0)
               flat.Square = square[0].TextContent.Replace(".", ",");

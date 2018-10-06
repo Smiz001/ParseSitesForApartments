@@ -19,10 +19,10 @@ namespace ParseSitesForApartments.Sites
     private const string NewApartaments = "main NewApartment";
     private static object locker = new object();
 
-    public override string Filename => @"D:\BKNProdam.csv";
-    public override string FilenameSdam => @"D:\BKNSdam.csv";
-    public override string FilenameWithinfo => @"D:\BKNProdamWithInfo.csv";
-    public override string FilenameWithinfoSdam => @"D:\BKNSdamWithInfo.csv";
+    public override string Filename => @"d:\ParserInfo\Appartament\BKNProdam.csv";
+    public override string FilenameSdam => @"d:\ParserInfo\Appartament\BKNSdam.csv";
+    public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\BKNProdamWithInfo.csv";
+    public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\BKNSdamWithInfo.csv";
     public override string NameSite => "БКН";
 
     public override void ParsingAll()

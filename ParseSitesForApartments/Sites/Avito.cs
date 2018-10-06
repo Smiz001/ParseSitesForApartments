@@ -21,10 +21,10 @@ namespace ParseSitesForApartments.Sites
 
     private static object locker = new object();
 
-    public override string Filename { get => @"D:\AvitoProdam.csv"; }
-    public override string FilenameSdam { get => @"D:\AvitoSdam.csv";  }
-    public override string FilenameWithinfo { get => @"D:\AvitoProdamWithInfo.csv"; }
-    public override string FilenameWithinfoSdam { get => @"D:\AvitoSdamWithInfo.csv"; }
+    public override string Filename { get => @"d:\ParserInfo\Appartament\AvitoProdam.csv"; }
+    public override string FilenameSdam { get => @"d:\ParserInfo\Appartament\AvitoSdam.csv";  }
+    public override string FilenameWithinfo { get => @"d:\ParserInfo\Appartament\AvitoProdamWithInfo.csv"; }
+    public override string FilenameWithinfoSdam { get => @"d:\ParserInfo\Appartament\AvitoSdamWithInfo.csv"; }
     public override string NameSite => "Avito";
 
     public void ParsingStudio()

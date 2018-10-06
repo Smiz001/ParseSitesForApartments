@@ -17,10 +17,10 @@ namespace ParseSitesForApartments.Sites
     static object locker = new object();
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 4, "Калининский" }, { 5, "Кировский" }, { 6, "Колпинский" }, { 7, "Красногвардейский" }, { 8, "Красносельский" }, { 9, "Кронштадтский" }, { 10, "Курортный" }, { 11, "Московский" }, { 12, "Невский" }, { 13, "Петроградский" }, { 14, "Петродворцовый" }, { 15, "Приморский" }, { 16, "Пушкинский" }, { 17, "Фрунзенский" }, { 18, "Центральный" }, };
 
-    public override string Filename => @"D:\BNProdam.csv";
-    public override string FilenameSdam => @"D:\BNSdam.csv";
-    public override string FilenameWithinfo => @"D:\BNProdamWithInfo.csv";
-    public override string FilenameWithinfoSdam => @"D:\BNSdamWithInfo.csv";
+    public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.csv";
+    public override string FilenameSdam => @"d:\ParserInfo\Appartament\BNSdam.csv";
+    public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\BNProdamWithInfo.csv";
+    public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\BNSdamWithInfo.csv";
     public override string NameSite => "БН";
 
     public override void ParsingAll()
