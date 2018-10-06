@@ -9,11 +9,14 @@ namespace DataBase.Connections
     private SqlConnection connection;
     public ConnetionToSqlServer(string connectionString)
     {
+      Log.Debug($"Connection string - {connectionString}");
       connection = new SqlConnection(connectionString);
     }
 
     public override void ExecuteNonQuery(string query)
     {
+      Log.Debug($"Call {nameof(ExecuteNonQuery)}");
+      Log.Debug($"Query - {query}");
       try
       {
         connection.Open();
@@ -24,7 +27,8 @@ namespace DataBase.Connections
       }
       catch (Exception e)
       {
-        Console.WriteLine(e);
+        Log.Error($"Exception Message - {e.Message}");
+        Log.Error($"Stack Trace - {e.StackTrace}");
         throw;
       }
       finally
@@ -40,6 +44,8 @@ namespace DataBase.Connections
     public override object ExecuteScalar(string query)
     {
       object obj = null;
+      Log.Debug($"Call {nameof(ExecuteScalar)}");
+      Log.Debug($"Query - {query}");
       try
       {
         connection.Open();
@@ -50,7 +56,8 @@ namespace DataBase.Connections
       }
       catch (Exception e)
       {
-        Console.WriteLine(e);
+        Log.Error($"Exception Message - {e.Message}");
+        Log.Error($"Stack Trace - {e.StackTrace}");
         throw;
       }
       finally
@@ -68,6 +75,8 @@ namespace DataBase.Connections
     public override IDataReader ExecuteReader(string query)
     {
       IDataReader reader = null;
+      Log.Debug($"Call {nameof(ExecuteScalar)}");
+      Log.Debug($"Query - {query}");
       try
       {
         connection.Open();
@@ -78,7 +87,8 @@ namespace DataBase.Connections
       }
       catch (Exception e)
       {
-        Console.WriteLine(e);
+        Log.Error($"Exception Message - {e.Message}");
+        Log.Error($"Stack Trace - {e.StackTrace}");
         throw;
       }
       finally
