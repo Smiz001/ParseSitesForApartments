@@ -47,6 +47,7 @@
     <Compile Include="Connections\ConnetionToSqlServer.cs" />
     <Compile Include="Connections\CoreConnetion.cs" />
     <Compile Include="Creators\CoreCreatorConnection.cs" />
+    <Compile Include="Creators\SqlServerCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

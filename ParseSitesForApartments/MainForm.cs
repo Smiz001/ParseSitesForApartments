@@ -3,26 +3,25 @@ using ParseSitesForApartments.Sites;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using DataBase.Connections;
+using DataBase.Creators;
 
 namespace ParseSitesForApartments
 {
   public partial class MainForm : Form
   {
+    private List<District> listDistricts = new List<District>();
+
     public MainForm()
     {
       InitializeComponent();
     }
-    private int pageMin = 1;
-    private int pageMaz = 100;
     private void button1_Click(object sender, EventArgs e)
     {
       var avito = new Avito();
@@ -731,7 +730,22 @@ WHERE ID ='{item.Id}'";
 
     private void MainForm_Load(object sender, EventArgs e)
     {
+      SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
+      sb.DataSource = "localhost";
+      sb.InitialCatalog = "ParseBulding";
+      sb.IntegratedSecurity = true;
 
+      CoreCreatorConnection creator = new SqlServerCreator();
+      using (CoreConnetion connection = creator.FactoryCreate(sb.ToString()))
+      {
+        string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
+        var reader = connection.ExecuteReader(select);
+        while (reader.Read())
+        {
+          listDistricts.Add(new District { Id = reader.GetGuid(0), Name = reader.GetString(1) });
+        }
+        reader.Close();
+      }
     }
   }
 }

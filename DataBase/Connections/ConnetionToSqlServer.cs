@@ -80,10 +80,8 @@ namespace DataBase.Connections
       try
       {
         connection.Open();
-        using (var command = new SqlCommand(query, connection))
-        {
-          reader = command.ExecuteReader();
-        }
+        var command = new SqlCommand(query, connection);
+        reader = command.ExecuteReader();
       }
       catch (Exception e)
       {
@@ -95,8 +93,8 @@ namespace DataBase.Connections
       {
         if (connection != null)
         {
-          if (connection.State == ConnectionState.Open)
-            connection.Close();
+          //if (connection.State == ConnectionState.Open)
+            //connection.Close();
         }
       }
 

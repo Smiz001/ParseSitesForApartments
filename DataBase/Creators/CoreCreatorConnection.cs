@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataBase.Connections;
 
 namespace DataBase.Creators
 {
   public abstract class CoreCreatorConnection
   {
-    
+    public abstract CoreConnetion FactoryCreate(string connectionString);
   }
 }
