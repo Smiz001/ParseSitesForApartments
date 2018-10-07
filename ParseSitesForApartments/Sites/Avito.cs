@@ -1042,5 +1042,9 @@ namespace ParseSitesForApartments.Sites
         Monitor.Exit(locker);
       }
     }
+
+    public Avito(List<District> listDistricts) : base(listDistricts)
+    {
+    }
   }
 }

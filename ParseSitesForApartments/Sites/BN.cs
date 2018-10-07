@@ -987,5 +987,9 @@ namespace ParseSitesForApartments.Sites
         Monitor.Exit(locker);
       }
     }
+
+    public BN(List<District> listDistricts) : base(listDistricts)
+    {
+    }
   }
 }

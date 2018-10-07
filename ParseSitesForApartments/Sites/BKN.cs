@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Parser.Html;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Net;
@@ -1478,6 +1479,10 @@ namespace ParseSitesForApartments.Sites
           Monitor.Exit(locker);
         }
       }
+    }
+
+    public BKN(List<District> listDistricts) : base(listDistricts)
+    {
     }
   }
 }

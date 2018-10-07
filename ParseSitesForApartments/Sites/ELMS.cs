@@ -1152,5 +1152,9 @@ namespace ParseSitesForApartments.Sites
         }
       }
     }
+
+    public ELMS(List<District> listDistricts) : base(listDistricts)
+    {
+    }
   }
 }

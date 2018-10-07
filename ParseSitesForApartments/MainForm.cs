@@ -24,7 +24,7 @@ namespace ParseSitesForApartments
     }
     private void button1_Click(object sender, EventArgs e)
     {
-      var avito = new Avito();
+      var avito = new Avito(listDistricts);
       avito.ParsingAll();
     }
 
@@ -234,7 +234,7 @@ WHERE NAME ='{ar[6]}'";
 
     private void button3_Click(object sender, EventArgs e)
     {
-      var avito = new Avito();
+      var avito = new Avito(listDistricts);
       avito.ParsingSdamAll();
     }
 
@@ -412,19 +412,19 @@ WHERE NAME ='{ar[6]}'";
 
     private void button7_Click(object sender, EventArgs e)
     {
-      var bkn = new BKN();
+      var bkn = new BKN(listDistricts);
       bkn.ParsingAll();
     }
 
     private void button8_Click(object sender, EventArgs e)
     {
-      var bn = new BN();
+      var bn = new BN(listDistricts);
       bn.ParsingAll();
     }
 
     private void button9_Click(object sender, EventArgs e)
     {
-      var elms = new ELMS();
+      var elms = new ELMS(listDistricts);
       elms.ParsingAll();
     }
 
@@ -551,7 +551,7 @@ WHERE ID ='{item.Id}'";
 
     private void button12_Click(object sender, EventArgs e)
     {
-      var elms = new ELMS();
+      var elms = new ELMS(listDistricts);
       var union = new UnionParseInfoWithDataBase(elms);
       var thread = new Thread(union.UnionInfoProdam);
       thread.Start();
@@ -559,7 +559,7 @@ WHERE ID ='{item.Id}'";
 
     private void button11_Click(object sender, EventArgs e)
     {
-      var bkn = new BKN();
+      var bkn = new BKN(listDistricts);
       var union = new UnionParseInfoWithDataBase(bkn);
       var thread = new Thread(union.UnionInfoProdam);
       thread.Start();
@@ -567,7 +567,7 @@ WHERE ID ='{item.Id}'";
 
     private void button13_Click(object sender, EventArgs e)
     {
-      var bn = new BN();
+      var bn = new BN(listDistricts);
       var union = new UnionParseInfoWithDataBase(bn);
       var thread = new Thread(union.UnionInfoProdam);
       thread.Start();
@@ -575,7 +575,7 @@ WHERE ID ='{item.Id}'";
 
     private void button15_Click(object sender, EventArgs e)
     {
-      var avito = new Avito();
+      var avito = new Avito(listDistricts);
       var union = new UnionParseInfoWithDataBase(avito);
       var thread = new Thread(union.UnionInfoProdam);
       thread.Start();
@@ -626,19 +626,19 @@ WHERE ID ='{item.Id}'";
 
     private void button17_Click(object sender, EventArgs e)
     {
-      var elms = new ELMS();
+      var elms = new ELMS(listDistricts);
       elms.ParsingSdamAll();
     }
 
     private void button18_Click(object sender, EventArgs e)
     {
-      var bn = new BN();
+      var bn = new BN(listDistricts);
       bn.ParsingSdamAll();
     }
 
     private void button19_Click(object sender, EventArgs e)
     {
-      var bkn = new BKN();
+      var bkn = new BKN(listDistricts);
       bkn.ParsingSdamAll();
     }
 
@@ -714,18 +714,18 @@ WHERE ID ='{item.Id}'";
 
     private void button21_Click(object sender, EventArgs e)
     {
-      var bkn = new BKN();
+      var bkn = new BKN(listDistricts);
       
     }
 
     private void button22_Click(object sender, EventArgs e)
     {
-      var bn = new BN();
+      var bn = new BN(listDistricts);
     }
 
     private void button23_Click(object sender, EventArgs e)
     {
-      var elms = new ELMS();
+      var elms = new ELMS(listDistricts);
     }
 
     private void MainForm_Load(object sender, EventArgs e)
