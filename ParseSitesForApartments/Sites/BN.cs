@@ -2,13 +2,14 @@
 using AngleSharp.Parser.Html;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using ParseSitesForApartments.ParsClasses;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -69,7 +70,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("Студия", document, district[k]);
+            ParseSheet("Студия", document, ListDistricts.Where(x=>x.Name.ToLower() == district[k].ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -98,7 +99,7 @@ namespace ParseSitesForApartments.Sites
               var responce = webClient.DownloadString(sdam);
               var parser = new HtmlParser();
               var document = parser.Parse(responce);
-              ParseSheet("1 км. кв.", document, district[k]);
+              ParseSheet("1 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
               if (document.GetElementsByClassName("object--item").Length < 30)
                 break;
             }
@@ -131,7 +132,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("2 км. кв.", document, district[k]);
+            ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -159,7 +160,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("3 км. кв.", document, district[k]);
+            ParseSheet("3 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -186,7 +187,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("4 км. кв.", document, district[k]);
+            ParseSheet("4 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -213,7 +214,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("Студия Н", document, district[k]);
+            ParseSheet("Студия Н", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -242,7 +243,7 @@ namespace ParseSitesForApartments.Sites
               var responce = webClient.DownloadString(sdam);
               var parser = new HtmlParser();
               var document = parser.Parse(responce);
-              ParseSheet("1 км. кв. Н", document, district[k]);
+              ParseSheet("1 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
               if (document.GetElementsByClassName("object--item").Length < 30)
                 break;
             }
@@ -275,7 +276,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("2 км. кв.", document, district[k]);
+            ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -303,7 +304,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("3 км. кв. Н", document, district[k]);
+            ParseSheet("3 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -330,7 +331,7 @@ namespace ParseSitesForApartments.Sites
             var responce = webClient.DownloadString(sdam);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("4 км. кв. Н", document, district[k]);
+            ParseSheet("4 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -340,9 +341,10 @@ namespace ParseSitesForApartments.Sites
       MessageBox.Show("Закончили 4+ км. кв. Н");
     }
 
-    private void ParseSheet(string typeRoom, IHtmlDocument document, string districtName)
+    private void ParseSheet(string typeRoom, IHtmlDocument document, District district)
     {
       var apartaments = document.GetElementsByClassName("object--item");
+      var parseStreet = new ParseStreet();
 
       for (int i = 0; i < apartaments.Length; i++)
       {
@@ -555,13 +557,14 @@ namespace ParseSitesForApartments.Sites
         if (!string.IsNullOrEmpty(str))
           flat.Building.Street = flat.Building.Street.Replace(str, "");
 
+        flat.Building.Street = parseStreet.Execute(flat.Building.Street, district);
         Monitor.Enter(locker);
         if (!string.IsNullOrEmpty(flat.Building.Number))
         {
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
           {
             sw.BaseStream.Position = sw.BaseStream.Length;
-            sw.WriteLine($@"{districtName};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{ flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+            sw.WriteLine($@"{district.Name};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{ flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
           }
         }
         Monitor.Exit(locker);

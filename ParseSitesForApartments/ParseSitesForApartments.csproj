@@ -67,6 +67,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Metro.cs" />
+    <Compile Include="ParsClasses\ParseStreet.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sites\Avito.cs" />
