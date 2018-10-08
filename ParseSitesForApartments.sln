@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParseSitesForApartments", "ParseSitesForApartments\ParseSitesForApartments.csproj", "{6B3D8E77-6204-401E-BBC2-AE6888A22A36}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PythonApplication1", "PythonApplication1\PythonApplication1.pyproj", "{61BE6D5D-88A8-4E4A-8F03-1EA566A6EB63}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataBase", "DataBase\DataBase.csproj", "{7DCB4432-544C-49A4-879C-7D71B5D7090B}"
 EndProject
 Global
@@ -19,8 +17,6 @@ Global
 		{6B3D8E77-6204-401E-BBC2-AE6888A22A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B3D8E77-6204-401E-BBC2-AE6888A22A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B3D8E77-6204-401E-BBC2-AE6888A22A36}.Release|Any CPU.Build.0 = Release|Any CPU
-		{61BE6D5D-88A8-4E4A-8F03-1EA566A6EB63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{61BE6D5D-88A8-4E4A-8F03-1EA566A6EB63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DCB4432-544C-49A4-879C-7D71B5D7090B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7DCB4432-544C-49A4-879C-7D71B5D7090B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DCB4432-544C-49A4-879C-7D71B5D7090B}.Release|Any CPU.ActiveCfg = Release|Any CPU
