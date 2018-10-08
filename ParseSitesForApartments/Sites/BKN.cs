@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using ParseSitesForApartments.ParsClasses;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -151,11 +152,8 @@ namespace ParseSitesForApartments.Sites
 
     private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection)
     {
-      string year = string.Empty;
-      string distanceInMinute = string.Empty;
       string district = string.Empty;
-      string building = string.Empty;
-
+      var parseStreet = new ParseStreet();
       for (int j = 0; j < collection.Length; j++)
       {
         string town = string.Empty;
@@ -493,7 +491,7 @@ namespace ParseSitesForApartments.Sites
           }
           flat.Building.Metro = flat.Building.Metro.Replace("Пл.", "").Replace("пр.", "").Replace("Пр.", "").Replace("●", "").Replace("Пл. А.", "").Trim();
 
-
+          //flat.Building.Street = parseStreet.Execute()
           Monitor.Enter(locker);
           if (!string.IsNullOrEmpty(flat.Building.Number))
           {

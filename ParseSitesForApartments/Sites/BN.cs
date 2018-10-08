@@ -15,8 +15,10 @@ namespace ParseSitesForApartments.Sites
 {
   public class BN : BaseParse
   {
-    static object locker = new object();
-    private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 4, "Калининский" }, { 5, "Кировский" }, { 6, "Колпинский" }, { 7, "Красногвардейский" }, { 8, "Красносельский" }, { 9, "Кронштадтский" }, { 10, "Курортный" }, { 11, "Московский" }, { 12, "Невский" }, { 13, "Петроградский" }, { 14, "Петродворцовый" }, { 15, "Приморский" }, { 16, "Пушкинский" }, { 17, "Фрунзенский" }, { 18, "Центральный" }, };
+    private static object locker = new object();
+    private int minPage = 1;
+    private int maxPage = 17;
+    private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 5, "Калининский" }, { 4, "Кировский" }, { 16, "Колпинский" }, { 6, "Красногвардейский" }, { 7, "Красносельский" }, { 15, "Кронштадтский" }, { 17, "Курортный" }, { 8, "Московский" }, { 9, "Невский" }, { 10, "Петроградский" }, { 19, "Петродворцовый" }, { 11, "Приморский" }, { 20, "Пушкинский" }, { 12, "Фрунзенский" }, { 13, "Центральный" }, };
 
     public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.csv";
     public override string FilenameSdam => @"d:\ParserInfo\Appartament\BNSdam.csv";
@@ -28,7 +30,7 @@ namespace ParseSitesForApartments.Sites
     {
       using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
       {
-        sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км)");
+        sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
       }
       var studiiThread = new Thread(ParseStudii);
       studiiThread.Start();
@@ -55,25 +57,22 @@ namespace ParseSitesForApartments.Sites
 
     public void ParseStudiiOld()
     {
-      int minPage = 1;
-      int maxPage = 17;
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-0-city_district-{k}/?from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-0-city_district-{distr.Key}/?from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
+            var responce = webClient.DownloadString(sell);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("Студия", document, ListDistricts.Where(x=>x.Name.ToLower() == district[k].ToLower()).First());
+            ParseSheet("Студия", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
-
           }
         }
       }
@@ -81,25 +80,22 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseOneRoomOld()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{k}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
             try
             {
-              var responce = webClient.DownloadString(sdam);
+              var responce = webClient.DownloadString(sell);
               var parser = new HtmlParser();
               var document = parser.Parse(responce);
-              ParseSheet("1 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+              ParseSheet("1 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
               if (document.GetElementsByClassName("object--item").Length < 30)
                 break;
             }
@@ -107,7 +103,6 @@ namespace ParseSitesForApartments.Sites
             {
               MessageBox.Show(ex.Message);
             }
-
           }
         }
       }
@@ -116,23 +111,20 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseTwoRoomOld()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{k}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
+            var responce = webClient.DownloadString(sell);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+            ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -144,23 +136,20 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseThreeRoomOld()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-3-city_district-{k}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
+            var responce = webClient.DownloadString(sell);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("3 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+            ParseSheet("3 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -171,23 +160,20 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseFourRoomOld()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{k}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
+            var responce = webClient.DownloadString(sell);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("4 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+            ParseSheet("4 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -196,25 +182,22 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили 4+ км. кв.");
     }
-
     public void ParseStudii()
     {
-      int minPage = 1;
-      int maxPage = 17;
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-0-city_district-{k}/?cpu=kkv-0-city_district-1&kkv%5B0%5D=0&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-0-city_district-{distr.Key}/?cpu=kkv-0-city_district-1&kkv%5B0%5D=0&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
+            var responce = webClient.DownloadString(sell);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("Студия Н", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+            ParseSheet("Студия Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -225,25 +208,22 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseOneRoom()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-1-city_district-{k}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
             webClient.Encoding = Encoding.UTF8;
             try
             {
-              var responce = webClient.DownloadString(sdam);
+              var responce = webClient.DownloadString(sell);
               var parser = new HtmlParser();
               var document = parser.Parse(responce);
-              ParseSheet("1 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+              ParseSheet("1 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
               if (document.GetElementsByClassName("object--item").Length < 30)
                 break;
             }
@@ -260,23 +240,20 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseTwoRoom()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-2-city_district-{k}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
+            var responce = webClient.DownloadString(sell);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+            ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -288,23 +265,20 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseThreeRoom()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-3-city_district-{i}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
+            var responce = webClient.DownloadString(sell);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("3 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+            ParseSheet("3 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -315,23 +289,20 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseFourRoom()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
-        for (int k = 1; k < district.Count; k++)
+        foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
             Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{k}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
             webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
+            var responce = webClient.DownloadString(sell);
             var parser = new HtmlParser();
             var document = parser.Parse(responce);
-            ParseSheet("4 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == district[k].ToLower()).First());
+            ParseSheet("4 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
             if (document.GetElementsByClassName("object--item").Length < 30)
               break;
 
@@ -344,11 +315,15 @@ namespace ParseSitesForApartments.Sites
     private void ParseSheet(string typeRoom, IHtmlDocument document, District district)
     {
       var apartaments = document.GetElementsByClassName("object--item");
+      var urlElems = document.GetElementsByClassName("object--link-to-object button_mode_one");
       var parseStreet = new ParseStreet();
 
       for (int i = 0; i < apartaments.Length; i++)
       {
-        var flat = new Flat();
+        var flat = new Flat
+        {
+          Url = $"https://www.bn.ru{urlElems[i].GetAttribute("href")}"
+        };
         if (apartaments[i].GetElementsByClassName("object__square").Length > 0)
           flat.Square = apartaments[i].GetElementsByClassName("object__square")[0].TextContent.Trim().Replace(".", ",");
         flat.CountRoom = typeRoom;
@@ -550,12 +525,13 @@ namespace ParseSitesForApartments.Sites
           flat.Building.Street = flat.Building.Street.Replace("СПб", "");
         }
 
-        flat.Building.Street = flat.Building.Street.Replace("ул.", "").Replace("ул", "").Replace("пр-кт", "").Replace("проспект", "").Replace("наб", "").Replace("б-р", "").Replace("б-р/2", "").Replace("б-р/4", "").Replace("проезд", "").Replace("пр", "").Replace("шос к", "").Replace("бульвар", "").Replace(" б", "").Replace("  к", "").Replace("  д", "").Replace("пл", "").Replace(",", "").Replace(".", "").Trim();
+        flat.Building.Street = flat.Building.Street.Replace("ул.", "").Replace("улица", "").Replace("пр-кт", "").Replace("проспект", "").Replace("наб", "").Replace("б-р", "").Replace("б-р/2", "").Replace("б-р/4", "").Replace("проезд", "").Replace("пр", "").Replace("шос к", "").Replace("бульвар", "").Replace(" б", "").Replace("  к", "").Replace("  д", "").Replace("пл", "").Replace(",", "").Replace(".", "").Trim();
 
         regex = new Regex(@"(\/А\d+А)");
         var str = regex.Match(flat.Building.Street).Value;
         if (!string.IsNullOrEmpty(str))
           flat.Building.Street = flat.Building.Street.Replace(str, "");
+
 
         flat.Building.Street = parseStreet.Execute(flat.Building.Street, district);
         Monitor.Enter(locker);
@@ -564,7 +540,7 @@ namespace ParseSitesForApartments.Sites
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
           {
             sw.BaseStream.Position = sw.BaseStream.Length;
-            sw.WriteLine($@"{district.Name};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{ flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+            sw.WriteLine($@"{district.Name};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{ flat.Floor};{flat.Building.Metro};{flat.Building.Distance};{flat.Url}");
           }
         }
         Monitor.Exit(locker);
@@ -591,8 +567,6 @@ namespace ParseSitesForApartments.Sites
 
     public void ParseStudiiSdam()
     {
-      int minPage = 1;
-      int maxPage = 17;
       using (var webClient = new WebClient())
       {
         var random = new Random();
@@ -613,9 +587,6 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseOneSdam()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
@@ -647,9 +618,6 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseTwoSdam()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
@@ -681,9 +649,6 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseThreeSdam()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
@@ -715,9 +680,6 @@ namespace ParseSitesForApartments.Sites
     }
     public void ParseFourSdam()
     {
-      int minPage = 1;
-      int maxPage = 17;
-
       using (var webClient = new WebClient())
       {
         var random = new Random();
