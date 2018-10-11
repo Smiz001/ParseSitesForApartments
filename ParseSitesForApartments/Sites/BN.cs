@@ -32,284 +32,360 @@ namespace ParseSitesForApartments.Sites
       {
         sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
       }
-      var studiiThread = new Thread(ParseStudii);
-      studiiThread.Start();
-      var oneThread = new Thread(ParseOneRoom);
-      oneThread.Start();
-      var twoThread = new Thread(ParseTwoRoom);
-      twoThread.Start();
-      var threeThread = new Thread(ParseThreeRoom);
-      threeThread.Start();
-      var fourThread = new Thread(ParseFourRoom);
-      fourThread.Start();
+      var studiiThread = new Thread(ChangeDistrictAndPage);
+      studiiThread.Start("Студия Н");
+      var oneThread = new Thread(ChangeDistrictAndPage);
+      oneThread.Start("1 км. кв. Н");
+      var twoThread = new Thread(ChangeDistrictAndPage);
+      twoThread.Start("2 км. кв. Н");
+      var threeThread = new Thread(ChangeDistrictAndPage);
+      threeThread.Start("3 км. кв. Н");
+      var fourThread = new Thread(ChangeDistrictAndPage);
+      fourThread.Start("4 км. кв. Н");
 
-      var studiiThreadOld = new Thread(ParseStudiiOld);
-      studiiThreadOld.Start();
-      var oneThreadOld = new Thread(ParseOneRoomOld);
-      oneThreadOld.Start();
-      var twoThreadOld = new Thread(ParseTwoRoomOld);
-      twoThreadOld.Start();
-      var threeThreadOld = new Thread(ParseThreeRoomOld);
-      threeThreadOld.Start();
-      var fourThreadOld = new Thread(ParseFourRoomOld);
-      fourThreadOld.Start();
+      var studiiThreadOld = new Thread(ChangeDistrictAndPage);
+      studiiThreadOld.Start("Студия");
+      var oneThreadOld = new Thread(ChangeDistrictAndPage);
+      oneThreadOld.Start("1 км. кв.");
+      var twoThreadOld = new Thread(ChangeDistrictAndPage);
+      twoThreadOld.Start("2 км. кв.");
+      var threeThreadOld = new Thread(ChangeDistrictAndPage);
+      threeThreadOld.Start("3 км. кв.");
+      var fourThreadOld = new Thread(ChangeDistrictAndPage);
+      fourThreadOld.Start("4 км. кв.");
     }
 
-    public void ParseStudiiOld()
+    //public void ParseStudiiOld()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-0-city_district-{distr.Key}/?from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        var responce = webClient.DownloadString(sell);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+    //        ParseSheet("Студия", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //        if (document.GetElementsByClassName("object--item").Length < 30)
+    //          break;
+    //      }
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили студии");
+    //}
+    //public void ParseOneRoomOld()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        try
+    //        {
+    //          var responce = webClient.DownloadString(sell);
+    //          var parser = new HtmlParser();
+    //          var document = parser.Parse(responce);
+    //          ParseSheet("1 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //          if (document.GetElementsByClassName("object--item").Length < 30)
+    //            break;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //          MessageBox.Show(ex.Message);
+    //        }
+    //      }
+    //    }
+    //  }
+
+    //  MessageBox.Show("Закончили 1 км. кв.");
+    //}
+    //public void ParseTwoRoomOld()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        var responce = webClient.DownloadString(sell);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+    //        ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //        if (document.GetElementsByClassName("object--item").Length < 30)
+    //          break;
+
+    //      }
+    //    }
+    //  }
+
+    //  MessageBox.Show("Закончили 2 км. кв.");
+    //}
+    //public void ParseThreeRoomOld()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        var responce = webClient.DownloadString(sell);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+    //        ParseSheet("3 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //        if (document.GetElementsByClassName("object--item").Length < 30)
+    //          break;
+
+    //      }
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 3 км. кв.");
+    //}
+    //public void ParseFourRoomOld()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        var responce = webClient.DownloadString(sell);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+    //        ParseSheet("4 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //        if (document.GetElementsByClassName("object--item").Length < 30)
+    //          break;
+
+    //      }
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 4+ км. кв.");
+    //}
+    //public void ParseStudii()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-0-city_district-{distr.Key}/?cpu=kkv-0-city_district-1&kkv%5B0%5D=0&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        var responce = webClient.DownloadString(sell);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+    //        ParseSheet("Студия Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //        if (document.GetElementsByClassName("object--item").Length < 30)
+    //          break;
+
+    //      }
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили студии Н");
+    //}
+    //public void ParseOneRoom()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        try
+    //        {
+    //          var responce = webClient.DownloadString(sell);
+    //          var parser = new HtmlParser();
+    //          var document = parser.Parse(responce);
+    //          ParseSheet("1 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //          if (document.GetElementsByClassName("object--item").Length < 30)
+    //            break;
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //          MessageBox.Show(ex.Message);
+    //        }
+
+    //      }
+    //    }
+    //  }
+
+    //  MessageBox.Show("Закончили 1 км. кв. Н");
+    //}
+    //public void ParseTwoRoom()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        var responce = webClient.DownloadString(sell);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+    //        ParseSheet("2 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //        if (document.GetElementsByClassName("object--item").Length < 30)
+    //          break;
+
+    //      }
+    //    }
+    //  }
+
+    //  MessageBox.Show("Закончили 2 км. кв. Н");
+    //}
+    //public void ParseThreeRoom()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        var responce = webClient.DownloadString(sell);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+    //        ParseSheet("3 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //        if (document.GetElementsByClassName("object--item").Length < 30)
+    //          break;
+
+    //      }
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 3 км. кв. Н");
+    //}
+    //public void ParseFourRoom()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    var random = new Random();
+    //    foreach (var distr in district)
+    //    {
+    //      for (int i = minPage; i < maxPage; i++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 4000));
+    //        string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+    //        webClient.Encoding = Encoding.UTF8;
+    //        var responce = webClient.DownloadString(sell);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+    //        ParseSheet("4 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
+    //        if (document.GetElementsByClassName("object--item").Length < 30)
+    //          break;
+
+    //      }
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 4+ км. кв. Н");
+    //}
+
+    private void ChangeDistrictAndPage(object typeRoom)
     {
+      HtmlParser parser = new HtmlParser();
       using (var webClient = new WebClient())
       {
-        var random = new Random();
+        string url = "";
         foreach (var distr in district)
         {
           for (int i = minPage; i < maxPage; i++)
           {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-0-city_district-{distr.Key}/?from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sell);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("Студия", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
-          }
-        }
-      }
-      MessageBox.Show("Закончили студии");
-    }
-    public void ParseOneRoomOld()
-    {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            try
+            switch (typeRoom)
             {
-              var responce = webClient.DownloadString(sell);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-              ParseSheet("1 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-              if (document.GetElementsByClassName("object--item").Length < 30)
+              case "Студия":
+                url =
+                  $@"https://www.bn.ru/kvartiry-vtorichka/kkv-0-city_district-{distr.Key}/?from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+                break;
+              case "Студия Н":
+                url =
+                  $@"https://www.bn.ru/kvartiry-novostroiki/kkv-0-city_district-{distr.Key}/?cpu=kkv-0-city_district-1&kkv%5B0%5D=0&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+                break;
+              case "1 км. кв.":
+                url =
+                  $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+                break;
+              case "1 км. кв. Н":
+                url =
+                  $@"https://www.bn.ru/kvartiry-novostroiki/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+                break;
+              case "2 км. кв.":
+                url =
+                  $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+                break;
+              case "2 км. кв. Н":
+                url =
+                  $@"https://www.bn.ru/kvartiry-novostroiki/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+                break;
+              case "3 км. кв.":
+                url =
+                  $@"https://www.bn.ru/kvartiry-vtorichka/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+                break;
+              case "3 км. кв. Н":
+                url =
+                  $@"https://www.bn.ru/kvartiry-novostroiki/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+                break;
+              case "4 км. кв. Н":
+                  url =
+                    $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+                break;
+              case "4 км. кв.":
+                url =
+                  $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
                 break;
             }
-            catch (Exception ex)
-            {
-              MessageBox.Show(ex.Message);
-            }
-          }
-        }
-      }
 
-      MessageBox.Show("Закончили 1 км. кв.");
-    }
-    public void ParseTwoRoomOld()
-    {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sell);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-            if (document.GetElementsByClassName("object--item").Length < 30)
+            if (!ExecuteParse(url, webClient, parser, (string)typeRoom,
+              ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First()))
               break;
-
           }
         }
       }
 
-      MessageBox.Show("Закончили 2 км. кв.");
+      MessageBox.Show($"Закнсили - {typeRoom}");
     }
-    public void ParseThreeRoomOld()
+
+    private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, District district)
     {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sell);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("3 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
-
-          }
-        }
-      }
-      MessageBox.Show("Закончили 3 км. кв.");
-    }
-    public void ParseFourRoomOld()
-    {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sell);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("4 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
-
-          }
-        }
-      }
-      MessageBox.Show("Закончили 4+ км. кв.");
-    }
-    public void ParseStudii()
-    {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-0-city_district-{distr.Key}/?cpu=kkv-0-city_district-1&kkv%5B0%5D=0&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sell);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("Студия Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
-
-          }
-        }
-      }
-      MessageBox.Show("Закончили студии Н");
-    }
-    public void ParseOneRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            try
-            {
-              var responce = webClient.DownloadString(sell);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-              ParseSheet("1 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-              if (document.GetElementsByClassName("object--item").Length < 30)
-                break;
-            }
-            catch (Exception ex)
-            {
-              MessageBox.Show(ex.Message);
-            }
-
-          }
-        }
-      }
-
-      MessageBox.Show("Закончили 1 км. кв. Н");
-    }
-    public void ParseTwoRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sell);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("2 км. кв.", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
-
-          }
-        }
-      }
-
-      MessageBox.Show("Закончили 2 км. кв. Н");
-    }
-    public void ParseThreeRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sell);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("3 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
-
-          }
-        }
-      }
-      MessageBox.Show("Закончили 3 км. кв. Н");
-    }
-    public void ParseFourRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        var random = new Random();
-        foreach (var distr in district)
-        {
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sell = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sell);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-            ParseSheet("4 км. кв. Н", document, ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First());
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
-
-          }
-        }
-      }
-      MessageBox.Show("Закончили 4+ км. кв. Н");
+      var random = new Random();
+      Thread.Sleep(random.Next(2000, 4000));
+      var responce = webClient.DownloadString(url);
+      var document = parser.Parse(responce);
+      ParseSheet(typeRoom, document, district);
+      if (document.GetElementsByClassName("object--item").Length < 30)
+        return false;
+      return true;
     }
 
     private void ParseSheet(string typeRoom, IHtmlDocument document, District district)
