@@ -27,13 +27,31 @@ namespace ParseSitesForApartments.Sites
     public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\BKNSdamWithInfo.csv";
     public override string NameSite => "БКН";
 
+    private ProgressForm progress;
+    private int count = 1;
     public override void ParsingAll()
     {
       var random = new Random();
-      using (var sw = new StreamWriter(Filename, true, System.Text.Encoding.UTF8))
+      using (var sw = new StreamWriter(Filename, true, Encoding.UTF8))
       {
         sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
       }
+      progress = new ProgressForm();
+      var threadbackground = new Thread(
+        new ThreadStart(() =>
+        {
+          try
+          {
+            ParsingVtorichka();
+            MessageBox.Show("Загрузка завершена");
+            progress.BeginInvoke(new Action(() => progress.Close()));
+          }
+          catch (Exception ex)
+          {
+            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+        }
+        ));
       ParsingVtorichka();
       //ParsingNovostroiki();
     }
@@ -57,6 +75,17 @@ namespace ParseSitesForApartments.Sites
       Thread.Sleep(55000);
       var fiveThread = new Thread(ParsingFiveAndMoreRoomVtorichka);
       fiveThread.Start();
+      while(true)
+      {
+        if (studiiThread.IsAlive)
+          if (oneThread.IsAlive)
+            if (twoThread.IsAlive)
+              if (threeThread.IsAlive)
+                if (fourThread.IsAlive)
+                  if (fiveThread.IsAlive)
+                    break;
+        Thread.Sleep(2000);
+      }
     }
     public void ParsingStudioVtorichka()
     {
@@ -493,6 +522,8 @@ namespace ParseSitesForApartments.Sites
 
           //flat.Building.Street = parseStreet.Execute()
           Monitor.Enter(locker);
+          progress.UpdateProgress(count);
+          count++;
           if (!string.IsNullOrEmpty(flat.Building.Number))
           {
             using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
