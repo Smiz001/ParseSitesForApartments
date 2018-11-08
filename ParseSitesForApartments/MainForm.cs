@@ -731,8 +731,8 @@ WHERE ID ='{item.Id}'";
     private void MainForm_Load(object sender, EventArgs e)
     {
       SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
-      //sb.DataSource = "localhost";
-      sb.DataSource = @"N1081\SQLEXPRESS";
+      sb.DataSource = "localhost";
+      //sb.DataSource = @"N1081\SQLEXPRESS";
       sb.InitialCatalog = "ParseBulding";
       sb.IntegratedSecurity = true;
 
