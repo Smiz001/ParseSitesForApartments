@@ -730,23 +730,23 @@ WHERE ID ='{item.Id}'";
 
     private void MainForm_Load(object sender, EventArgs e)
     {
-      SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
-      sb.DataSource = "localhost";
-      //sb.DataSource = @"N1081\SQLEXPRESS";
-      sb.InitialCatalog = "ParseBulding";
-      sb.IntegratedSecurity = true;
+      //SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
+      //sb.DataSource = "localhost";
+      ////sb.DataSource = @"N1081\SQLEXPRESS";
+      //sb.InitialCatalog = "ParseBulding";
+      //sb.IntegratedSecurity = true;
 
-      CoreCreatorConnection creator = new SqlServerCreator();
-      using (CoreConnetion connection = creator.FactoryCreate(sb.ToString()))
-      {
-        string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
-        var reader = connection.ExecuteReader(select);
-        while (reader.Read())
-        {
-          listDistricts.Add(new District { Id = reader.GetGuid(0), Name = reader.GetString(1) });
-        }
-        reader.Close();
-      }
+      //CoreCreatorConnection creator = new SqlServerCreator();
+      //using (CoreConnetion connection = creator.FactoryCreate(sb.ToString()))
+      //{
+      //  string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
+      //  var reader = connection.ExecuteReader(select);
+      //  while (reader.Read())
+      //  {
+      //    listDistricts.Add(new District { Id = reader.GetGuid(0), Name = reader.GetString(1) });
+      //  }
+      //  reader.Close();
+      //}
     }
   }
 }
