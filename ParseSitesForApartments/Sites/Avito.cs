@@ -1043,6 +1043,11 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
+    public override int GetCountFlat()
+    {
+      throw new NotImplementedException();
+    }
+
     public Avito(List<District> listDistricts) : base(listDistricts)
     {
     }

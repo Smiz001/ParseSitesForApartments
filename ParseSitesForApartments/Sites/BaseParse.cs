@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -21,5 +17,6 @@ namespace ParseSitesForApartments.Sites
     public abstract string NameSite { get; }
     public abstract void ParsingAll();
     public abstract void ParsingSdamAll();
+    public abstract int GetCountFlat();
   }
 }

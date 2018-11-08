@@ -1479,6 +1479,11 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
+    public override int GetCountFlat()
+    {
+      throw new NotImplementedException();
+    }
+
     public BKN(List<District> listDistricts) : base(listDistricts)
     {
     }

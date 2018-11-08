@@ -358,8 +358,8 @@ namespace ParseSitesForApartments.Sites
                   $@"https://www.bn.ru/kvartiry-novostroiki/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
                 break;
               case "4 км. кв. Н":
-                  url =
-                    $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
+                url =
+                  $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page={i}";
                 break;
               case "4 км. кв.":
                 url =
@@ -643,7 +643,7 @@ namespace ParseSitesForApartments.Sites
 
         flat.Building.Street = parseStreet.Execute(flat.Building.Street, district);
         Monitor.Enter(locker);
-        if (!string.IsNullOrEmpty(flat.Building.Number)|| !string.IsNullOrEmpty(flat.Building.Street))
+        if (!string.IsNullOrEmpty(flat.Building.Number) || !string.IsNullOrEmpty(flat.Building.Street))
         {
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
           {
@@ -678,18 +678,18 @@ namespace ParseSitesForApartments.Sites
       using (var webClient = new WebClient())
       {
         var random = new Random();
-          for (int i = minPage; i < maxPage; i++)
-          {
-            Thread.Sleep(random.Next(2000, 4000));
-            string sdam = $@"https://www.bn.ru/arenda-kvartiry/kkv-0/?cpu=kkv-0&kkv%5B0%5D=0&from=&to=&lease_period%5B0%5D=1&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=rent&page={i}";
-            webClient.Encoding = Encoding.UTF8;
-            var responce = webClient.DownloadString(sdam);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
+        for (int i = minPage; i < maxPage; i++)
+        {
+          Thread.Sleep(random.Next(2000, 4000));
+          string sdam = $@"https://www.bn.ru/arenda-kvartiry/kkv-0/?cpu=kkv-0&kkv%5B0%5D=0&from=&to=&lease_period%5B0%5D=1&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=rent&page={i}";
+          webClient.Encoding = Encoding.UTF8;
+          var responce = webClient.DownloadString(sdam);
+          var parser = new HtmlParser();
+          var document = parser.Parse(responce);
           ParseSheetSdam("Студия", document);
-            if (document.GetElementsByClassName("object--item").Length < 30)
-              break;
-          }
+          if (document.GetElementsByClassName("object--item").Length < 30)
+            break;
+        }
       }
       MessageBox.Show("Закончили студии");
     }
@@ -1049,7 +1049,7 @@ namespace ParseSitesForApartments.Sites
           flat.Building.Street = flat.Building.Street.Replace(str, "");
 
         Monitor.Enter(locker);
-        if(!string.IsNullOrWhiteSpace(flat.Building.Number))
+        if (!string.IsNullOrWhiteSpace(flat.Building.Number))
         {
           using (var sw = new StreamWriter(new FileStream(FilenameSdam, FileMode.Open), Encoding.UTF8))
           {
@@ -1058,6 +1058,78 @@ namespace ParseSitesForApartments.Sites
           }
         }
         Monitor.Exit(locker);
+      }
+    }
+
+    int count = 0;
+    public override int GetCountFlat()
+    {
+      var parser = new HtmlParser();
+      var random = new Random();
+      using (var webClient = new WebClient())
+      {
+        foreach (var distr in district)
+        {
+          Thread.Sleep(random.Next(2000, 4000));
+
+          string url = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-0-city_district-{distr.Key}/?from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+           url = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-0-city_district-{distr.Key}/?cpu=kkv-0-city_district-1&kkv%5B0%5D=0&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+          url = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+          url = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-1-city_district-{distr.Key}/?cpu=kkv-1-city_district-1&kkv%5B0%5D=1&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+          url = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+          url = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-2-city_district-{distr.Key}/?cpu=kkv-2-city_district-1&kkv%5B0%5D=2&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+          url = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+          url = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-3-city_district-{distr.Key}/?cpu=kkv-3-city_district-1&kkv%5B0%5D=3&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+          url = $@"https://www.bn.ru/kvartiry-novostroiki/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=newbuild&page=1";
+
+          AddCountFlat(url, parser, webClient);
+
+          url = $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page=1";
+          AddCountFlat(url, parser, webClient);
+        }
+      }
+      return count;
+    }
+
+    private void AddCountFlat(string url, HtmlParser parser, WebClient webClient)
+    {
+      var responce = webClient.DownloadString(url);
+      var document = parser.Parse(responce);
+      var element = document.GetElementsByClassName("catalog-top_info color");
+      if (element.Length == 1)
+      {
+        var a = element[0].TextContent;
+        if (a.Contains("показано"))
+          count += 500;
+        else
+        {
+          var regex = new Regex(@"(\d+)");
+          count += int.Parse(regex.Match(a).Value);
+        }
       }
     }
 

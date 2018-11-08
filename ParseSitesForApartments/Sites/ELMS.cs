@@ -2,7 +2,6 @@
 using AngleSharp.Parser.Html;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -1151,6 +1150,11 @@ namespace ParseSitesForApartments.Sites
           MessageBox.Show(ex.Message);
         }
       }
+    }
+
+    public override int GetCountFlat()
+    {
+      throw new NotImplementedException();
     }
 
     public ELMS(List<District> listDistricts) : base(listDistricts)
