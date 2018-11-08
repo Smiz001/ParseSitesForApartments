@@ -125,6 +125,62 @@ namespace ParseSitesForApartments.ParsClasses
       {
         return "Наб. р. Пряжки";
       }
+      else if (str.Contains("фурштатская"))
+      {
+        return "Фурштатская ул.";
+      }
+      else if (str.Contains("херсонская"))
+      {
+        return "Херсонская ул.";
+      }
+      else if (str.Contains("чайковского"))
+      {
+        return "Чайковского ул.";
+      }
+      else if (str.Contains("таврическая"))
+      {
+        return "Таврическая ул.";
+      }
+      else if (str.Contains("суворовский"))
+      {
+        return "Суворовский пр.";
+      }
+      else if (str.Contains("смольный"))
+      {
+        return "Смольный пр.";
+      }
+      else if (str.Contains("рубинштейна"))
+      {
+        return "Рубинштейна ул.";
+      }
+      else if (str.Contains("пушкинская"))
+      {
+        return "Пушкинская ул.";
+      }
+      else if (str.Contains("полтавский"))
+      {
+        return "Полтавский проезд";
+      }
+      else if (str.Contains("заневский"))
+      {
+        return "Заневский пр.";
+      }
+      else if (str.Contains("невский"))
+      {
+        return "Невский пр.";
+      }
+      else if (str.Contains("морская") && str.Contains("б") &&(district.Name == "﻿Центральный" || district.Name == "﻿Адмиралтейский"))
+      {
+        return "Б.Морская ул.";
+      }
+      else if (str.Contains("морская") && str.Contains("м") && (district.Name == "﻿Центральный" || district.Name == "﻿Адмиралтейский"))
+      {
+        return "М.Морская ул.";
+      }
+      else if (str.Contains("морская") && district.Name == "﻿﻿Василеостровский")
+      {
+        return "Морская наб.";
+      }
       else
         return street;
     }

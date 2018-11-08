@@ -317,6 +317,7 @@ namespace ParseSitesForApartments.Sites
       HtmlParser parser = new HtmlParser();
       using (var webClient = new WebClient())
       {
+        webClient.Encoding = Encoding.UTF8;
         string url = "";
         foreach (var distr in district)
         {
@@ -595,6 +596,37 @@ namespace ParseSitesForApartments.Sites
           town = "Красное Село г";
           flat.Building.Street = flat.Building.Street.Replace(town, "");
         }
+        else if (flat.Building.Street.Contains("г. Пушкин"))
+        {
+          town = "г. Пушкин";
+          flat.Building.Street = flat.Building.Street.Replace(town, "");
+        }
+        else if (flat.Building.Street.Contains("Пушкин"))
+        {
+          town = "Пушкин";
+          flat.Building.Street = flat.Building.Street.Replace(town, "");
+        }
+
+        else if (flat.Building.Street.Contains("Шушары пос"))
+        {
+          town = "Шушары пос";
+          flat.Building.Street = flat.Building.Street.Replace(town, "");
+        }
+        else if (flat.Building.Street.Contains("Шушары"))
+        {
+          town = "Шушары";
+          flat.Building.Street = flat.Building.Street.Replace(town, "");
+        }
+        else if (flat.Building.Street.Contains("Металострой пос"))
+        {
+          town = "Металострой пос";
+          flat.Building.Street = flat.Building.Street.Replace(town, "");
+        }
+        else if (flat.Building.Street.Contains("Металострой"))
+        {
+          town = "Металострой";
+          flat.Building.Street = flat.Building.Street.Replace(town, "");
+        }
         else
         {
           town = "Санкт-Петербург";
@@ -611,7 +643,7 @@ namespace ParseSitesForApartments.Sites
 
         flat.Building.Street = parseStreet.Execute(flat.Building.Street, district);
         Monitor.Enter(locker);
-        if (!string.IsNullOrEmpty(flat.Building.Number))
+        if (!string.IsNullOrEmpty(flat.Building.Number)|| !string.IsNullOrEmpty(flat.Building.Street))
         {
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
           {
