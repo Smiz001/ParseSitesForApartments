@@ -9,5 +9,6 @@ namespace ParseSitesForApartments
     public string Name { get; set; } = string.Empty;
 
     public List<Building> Buildings { get; set; } = new List<Building>();
+    public List<Metro> Metros { get; set; } = new List<Metro>();
   }
 }

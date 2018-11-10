@@ -79,7 +79,8 @@ namespace DataBase.Connections
       Log.Debug($"Query - {query}");
       try
       {
-        connection.Open();
+        if (connection.State != ConnectionState.Open)
+          connection.Open();
         var command = new SqlCommand(query, connection);
         reader = command.ExecuteReader();
       }

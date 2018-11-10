@@ -52,7 +52,9 @@ namespace ParseSitesForApartments.Sites
           }
         }
         ));
-      ParsingVtorichka();
+      threadbackground.Start();
+      progress.Show();
+      //ParsingVtorichka();
       //ParsingNovostroiki();
     }
 
