@@ -646,34 +646,34 @@ WHERE ID ='{item.Id}'";
     {
       using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
       {
-        connection.Open();
-        using (var sr = new StreamReader(@"D:\CoordMetro.csv", Encoding.UTF8))
-        {
-          string line = "";
+ //       connection.Open();
+ //       using (var sr = new StreamReader(@"D:\CoordMetro.csv", Encoding.UTF8))
+ //       {
+ //         string line = "";
 
-          while ((line = sr.ReadLine()) != null)
-          {
-            var arr = line.Split(';');
-            var metro = new Metro() { Name = arr[0], XCoor = float.Parse(arr[1]), YCoor = float.Parse(arr[2]) };
-            string select = $@"SELECT [ID]
-  FROM [ParseBulding].[dbo].[District]
-  WHERE LOWER(Name) = LOWER('{arr[3].Replace("район","").Trim()}')";
+ //         while ((line = sr.ReadLine()) != null)
+ //         {
+ //           var arr = line.Split(';');
+ //           var metro = new Metro() { Name = arr[0], XCoor = float.Parse(arr[1]), YCoor = float.Parse(arr[2]) };
+ //           string select = $@"SELECT [ID]
+ // FROM [ParseBulding].[dbo].[District]
+ // WHERE LOWER(Name) = LOWER('{arr[3].Replace("район","").Trim()}')";
 
-            var command = new SqlCommand(select, connection);
-            var reader = command.ExecuteReader();
-            if(reader.Read())
-            {
-              metro.IdDistrict = reader.GetGuid(0);
-            }
-            reader.Close();
+ //           var command = new SqlCommand(select, connection);
+ //           var reader = command.ExecuteReader();
+ //           if(reader.Read())
+ //           {
+ //             metro.IdDistrict = reader.GetGuid(0);
+ //           }
+ //           reader.Close();
 
-            string insert = $@" insert into [dbo].[Metro] (Id, Name, XCoor, YCoor, IdRegion)
- values ('{metro.Id}','{metro.Name}',{metro.XCoor.ToString().Replace(",",".")},{metro.YCoor.ToString().Replace(",", ".")},'{metro.IdDistrict}')";
+ //           string insert = $@" insert into [dbo].[Metro] (Id, Name, XCoor, YCoor, IdRegion)
+ //values ('{metro.Id}','{metro.Name}',{metro.XCoor.ToString().Replace(",",".")},{metro.YCoor.ToString().Replace(",", ".")},'{metro.IdDistrict}')";
 
-            command = new SqlCommand(insert, connection);
-            command.ExecuteNonQuery();
-          }
-        }
+ //           command = new SqlCommand(insert, connection);
+ //           command.ExecuteNonQuery();
+ //         }
+ //       }
       }
     }
 
@@ -758,7 +758,7 @@ WHERE ID ='{item.Id}'";
           reader = connection.ExecuteReader(select);
           while (reader.Read())
           {
-            district.Metros.Add(new Metro{Id = reader.GetGuid(0), Name = reader.GetString(1), XCoor = (float)reader.GetDouble(2), YCoor = (float)reader.GetDouble(3), IdDistrict = reader.GetGuid(4)});
+            district.Metros.Add(new Metro{Id = reader.GetGuid(0), Name = reader.GetString(1), XCoor = (float)reader.GetDouble(2), YCoor = (float)reader.GetDouble(3)});
           }
           reader.Close();
         }
