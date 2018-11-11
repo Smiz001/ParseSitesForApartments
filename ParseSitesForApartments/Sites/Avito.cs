@@ -1042,13 +1042,9 @@ namespace ParseSitesForApartments.Sites
         Monitor.Exit(locker);
       }
     }
+    
 
-    public override int GetCountFlat()
-    {
-      throw new NotImplementedException();
-    }
-
-    public Avito(List<District> listDistricts) : base(listDistricts)
+    public Avito(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
     }
   }

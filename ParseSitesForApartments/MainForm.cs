@@ -17,6 +17,7 @@ namespace ParseSitesForApartments
   public partial class MainForm : Form
   {
     private List<District> listDistricts = new List<District>();
+    private List<Metro> listMetros = new List<Metro>();
 
     public MainForm()
     {
@@ -24,7 +25,7 @@ namespace ParseSitesForApartments
     }
     private void button1_Click(object sender, EventArgs e)
     {
-      var avito = new Avito(listDistricts);
+      var avito = new Avito(listDistricts, listMetros);
       avito.ParsingAll();
     }
 
@@ -234,7 +235,7 @@ WHERE NAME ='{ar[6]}'";
 
     private void button3_Click(object sender, EventArgs e)
     {
-      var avito = new Avito(listDistricts);
+      var avito = new Avito(listDistricts, listMetros);
       avito.ParsingSdamAll();
     }
 
@@ -412,19 +413,19 @@ WHERE NAME ='{ar[6]}'";
 
     private void button7_Click(object sender, EventArgs e)
     {
-      var bkn = new BKN(listDistricts);
+      var bkn = new BKN(listDistricts, listMetros);
       bkn.ParsingAll();
     }
 
     private void button8_Click(object sender, EventArgs e)
     {
-      var bn = new BN(listDistricts);
+      var bn = new BN(listDistricts, listMetros);
       bn.ParsingAll();
     }
 
     private void button9_Click(object sender, EventArgs e)
     {
-      var elms = new ELMS(listDistricts);
+      var elms = new ELMS(listDistricts, listMetros);
       elms.ParsingAll();
     }
 
@@ -551,7 +552,7 @@ WHERE ID ='{item.Id}'";
 
     private void button12_Click(object sender, EventArgs e)
     {
-      var elms = new ELMS(listDistricts);
+      var elms = new ELMS(listDistricts, listMetros);
       var union = new UnionParseInfoWithDataBase(elms);
       var thread = new Thread(union.UnionInfoProdam);
       thread.Start();
@@ -559,7 +560,7 @@ WHERE ID ='{item.Id}'";
 
     private void button11_Click(object sender, EventArgs e)
     {
-      var bkn = new BKN(listDistricts);
+      var bkn = new BKN(listDistricts, listMetros);
       var union = new UnionParseInfoWithDataBase(bkn);
       var thread = new Thread(union.UnionInfoProdam);
       thread.Start();
@@ -567,7 +568,7 @@ WHERE ID ='{item.Id}'";
 
     private void button13_Click(object sender, EventArgs e)
     {
-      var bn = new BN(listDistricts);
+      var bn = new BN(listDistricts, listMetros);
       var union = new UnionParseInfoWithDataBase(bn);
       var thread = new Thread(union.UnionInfoProdam);
       thread.Start();
@@ -575,7 +576,7 @@ WHERE ID ='{item.Id}'";
 
     private void button15_Click(object sender, EventArgs e)
     {
-      var avito = new Avito(listDistricts);
+      var avito = new Avito(listDistricts, listMetros);
       var union = new UnionParseInfoWithDataBase(avito);
       var thread = new Thread(union.UnionInfoProdam);
       thread.Start();
@@ -626,19 +627,19 @@ WHERE ID ='{item.Id}'";
 
     private void button17_Click(object sender, EventArgs e)
     {
-      var elms = new ELMS(listDistricts);
+      var elms = new ELMS(listDistricts, listMetros);
       elms.ParsingSdamAll();
     }
 
     private void button18_Click(object sender, EventArgs e)
     {
-      var bn = new BN(listDistricts);
+      var bn = new BN(listDistricts, listMetros);
       bn.ParsingSdamAll();
     }
 
     private void button19_Click(object sender, EventArgs e)
     {
-      var bkn = new BKN(listDistricts);
+      var bkn = new BKN(listDistricts, listMetros);
       bkn.ParsingSdamAll();
     }
 
@@ -714,18 +715,18 @@ WHERE ID ='{item.Id}'";
 
     private void button21_Click(object sender, EventArgs e)
     {
-      var bkn = new BKN(listDistricts);
+      var bkn = new BKN(listDistricts, listMetros);
       
     }
 
     private void button22_Click(object sender, EventArgs e)
     {
-      var bn = new BN(listDistricts);
+      var bn = new BN(listDistricts, listMetros);
     }
 
     private void button23_Click(object sender, EventArgs e)
     {
-      var elms = new ELMS(listDistricts);
+      var elms = new ELMS(listDistricts, listMetros);
     }
 
     private void MainForm_Load(object sender, EventArgs e)
@@ -758,7 +759,13 @@ WHERE ID ='{item.Id}'";
           reader = connection.ExecuteReader(select);
           while (reader.Read())
           {
-            district.Metros.Add(new Metro{Id = reader.GetGuid(0), Name = reader.GetString(1), XCoor = (float)reader.GetDouble(2), YCoor = (float)reader.GetDouble(3)});
+            var metro = new Metro
+            {
+              Id = reader.GetGuid(0), Name = reader.GetString(1), XCoor = (float) reader.GetDouble(2),
+              YCoor = (float) reader.GetDouble(3)
+            };
+            district.Metros.Add(metro);
+            listMetros.Add(metro);
           }
           reader.Close();
         }

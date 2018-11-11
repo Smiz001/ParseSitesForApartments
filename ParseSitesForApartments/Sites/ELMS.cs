@@ -1151,13 +1151,9 @@ namespace ParseSitesForApartments.Sites
         }
       }
     }
+  
 
-    public override int GetCountFlat()
-    {
-      throw new NotImplementedException();
-    }
-
-    public ELMS(List<District> listDistricts) : base(listDistricts)
+    public ELMS(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
     }
   }

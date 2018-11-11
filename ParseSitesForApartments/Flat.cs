@@ -9,7 +9,7 @@ namespace ParseSitesForApartments
     public int Price { get; set; } = 0;
     public string Square { get; set; } = string.Empty;
     public string Floor { get; set; } = string.Empty;
-    public Building Building { get; set; } = new Building();
+    public Building Building { get; set; }
     public string Url { get; set; }= string.Empty;
 
     public override bool Equals(object obj)
