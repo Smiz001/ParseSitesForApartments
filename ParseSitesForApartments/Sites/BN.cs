@@ -427,7 +427,12 @@ namespace ParseSitesForApartments.Sites
         Building building= null;
         Monitor.Enter(lockerDistrict);
         if (district.Buildings.Count != 0)
-          building = district.Buildings.Where(x => x.Street == street && x.Number == number && x.Structure == structure)?.First();
+        {
+          var bldsEnum =
+            district.Buildings.Where(x => x.Street == street && x.Number == number && x.Structure == structure);
+          if(bldsEnum.Count()>0)
+            building = bldsEnum.First();
+        }
         if (building == null)
         {
           building = new Building
@@ -450,7 +455,6 @@ namespace ParseSitesForApartments.Sites
         {
           building.MetroObj = metroObjEnum.First();
         }
-
         flat.Building = building;
 
         if (apartaments[i].GetElementsByClassName("object--metro-distance").Length > 0)
