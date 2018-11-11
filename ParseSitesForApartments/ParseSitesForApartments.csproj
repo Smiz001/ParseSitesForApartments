@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="District.cs" />
+    <Compile Include="Export\AppendFlatEventArgs.cs" />
     <Compile Include="Export\CoreExport.cs" />
     <Compile Include="Export\Creators\CoreCreator.cs" />
     <Compile Include="Export\Creators\CsvExportCreator.cs" />

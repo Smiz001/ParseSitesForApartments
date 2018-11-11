@@ -5,7 +5,7 @@ namespace ParseSitesForApartments.Export
 {
   public class CsvExport:CoreExport
   {
-    public CsvExport(List<Flat> flats) : base(flats)
+    public CsvExport()
     {
     }
 

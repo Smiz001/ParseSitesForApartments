@@ -8,7 +8,7 @@ namespace ParseSitesForApartments.Export
 {
   public class ExcelExport:CoreExport
   {
-    public ExcelExport(List<Flat> flats) : base(flats)
+    public ExcelExport()
     {
     }
 
