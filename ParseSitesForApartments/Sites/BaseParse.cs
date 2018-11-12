@@ -20,7 +20,5 @@ namespace ParseSitesForApartments.Sites
     public abstract string NameSite { get; }
     public abstract void ParsingAll();
     public abstract void ParsingSdamAll();
-    protected delegate void Append(object sender, AppendFlatEventArgs e);
-    protected event Append OnAppend;
   }
 }

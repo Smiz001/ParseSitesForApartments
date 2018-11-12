@@ -10,6 +10,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using ParseSitesForApartments.ParsClasses;
+using ParseSitesForApartments.Export;
+using ParseSitesForApartments.Export.Creators;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -26,6 +28,16 @@ namespace ParseSitesForApartments.Sites
     public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\BNProdamWithInfo.csv";
     public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\BNSdamWithInfo.csv";
     public override string NameSite => "БН";
+    private CoreExport export;
+    public delegate void Append(object sender, AppendFlatEventArgs e);
+    public event Append OnAppend;
+
+    public BN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
+    {
+      CoreCreator creator = new CsvExportCreator();
+      export = creator.FactoryCreate(Filename);
+      OnAppend += export.AddFilesInList;
+    }
 
     public override void ParsingAll()
     {
@@ -474,6 +486,7 @@ namespace ParseSitesForApartments.Sites
             flat.Floor = mas[0].Value;
         }
         Monitor.Enter(locker);
+        OnAppend(this, new AppendFlatEventArgs {Flat =flat });
         if (!string.IsNullOrEmpty(flat.Building.Number) || !string.IsNullOrEmpty(flat.Building.Street))
         {
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
@@ -893,9 +906,5 @@ namespace ParseSitesForApartments.Sites
     }
 
     int count = 0;
-
-    public BN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
-    {
-    }
   }
 }

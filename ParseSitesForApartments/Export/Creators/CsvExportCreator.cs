@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ParseSitesForApartments.Export.Creators
 {
@@ -6,7 +7,12 @@ namespace ParseSitesForApartments.Export.Creators
   {
     public override CoreExport FactoryCreate(List<Flat> flats)
     {
-      return new CsvExport(flats);
+      throw new NotImplementedException();
+    }
+
+    public override CoreExport FactoryCreate(string fileName)
+    {
+      return new CsvExport(fileName);
     }
   }
 }

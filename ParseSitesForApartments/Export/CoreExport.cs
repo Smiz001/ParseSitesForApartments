@@ -8,10 +8,12 @@ namespace ParseSitesForApartments.Export
 {
   public abstract class CoreExport
   {
-    public CoreExport()
+    public CoreExport(string filename)
     {
+      Filename = filename;
     }
     protected List<Flat> listFlats;
+    protected string Filename { get; set; }
 
 
     public abstract void ExecuteWithBaseInfo();
@@ -21,7 +23,6 @@ namespace ParseSitesForApartments.Export
     {
 
     }
-
     public virtual void AddFilesInList(object sender, AppendFlatEventArgs arg)
     {
       listFlats.Add(arg.Flat);
