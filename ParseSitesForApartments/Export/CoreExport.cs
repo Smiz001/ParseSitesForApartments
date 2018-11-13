@@ -12,7 +12,7 @@ namespace ParseSitesForApartments.Export
     {
       Filename = filename;
     }
-    protected List<Flat> listFlats;
+    protected List<Flat> listFlats = new List<Flat>();
     protected string Filename { get; set; }
 
 
