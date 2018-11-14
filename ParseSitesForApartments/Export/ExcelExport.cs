@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
 using Application = Microsoft.Office.Interop.Excel.Application;
@@ -12,6 +8,7 @@ namespace ParseSitesForApartments.Export
 {
   public class ExcelExport:CoreExport
   {
+    private int startRow = 1;
     public ExcelExport(string filename) : base(filename)
     {
     }
@@ -20,7 +17,7 @@ namespace ParseSitesForApartments.Export
     {
       throw new NotImplementedException();
     }
-
+  
     public override void Execute()
     {
       Application excel;
@@ -37,8 +34,13 @@ namespace ParseSitesForApartments.Export
           workbook = excel.Workbooks.Add(Type.Missing);
           worksheet = (Worksheet)workbook.ActiveSheet;
           worksheet.Name = "Основная информация";
-
           CreateTitle(worksheet);
+
+          foreach (var flat in listFlats)
+          {
+            AddRow(flat, worksheet);
+          }
+
         }
         catch (Exception ex)
         {
@@ -58,41 +60,41 @@ namespace ParseSitesForApartments.Export
 
     private void CreateTitle(Worksheet sheet)
     {
-      sheet.Cells[1, 1] = "Район";
-      sheet.Cells[1, 2] = "Улица";
-      sheet.Cells[1, 3] = "Номер";
-      sheet.Cells[1, 4] = "Корпус";
-      sheet.Cells[1, 5] = "Литер";
-      sheet.Cells[1, 6] = "Кол-во комнат";
-      sheet.Cells[1, 7] = "Площадь";
-      sheet.Cells[1, 8] = "Цена";
-      sheet.Cells[1, 9] = "Этаж";
-      sheet.Cells[1, 10] = "Этажей";
-      sheet.Cells[1, 11] = "Цена";
-      sheet.Cells[1, 12] = "Метро";
-      sheet.Cells[1, 13] = "Дата постройки";
-      sheet.Cells[1, 14] = "Дата реконструкции";
-      sheet.Cells[1, 15] = "Даты кап. ремонтов";
-      sheet.Cells[1, 16] = "Общая пл. здания, м2";
-      sheet.Cells[1, 17] = "Жилая пл., м2";
-      sheet.Cells[1, 18] = "Пл. нежелых помещений м2";
-      sheet.Cells[1, 19] = "Мансарда м2";
-      sheet.Cells[1, 20] = "Кол-во проживающих";
-      sheet.Cells[1, 21] = "Центральное отопление";
-      sheet.Cells[1, 22] = "Центральное ГВС";
-      sheet.Cells[1, 23] = "Центральное ЭС";
-      sheet.Cells[1, 24] = "Центарльное ГС";
-      sheet.Cells[1, 25] = "Тип Квартир";
-      sheet.Cells[1, 26] = "Кол-во квартир";
-      sheet.Cells[1, 27] = "Кол-во встроенных нежилых помещений";
-      sheet.Cells[1, 28] = "Дата ТЭП";
-      sheet.Cells[1, 29] = "Виды кап. ремонта";
-      sheet.Cells[1, 30] = "Общее кол-во лифтов";
-      sheet.Cells[1, 31] = "Расстояние пешком";
-      sheet.Cells[1, 32] = "Время пешком";
-      sheet.Cells[1, 33] = "Расстояние на машине";
-      sheet.Cells[1, 34] = "Время на машине";
-      sheet.Cells[1, 35] = "Ссылка";
+      sheet.Cells[startRow, 1] = "Район";
+      sheet.Cells[startRow, 2] = "Улица";
+      sheet.Cells[startRow, 3] = "Номер";
+      sheet.Cells[startRow, 4] = "Корпус";
+      sheet.Cells[startRow, 5] = "Литер";
+      sheet.Cells[startRow, 6] = "Кол-во комнат";
+      sheet.Cells[startRow, 7] = "Площадь";
+      sheet.Cells[startRow, 8] = "Цена";
+      sheet.Cells[startRow, 9] = "Этаж";
+      sheet.Cells[startRow, 10] = "Этажей";
+      sheet.Cells[startRow, 11] = "Цена";
+      sheet.Cells[startRow, 12] = "Метро";
+      sheet.Cells[startRow, 13] = "Дата постройки";
+      sheet.Cells[startRow, 14] = "Дата реконструкции";
+      sheet.Cells[startRow, 15] = "Даты кап. ремонтов";
+      sheet.Cells[startRow, 16] = "Общая пл. здания, м2";
+      sheet.Cells[startRow, 17] = "Жилая пл., м2";
+      sheet.Cells[startRow, 18] = "Пл. нежелых помещений м2";
+      sheet.Cells[startRow, 19] = "Мансарда м2";
+      sheet.Cells[startRow, 20] = "Кол-во проживающих";
+      sheet.Cells[startRow, 21] = "Центральное отопление";
+      sheet.Cells[startRow, 22] = "Центральное ГВС";
+      sheet.Cells[startRow, 23] = "Центральное ЭС";
+      sheet.Cells[startRow, 24] = "Центарльное ГС";
+      sheet.Cells[startRow, 25] = "Тип Квартир";
+      sheet.Cells[startRow, 26] = "Кол-во квартир";
+      sheet.Cells[startRow, 27] = "Кол-во встроенных нежилых помещений";
+      sheet.Cells[startRow, 28] = "Дата ТЭП";
+      sheet.Cells[startRow, 29] = "Виды кап. ремонта";
+      sheet.Cells[startRow, 30] = "Общее кол-во лифтов";
+      sheet.Cells[startRow, 31] = "Расстояние пешком";
+      sheet.Cells[startRow, 32] = "Время пешком";
+      sheet.Cells[startRow, 33] = "Расстояние на машине";
+      sheet.Cells[startRow, 34] = "Время на машине";
+      sheet.Cells[startRow, 35] = "Ссылка";
 
       #region Установление ширины колонок
 
@@ -202,6 +204,46 @@ namespace ParseSitesForApartments.Export
       range.EntireColumn.ColumnWidth = 30;
 
       #endregion
+    }
+
+    private void AddRow(Flat flat, Worksheet sheet)
+    {
+      startRow++;
+      sheet.Cells[startRow, 1] = flat.Building.District.Name;
+      sheet.Cells[startRow, 2] = flat.Building.Street;
+      sheet.Cells[startRow, 3] = flat.Building.Number;
+      sheet.Cells[startRow, 4] = flat.Building.Structure;
+      sheet.Cells[startRow, 5] = flat.Building.Liter;
+      sheet.Cells[startRow, 6] = flat.CountRoom;
+      sheet.Cells[startRow, 7] = flat.Square;
+      sheet.Cells[startRow, 8] = flat.Price;
+      sheet.Cells[startRow, 9] = flat.Floor;
+      //sheet.Cells[startRow, 10] = flat.Building.Fl;
+      sheet.Cells[startRow, 11] = flat.Price;
+      sheet.Cells[startRow, 12] = flat.Building.MetroObj.Name;
+      sheet.Cells[startRow, 13] = "Дата постройки";
+      sheet.Cells[startRow, 14] = "Дата реконструкции";
+      sheet.Cells[startRow, 15] = "Даты кап. ремонтов";
+      sheet.Cells[startRow, 16] = "Общая пл. здания, м2";
+      sheet.Cells[startRow, 17] = "Жилая пл., м2";
+      sheet.Cells[startRow, 18] = "Пл. нежелых помещений м2";
+      sheet.Cells[startRow, 19] = "Мансарда м2";
+      sheet.Cells[startRow, 20] = "Кол-во проживающих";
+      sheet.Cells[startRow, 21] = "Центральное отопление";
+      sheet.Cells[startRow, 22] = "Центральное ГВС";
+      sheet.Cells[startRow, 23] = "Центральное ЭС";
+      sheet.Cells[startRow, 24] = "Центарльное ГС";
+      sheet.Cells[startRow, 25] = "Тип Квартир";
+      sheet.Cells[startRow, 26] = "Кол-во квартир";
+      sheet.Cells[startRow, 27] = "Кол-во встроенных нежилых помещений";
+      sheet.Cells[startRow, 28] = "Дата ТЭП";
+      sheet.Cells[startRow, 29] = "Виды кап. ремонта";
+      sheet.Cells[startRow, 30] = "Общее кол-во лифтов";
+      sheet.Cells[startRow, 31] = "Расстояние пешком";
+      sheet.Cells[startRow, 32] = "Время пешком";
+      sheet.Cells[startRow, 33] = "Расстояние на машине";
+      sheet.Cells[startRow, 34] = "Время на машине";
+      sheet.Cells[startRow, 35] = flat.Url;
     }
   }
 }
