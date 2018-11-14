@@ -101,6 +101,108 @@ namespace ParseSitesForApartments.Export
       var range = sheet.Range[sheet.Cells[1, 1], sheet.Cells[1, 1]];
       range.EntireColumn.ColumnWidth = 30;
 
+      range = sheet.Range[sheet.Cells[1, 2], sheet.Cells[1,2]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 3], sheet.Cells[1, 3]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 4], sheet.Cells[1, 4]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 5], sheet.Cells[1, 5]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 6], sheet.Cells[1, 6]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 7], sheet.Cells[1, 7]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 8], sheet.Cells[1, 8]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 9], sheet.Cells[1, 9]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 10], sheet.Cells[1, 10]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 11], sheet.Cells[1, 11]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 12], sheet.Cells[1, 12]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 13], sheet.Cells[1, 13]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 14], sheet.Cells[1, 14]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 15], sheet.Cells[1, 15]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 16], sheet.Cells[1, 16]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 17], sheet.Cells[1, 17]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 18], sheet.Cells[1, 18]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 19], sheet.Cells[1, 19]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 20], sheet.Cells[1, 20]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 21], sheet.Cells[1, 21]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 22], sheet.Cells[1, 22]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 23], sheet.Cells[1, 23]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 24], sheet.Cells[1, 24]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 25], sheet.Cells[1, 25]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 26], sheet.Cells[1, 26]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 27], sheet.Cells[1, 27]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 28], sheet.Cells[1, 28]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 29], sheet.Cells[1, 29]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 30], sheet.Cells[1, 30]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 31], sheet.Cells[1, 31]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 32], sheet.Cells[1, 32]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 33], sheet.Cells[1, 33]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 34], sheet.Cells[1, 34]];
+      range.EntireColumn.ColumnWidth = 30;
+
+      range = sheet.Range[sheet.Cells[1, 35], sheet.Cells[1, 35]];
+      range.EntireColumn.ColumnWidth = 30;
+
       #endregion
     }
   }
