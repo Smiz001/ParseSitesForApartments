@@ -22,7 +22,7 @@ namespace ParseSitesForApartments.Export
     {
       Application excel;
       Workbook workbook;
-      Worksheet worksheet;
+      Worksheet worksheet = null;
       if (!File.Exists(Filename))
       {
         try
@@ -40,11 +40,17 @@ namespace ParseSitesForApartments.Export
           {
             AddRow(flat, worksheet);
           }
-
         }
         catch (Exception ex)
         {
           MessageBox.Show(ex.Message);
+        }
+      }
+      else
+      {
+        foreach (var flat in listFlats)
+        {
+          AddRow(flat, worksheet);
         }
       }
     }
@@ -60,6 +66,8 @@ namespace ParseSitesForApartments.Export
 
     private void CreateTitle(Worksheet sheet)
     {
+      if (sheet == null)
+        throw new NullReferenceException();
       sheet.Cells[startRow, 1] = "Район";
       sheet.Cells[startRow, 2] = "Улица";
       sheet.Cells[startRow, 3] = "Номер";
