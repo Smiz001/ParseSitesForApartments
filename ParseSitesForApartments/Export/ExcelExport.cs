@@ -17,12 +17,13 @@ namespace ParseSitesForApartments.Export
     {
       throw new NotImplementedException();
     }
-  
+
+
+    private Application excel = null;
+    private Workbook workbook = null;
+    private Worksheet worksheet = null;
     public override void Execute()
     {
-      Application excel;
-      Workbook workbook;
-      Worksheet worksheet = null;
       if (!File.Exists(Filename))
       {
         try
@@ -35,7 +36,6 @@ namespace ParseSitesForApartments.Export
           worksheet = (Worksheet)workbook.ActiveSheet;
           worksheet.Name = "Основная информация";
           CreateTitle(worksheet);
-
           foreach (var flat in listFlats)
           {
             AddRow(flat, worksheet);
@@ -53,6 +53,7 @@ namespace ParseSitesForApartments.Export
           AddRow(flat, worksheet);
         }
       }
+      listFlats.Clear();
     }
 
     public virtual void AddFilesInList(object sender, AppendFlatEventArgs arg)
@@ -252,6 +253,20 @@ namespace ParseSitesForApartments.Export
       sheet.Cells[startRow, 33] = "Расстояние на машине";
       sheet.Cells[startRow, 34] = "Время на машине";
       sheet.Cells[startRow, 35] = flat.Url;
+    }
+
+    public void Save()
+    {
+      if (listFlats.Count > 0)
+      {
+        Execute();
+      }
+      if (excel != null && workbook != null)
+      {
+        workbook.SaveAs(Filename); ;
+        workbook.Close();
+        excel.Quit();
+      }
     }
   }
 }
