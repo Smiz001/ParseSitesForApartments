@@ -39,7 +39,7 @@ namespace ParseSitesForApartments.Sites
       //export = creator.FactoryCreate(Filename);
       CoreCreator creator = new ExcelExportCreator();
       export = creator.FactoryCreate(Filename);
-      OnAppend += export.AddFilesInList;
+      OnAppend += export.AddFlatInList;
     }
 
 

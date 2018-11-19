@@ -58,9 +58,9 @@ namespace ParseSitesForApartments.Export
       listFlats.Clear();
     }
 
-    public override void AddFilesInList(object sender, AppendFlatEventArgs arg)
+    public override void AddFlatInList(object sender, AppendFlatEventArgs arg)
     {
-      base.AddFilesInList(sender, arg);
+      base.AddFlatInList(sender, arg);
       if (listFlats.Count == 50)
       {
         Execute();

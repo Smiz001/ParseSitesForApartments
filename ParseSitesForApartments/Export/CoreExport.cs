@@ -23,7 +23,7 @@ namespace ParseSitesForApartments.Export
     {
 
     }
-    public virtual void AddFilesInList(object sender, AppendFlatEventArgs arg)
+    public virtual void AddFlatInList(object sender, AppendFlatEventArgs arg)
     {
       listFlats.Add(arg.Flat);
     }

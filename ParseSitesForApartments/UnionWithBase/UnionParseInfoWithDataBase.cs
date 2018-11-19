@@ -1103,5 +1103,10 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
     {
       return "";
     }
+
+    public void UnionFlat(object sender, UnionFlatEventArgs arg)
+    {
+      //TODO
+    }
   }
 }
