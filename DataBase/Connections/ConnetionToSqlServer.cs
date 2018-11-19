@@ -6,7 +6,27 @@ namespace DataBase.Connections
 {
   public class ConnetionToSqlServer:CoreConnetion
   {
-    private SqlConnection connection;
+    private static volatile ConnetionToSqlServer connection;// = new Connection();
+    private static object syncRoot = new Object();
+
+    #region private field
+    
+    private SqlConnectionStringBuilder m_builder = new SqlConnectionStringBuilder();
+    private SqlConnection m_connection;
+    private int m_countConnection = 0;
+
+    #endregion
+
+    public static ConnetionToSqlServer Default()
+    {
+      lock (syncRoot)
+      {
+        if (connection == null)
+          connection = new ConnetionToSqlServer();
+      }
+      return connection;
+    }
+
     public ConnetionToSqlServer(string connectionString)
     {
       Log.Debug($"Connection string - {connectionString}");
