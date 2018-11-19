@@ -5,6 +5,7 @@ namespace ParseSitesForApartments
 {
   public class Building
   {
+    public Guid Guid { get; set; } = Guid.NewGuid();
     public string Metro { get; set; } = string.Empty;
     public string Distance { get; set; } = string.Empty;
     public string Number { get; set; } = string.Empty;

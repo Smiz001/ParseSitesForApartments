@@ -1154,32 +1154,31 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
             flat.Building.DateBuild = reader.GetString(1);
             flat.Building.DateReconstruct = reader.GetString(3);
             flat.Building.DateRepair = reader.GetString(4).Replace("  ", "");
-            buildingSquare = reader.GetDouble(5).ToString(CultureInfo.CurrentCulture);
-            livingSquare = reader.GetDouble(6).ToString(CultureInfo.CurrentCulture);
-            noLivingSqaure = reader.GetDouble(7).ToString(CultureInfo.CurrentCulture);
-            countFloor = reader.GetInt32(9).ToString();
-            residents = reader.GetInt32(10).ToString();
-            mansardaSquare = reader.GetDouble(11).ToString(CultureInfo.CurrentCulture);
-            otoplenie = reader.GetBoolean(12).ToString();
-            gvs = reader.GetBoolean(13).ToString();
-            es = reader.GetBoolean(14).ToString();
-            gs = reader.GetBoolean(15).ToString();
-            typeApartaments = reader.GetString(16).Replace("  ", "");
-            countApartaments = reader.GetString(17).Replace("  ", "");
-            countInternal = reader.GetInt32(18).ToString();
-            dateTep = reader.GetDateTime(19);
-            typeRepair = reader.GetString(21);
-            countLift = reader.GetInt32(22).ToString();
+            flat.Building.BuildingSquare = reader.GetDouble(5);
+            flat.Building.LivingSquare = reader.GetDouble(6);
+            flat.Building.NoLivingSqaure = reader.GetDouble(7);
+            flat.Building.CountFloor = reader.GetInt32(9);
+            flat.Building.Residents = reader.GetInt32(10);
+            flat.Building.MansardaSquare = reader.GetDouble(11);
+            flat.Building.Otoplenie = reader.GetBoolean(12);
+            flat.Building.Gvs = reader.GetBoolean(13);
+            flat.Building.Es = reader.GetBoolean(14);
+            flat.Building.Gs = reader.GetBoolean(15);
+            flat.Building.TypeApartaments = reader.GetString(16).Replace("  ", "");
+            flat.Building.CountApartaments = reader.GetString(17).Replace("  ", "");
+            flat.Building.CountInternal = reader.GetInt32(18);
+            flat.Building.DateTep = reader.GetDateTime(19);
+            flat.Building.TypeRepair = reader.GetString(21);
+            flat.Building.CountLift = reader.GetInt32(22);
 
-            x = (float)reader.GetDouble(24);
-            y = (float)reader.GetDouble(25);
+            flat.Building.XCoor = (float)reader.GetDouble(24);
+            flat.Building.YCoor = (float)reader.GetDouble(25);
 
-            distanceOnFoot = reader.GetString(26);
-            distanceOnCar = reader.GetString(27);
-            metroInBase = reader.GetString(28);
-            xmetro = (float)reader.GetDouble(29);
-            ymetro = (float)reader.GetDouble(30);
-            IdBuilding = reader.GetGuid(31);
+            flat.Building.DistanceOnFoot = reader.GetString(26).Split(',')[0];
+            flat.Building.TimeOnFootToMetro = reader.GetString(26).Split(',')[1];
+            flat.Building.DistanceOnCar = reader.GetString(27).Split(',')[0];
+            flat.Building.TimeOnCarToMetro = reader.GetString(27).Split(',')[1];
+            flat.Building.Guid = reader.GetGuid(31);
           }
           reader.Close();
         }
