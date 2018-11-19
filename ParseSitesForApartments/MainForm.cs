@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Xml;
 using DataBase.Connections;
 using DataBase.Creators;
+using ParseSitesForApartments.UnionWithBase;
 
 namespace ParseSitesForApartments
 {

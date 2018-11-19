@@ -82,7 +82,7 @@
     <Compile Include="Sites\BKN.cs" />
     <Compile Include="Sites\BN.cs" />
     <Compile Include="Sites\ELMS.cs" />
-    <Compile Include="UnionParseInfoWithDataBase.cs" />
+    <Compile Include="UnionWithBase\UnionParseInfoWithDataBase.cs" />
     <Compile Include="Yandex.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

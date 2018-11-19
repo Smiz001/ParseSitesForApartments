@@ -13,7 +13,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
-namespace ParseSitesForApartments
+namespace ParseSitesForApartments.UnionWithBase
 {
   public class UnionParseInfoWithDataBase
   {
