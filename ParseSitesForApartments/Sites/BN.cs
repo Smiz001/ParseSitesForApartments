@@ -42,6 +42,17 @@ namespace ParseSitesForApartments.Sites
       OnAppend += export.AddFilesInList;
     }
 
+
+    Thread studiiThread;
+    Thread oneThread;
+    Thread twoThread;
+    Thread threeThread;
+    Thread fourThread;
+    Thread studiiThreadOld;
+    Thread oneThreadOld;
+    Thread twoThreadOld;
+    Thread threeThreadOld;
+    Thread fourThreadOld;
     public override void ParsingAll()
     {
       if (export is CsvExport)
@@ -72,6 +83,13 @@ namespace ParseSitesForApartments.Sites
       threeThreadOld.Start("3 км. кв.");
       var fourThreadOld = new Thread(ChangeDistrictAndPage);
       fourThreadOld.Start("4 км. кв.");
+
+      var threadCheck = new Thread(CheckCloseThread);
+      threadCheck.Start();
+    }
+
+    private void CheckCloseThread()
+    {
       while (true)
       {
         if (!studiiThread.IsAlive)
