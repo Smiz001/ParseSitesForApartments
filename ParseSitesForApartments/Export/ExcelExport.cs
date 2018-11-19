@@ -9,6 +9,7 @@ namespace ParseSitesForApartments.Export
   public class ExcelExport:CoreExport
   {
     private int startRow = 1;
+    private bool isCreatedFile = false;
     public ExcelExport(string filename) : base(filename)
     {
     }
@@ -24,7 +25,7 @@ namespace ParseSitesForApartments.Export
     private Worksheet worksheet = null;
     public override void Execute()
     {
-      if (!File.Exists(Filename))
+      if (!isCreatedFile)
       {
         try
         {
@@ -45,6 +46,7 @@ namespace ParseSitesForApartments.Export
         {
           MessageBox.Show(ex.Message);
         }
+        isCreatedFile = true;
       }
       else
       {
@@ -56,7 +58,7 @@ namespace ParseSitesForApartments.Export
       listFlats.Clear();
     }
 
-    public virtual void AddFilesInList(object sender, AppendFlatEventArgs arg)
+    public override void AddFilesInList(object sender, AppendFlatEventArgs arg)
     {
       base.AddFilesInList(sender, arg);
       if (listFlats.Count == 50)
@@ -68,7 +70,7 @@ namespace ParseSitesForApartments.Export
     private void CreateTitle(Worksheet sheet)
     {
       if (sheet == null)
-        throw new NullReferenceException();
+        throw new NullReferenceException("Объект sheet не существует");
       sheet.Cells[startRow, 1] = "Район";
       sheet.Cells[startRow, 2] = "Улица";
       sheet.Cells[startRow, 3] = "Номер";
@@ -218,18 +220,18 @@ namespace ParseSitesForApartments.Export
     private void AddRow(Flat flat, Worksheet sheet)
     {
       startRow++;
-      sheet.Cells[startRow, 1] = flat.Building.District.Name;
-      sheet.Cells[startRow, 2] = flat.Building.Street;
-      sheet.Cells[startRow, 3] = flat.Building.Number;
-      sheet.Cells[startRow, 4] = flat.Building.Structure;
-      sheet.Cells[startRow, 5] = flat.Building.Liter;
+      sheet.Cells[startRow, 1] = flat.Building?.District?.Name;
+      sheet.Cells[startRow, 2] = flat.Building?.Street;
+      sheet.Cells[startRow, 3] = flat.Building?.Number;
+      sheet.Cells[startRow, 4] = flat.Building?.Structure;
+      sheet.Cells[startRow, 5] = flat.Building?.Liter;
       sheet.Cells[startRow, 6] = flat.CountRoom;
       sheet.Cells[startRow, 7] = flat.Square;
       sheet.Cells[startRow, 8] = flat.Price;
       sheet.Cells[startRow, 9] = flat.Floor;
       //sheet.Cells[startRow, 10] = flat.Building.Fl;
       sheet.Cells[startRow, 11] = flat.Price;
-      sheet.Cells[startRow, 12] = flat.Building.MetroObj.Name;
+      sheet.Cells[startRow, 12] = flat.Building?.MetroObj?.Name;
       sheet.Cells[startRow, 13] = "Дата постройки";
       sheet.Cells[startRow, 14] = "Дата реконструкции";
       sheet.Cells[startRow, 15] = "Даты кап. ремонтов";
