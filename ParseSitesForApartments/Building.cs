@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ParseSitesForApartments
 {
@@ -18,12 +15,31 @@ namespace ParseSitesForApartments
     public string DateBuild { get; set; } = string.Empty;
     public string DateRepair { get; set; } = string.Empty;
     public string DateReconstruct { get; set; } = string.Empty;
-    public List<Flat> FlatsOnSale { get; set; } = new List<Flat>();
+    public double BuildingSquare { get; set; }
+    public double NoLivingSqaure { get; set; }
+    public double LivingSquare { get; set; }
+    public double MansardaSquare { get; set; }
+    public int CountFloor { get; set; }
+    public int Residents { get; set; }
+    public bool Otoplenie { get; set; }
+    public bool Gvs { get; set; }
+    public bool Es { get; set; }
+    public bool Gs { get; set; }
+    public string TypeApartaments { get; set; } = string.Empty;
+    public string CountApartaments { get; set; } = string.Empty;
+    public int CountInternal { get; set; }
+    public DateTime DateTep { get; set; }
+    public string TypeRepair { get; set; } = string.Empty;
+    public int CountLift { get; set; }
+    public float XCoor { get; set; }
+    public float YCoor { get; set; }
     public string DistanceOnFoot { get; set; } = string.Empty;
     public string DistanceOnCar { get; set; } = string.Empty;
-    public Metro MetroObj { get; set; }
     public string TimeOnFootToMetro { get; set; } = string.Empty;
     public string TimeOnCarToMetro { get; set; } = string.Empty;
+
+    public List<Flat> FlatsOnSale { get; set; } = new List<Flat>();
+    public Metro MetroObj { get; set; }
     public District District { get; set; }
 
 

@@ -19,10 +19,13 @@ namespace ParseSitesForApartments.UnionWithBase
   {
     private BaseParse baseSite;
     private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    SqlConnection connection;
 
     public UnionParseInfoWithDataBase(BaseParse baseSite)
     {
       this.baseSite = baseSite;
+      connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;");
+      connection.Open();
     }
 
     public void UnionInfoProdam()
@@ -1107,6 +1110,80 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
     public void UnionFlat(object sender, UnionFlatEventArgs arg)
     {
       //TODO
+      UnionInfoProdam(arg.Flat);
+    }
+
+    public void UnionInfoProdam(Flat flat)
+    {
+      if(flat!= null)
+      {
+        string select = string.Empty;
+        if (string.IsNullOrWhiteSpace(flat.Building.Liter))
+        {
+          if (string.IsNullOrWhiteSpace(flat.Building.Structure))
+          {
+            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{flat.Building.Street}', '{flat.Building.Number}'";
+          }
+          else
+          {
+            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}'";
+          }
+        }
+        else
+        {
+          if (string.IsNullOrWhiteSpace(flat.Building.Structure))
+          {
+            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Liter}'";
+          }
+          else
+          {
+            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}', '{flat.Building.Liter}'";
+          }
+        }
+        Log.Debug("----------------------------");
+        Log.Debug(select);
+
+        var command = new SqlCommand(select, connection);
+        var reader = command.ExecuteReader();
+        if(reader != null)
+        {
+          while (reader.Read())
+          {
+            //if (string.IsNullOrEmpty(district))
+            //  district = reader.GetString(0);
+            flat.Building.DateBuild = reader.GetString(1);
+            flat.Building.DateReconstruct = reader.GetString(3);
+            flat.Building.DateRepair = reader.GetString(4).Replace("  ", "");
+            buildingSquare = reader.GetDouble(5).ToString(CultureInfo.CurrentCulture);
+            livingSquare = reader.GetDouble(6).ToString(CultureInfo.CurrentCulture);
+            noLivingSqaure = reader.GetDouble(7).ToString(CultureInfo.CurrentCulture);
+            countFloor = reader.GetInt32(9).ToString();
+            residents = reader.GetInt32(10).ToString();
+            mansardaSquare = reader.GetDouble(11).ToString(CultureInfo.CurrentCulture);
+            otoplenie = reader.GetBoolean(12).ToString();
+            gvs = reader.GetBoolean(13).ToString();
+            es = reader.GetBoolean(14).ToString();
+            gs = reader.GetBoolean(15).ToString();
+            typeApartaments = reader.GetString(16).Replace("  ", "");
+            countApartaments = reader.GetString(17).Replace("  ", "");
+            countInternal = reader.GetInt32(18).ToString();
+            dateTep = reader.GetDateTime(19);
+            typeRepair = reader.GetString(21);
+            countLift = reader.GetInt32(22).ToString();
+
+            x = (float)reader.GetDouble(24);
+            y = (float)reader.GetDouble(25);
+
+            distanceOnFoot = reader.GetString(26);
+            distanceOnCar = reader.GetString(27);
+            metroInBase = reader.GetString(28);
+            xmetro = (float)reader.GetDouble(29);
+            ymetro = (float)reader.GetDouble(30);
+            IdBuilding = reader.GetGuid(31);
+          }
+          reader.Close();
+        }
+      }
     }
   }
 }
