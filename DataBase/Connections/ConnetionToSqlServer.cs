@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Reflection;
+using log4net;
 
 namespace DataBase.Connections
 {
-  public class ConnetionToSqlServer:CoreConnetion
+  public class ConnetionToSqlServer
   {
     private static volatile ConnetionToSqlServer connection;// = new Connection();
     private static object syncRoot = new Object();
 
     #region private field
-    
+
+    protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
     private SqlConnectionStringBuilder m_builder = new SqlConnectionStringBuilder();
     private SqlConnection m_connection;
     private int m_countConnection = 0;
@@ -27,7 +30,7 @@ namespace DataBase.Connections
       return connection;
     }
 
-    public ConnetionToSqlServer(string connectionString)
+    public ConnetionToSqlServer()
     {
       Log.Debug($"Connection string - {connectionString}");
       connection = new SqlConnection(connectionString);
