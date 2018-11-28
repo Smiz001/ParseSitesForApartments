@@ -732,11 +732,14 @@ WHERE ID ='{item.Id}'";
 
     private void MainForm_Load(object sender, EventArgs e)
     {
-      SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
-      sb.DataSource = "localhost";
-      //sb.DataSource = @"N1081\SQLEXPRESS";
-      sb.InitialCatalog = "ParseBulding";
-      sb.IntegratedSecurity = true;
+      var connection = ConnetionToSqlServer.Default();
+      connection.DataBase = "ParseBulding;";
+      connection.Server = "localhost";
+      //SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
+      //sb.DataSource = "localhost";
+      ////sb.DataSource = @"N1081\SQLEXPRESS";
+      //sb.InitialCatalog = "ParseBulding";
+      //sb.IntegratedSecurity = true;
 
       CoreCreatorConnection creator = new SqlServerCreator();
       using (CoreConnetion connection = creator.FactoryCreate(sb.ToString()))

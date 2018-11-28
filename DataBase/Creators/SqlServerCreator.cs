@@ -10,7 +10,8 @@ namespace DataBase.Creators
 
     public override CoreConnetion FactoryCreate(string connectionString)
     {
-      return new ConnetionToSqlServer(connectionString);
+      throw new System.Exception();
+      //return new ConnetionToSqlServer(connectionString);
     }
   }
 }
