@@ -28,6 +28,11 @@ namespace ParseSitesForApartments.UnionWithBase
       connection.Open();
     }
 
+    public UnionParseInfoWithDataBase()
+    {
+
+    }
+
     public void UnionInfoProdam()
     {
       if (File.Exists(baseSite.Filename))

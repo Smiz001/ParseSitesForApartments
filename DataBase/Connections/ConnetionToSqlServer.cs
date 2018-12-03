@@ -9,7 +9,7 @@ namespace DataBase.Connections
   public class ConnetionToSqlServer
   {
     private static volatile ConnetionToSqlServer connection;// = new Connection();
-    private static object syncRoot = new Object();
+    private static object syncRoot = new object();
 
     #region private field
 
@@ -323,6 +323,7 @@ namespace DataBase.Connections
         //    {
         //      result = reader.GetValue(0);
         //    }
+        //    reader.Close();
         //  }
         //}
       }

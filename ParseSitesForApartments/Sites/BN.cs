@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using ParseSitesForApartments.ParsClasses;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.Export.Creators;
+using ParseSitesForApartments.UnionWithBase;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -32,6 +33,7 @@ namespace ParseSitesForApartments.Sites
     private CoreExport export;
     public delegate void Append(object sender, AppendFlatEventArgs e);
     public event Append OnAppend;
+    private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
 
     public BN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
@@ -551,6 +553,12 @@ namespace ParseSitesForApartments.Sites
 
         #endregion
         Monitor.Enter(locker);
+
+        if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+        {
+          unionInfo.UnionInfoProdam(flat);
+        }
+
         OnAppend(this, new AppendFlatEventArgs {Flat =flat });
         Monitor.Exit(locker);
       }

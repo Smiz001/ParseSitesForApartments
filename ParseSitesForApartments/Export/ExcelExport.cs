@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Windows.Forms;
 using Microsoft.Office.Interop.Excel;
 using Application = Microsoft.Office.Interop.Excel.Application;
@@ -65,6 +64,7 @@ namespace ParseSitesForApartments.Export
       {
         Execute();
       }
+      listFlats.Clear();
     }
 
     private void CreateTitle(Worksheet sheet)
