@@ -1117,70 +1117,73 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
     {
       if(flat!= null)
       {
-        string select = string.Empty;
-        if (string.IsNullOrWhiteSpace(flat.Building.Liter))
+        if(string.IsNullOrWhiteSpace(flat.Building.DateBuild))
         {
-          if (string.IsNullOrWhiteSpace(flat.Building.Structure))
+          string select = string.Empty;
+          if (string.IsNullOrWhiteSpace(flat.Building.Liter))
           {
-            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{flat.Building.Street}', '{flat.Building.Number}'";
+            if (string.IsNullOrWhiteSpace(flat.Building.Structure))
+            {
+              select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{flat.Building.Street}', '{flat.Building.Number}'";
+            }
+            else
+            {
+              select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}'";
+            }
           }
           else
           {
-            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}'";
+            if (string.IsNullOrWhiteSpace(flat.Building.Structure))
+            {
+              select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Liter}'";
+            }
+            else
+            {
+              select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}', '{flat.Building.Liter}'";
+            }
           }
-        }
-        else
-        {
-          if (string.IsNullOrWhiteSpace(flat.Building.Structure))
-          {
-            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Liter}'";
-          }
-          else
-          {
-            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}', '{flat.Building.Liter}'";
-          }
-        }
-        Log.Debug("----------------------------");
-        Log.Debug(select);
+          Log.Debug("----------------------------");
+          Log.Debug(select);
 
-        var command = new SqlCommand(select, connection);
-        var reader = command.ExecuteReader();
-        if(reader != null)
-        {
-          while (reader.Read())
+          var command = new SqlCommand(select, connection);
+          var reader = command.ExecuteReader();
+          if (reader != null)
           {
-            //if (string.IsNullOrEmpty(district))
-            //  district = reader.GetString(0);
-            flat.Building.DateBuild = reader.GetString(1);
-            flat.Building.DateReconstruct = reader.GetString(3);
-            flat.Building.DateRepair = reader.GetString(4).Replace("  ", "");
-            flat.Building.BuildingSquare = reader.GetDouble(5);
-            flat.Building.LivingSquare = reader.GetDouble(6);
-            flat.Building.NoLivingSqaure = reader.GetDouble(7);
-            flat.Building.CountFloor = reader.GetInt32(9);
-            flat.Building.Residents = reader.GetInt32(10);
-            flat.Building.MansardaSquare = reader.GetDouble(11);
-            flat.Building.Otoplenie = reader.GetBoolean(12);
-            flat.Building.Gvs = reader.GetBoolean(13);
-            flat.Building.Es = reader.GetBoolean(14);
-            flat.Building.Gs = reader.GetBoolean(15);
-            flat.Building.TypeApartaments = reader.GetString(16).Replace("  ", "");
-            flat.Building.CountApartaments = reader.GetString(17).Replace("  ", "");
-            flat.Building.CountInternal = reader.GetInt32(18);
-            flat.Building.DateTep = reader.GetDateTime(19);
-            flat.Building.TypeRepair = reader.GetString(21);
-            flat.Building.CountLift = reader.GetInt32(22);
+            while (reader.Read())
+            {
+              //if (string.IsNullOrEmpty(district))
+              //  district = reader.GetString(0);
+              flat.Building.DateBuild = reader.GetString(1);
+              flat.Building.DateReconstruct = reader.GetString(3);
+              flat.Building.DateRepair = reader.GetString(4).Replace("  ", "");
+              flat.Building.BuildingSquare = reader.GetDouble(5);
+              flat.Building.LivingSquare = reader.GetDouble(6);
+              flat.Building.NoLivingSqaure = reader.GetDouble(7);
+              flat.Building.CountFloor = reader.GetInt32(9);
+              flat.Building.Residents = reader.GetInt32(10);
+              flat.Building.MansardaSquare = reader.GetDouble(11);
+              flat.Building.Otoplenie = reader.GetBoolean(12);
+              flat.Building.Gvs = reader.GetBoolean(13);
+              flat.Building.Es = reader.GetBoolean(14);
+              flat.Building.Gs = reader.GetBoolean(15);
+              flat.Building.TypeApartaments = reader.GetString(16).Replace("  ", "");
+              flat.Building.CountApartaments = reader.GetString(17).Replace("  ", "");
+              flat.Building.CountInternal = reader.GetInt32(18);
+              flat.Building.DateTep = reader.GetDateTime(19);
+              flat.Building.TypeRepair = reader.GetString(21);
+              flat.Building.CountLift = reader.GetInt32(22);
 
-            flat.Building.XCoor = (float)reader.GetDouble(24);
-            flat.Building.YCoor = (float)reader.GetDouble(25);
+              flat.Building.XCoor = (float)reader.GetDouble(24);
+              flat.Building.YCoor = (float)reader.GetDouble(25);
 
-            flat.Building.DistanceOnFoot = reader.GetString(26).Split(',')[0];
-            flat.Building.TimeOnFootToMetro = reader.GetString(26).Split(',')[1];
-            flat.Building.DistanceOnCar = reader.GetString(27).Split(',')[0];
-            flat.Building.TimeOnCarToMetro = reader.GetString(27).Split(',')[1];
-            flat.Building.Guid = reader.GetGuid(31);
+              flat.Building.DistanceOnFoot = reader.GetString(26).Split(',')[0];
+              flat.Building.TimeOnFootToMetro = reader.GetString(26).Split(',')[1];
+              flat.Building.DistanceOnCar = reader.GetString(27).Split(',')[0];
+              flat.Building.TimeOnCarToMetro = reader.GetString(27).Split(',')[1];
+              flat.Building.Guid = reader.GetGuid(31);
+            }
+            reader.Close();
           }
-          reader.Close();
         }
       }
     }

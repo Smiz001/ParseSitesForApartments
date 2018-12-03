@@ -681,37 +681,37 @@ WHERE ID ='{item.Id}'";
 
     private void button20_Click(object sender, EventArgs e)
     {
-      using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
-      {
-        connection.Open();
-        using (var sr = new StreamReader(@"D:\PostPoint.csv", Encoding.UTF8))
-        {
-          string line = "";
+  //    using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
+  //    {
+  //      connection.Open();
+  //      using (var sr = new StreamReader(@"D:\PostPoint.csv", Encoding.UTF8))
+  //      {
+  //        string line = "";
 
-          while ((line = sr.ReadLine()) != null)
-          {
-            var arr = line.Split(',');
-            string select = $@"SELECT [ID]
-  FROM [ParseBulding].[dbo].[District]
-  WHERE LOWER(Name) = LOWER('{arr[1].Replace("район", "").Trim()}')";
+  //        while ((line = sr.ReadLine()) != null)
+  //        {
+  //          var arr = line.Split(',');
+  //          string select = $@"SELECT [ID]
+  //FROM [ParseBulding].[dbo].[District]
+  //WHERE LOWER(Name) = LOWER('{arr[1].Replace("район", "").Trim()}')";
 
-            Guid idDistrict = Guid.Empty;
-            var command = new SqlCommand(select, connection);
-            var reader = command.ExecuteReader();
-            if (reader.Read())
-            {
-              idDistrict = reader.GetGuid(0);
-            }
-            reader.Close();
+  //          Guid idDistrict = Guid.Empty;
+  //          var command = new SqlCommand(select, connection);
+  //          var reader = command.ExecuteReader();
+  //          if (reader.Read())
+  //          {
+  //            idDistrict = reader.GetGuid(0);
+  //          }
+  //          reader.Close();
 
-            string insert = $@"insert into [dbo].[PostPoint] (Id, PostName, DistrictId)
-  values (newid(),{arr[0]},'{idDistrict}')";
+  //          string insert = $@"insert into [dbo].[PostPoint] (Id, PostName, DistrictId)
+  //values (newid(),{arr[0]},'{idDistrict}')";
 
-            command = new SqlCommand(insert, connection);
-            command.ExecuteNonQuery();
-          }
-        }
-      }
+  //          command = new SqlCommand(insert, connection);
+  //          command.ExecuteNonQuery();
+  //        }
+  //      }
+  //    }
     }
 
     private void button21_Click(object sender, EventArgs e)

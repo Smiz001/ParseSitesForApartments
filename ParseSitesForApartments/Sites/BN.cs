@@ -233,7 +233,6 @@ namespace ParseSitesForApartments.Sites
                   $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
                 break;
             }
-
             if (!ExecuteParse(url, webClient, parser, (string)typeRoom,
               ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First()))
               break;
