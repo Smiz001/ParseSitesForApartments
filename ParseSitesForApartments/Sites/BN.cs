@@ -566,21 +566,69 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingSdamAll()
     {
-      using (var sw = new StreamWriter(new FileStream(FilenameSdam, FileMode.Create), Encoding.UTF8))
+      if(export is CsvExport)
       {
-        sw.WriteLine($@"Нас. пункт;Улица;Номер;Корпус;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км)");
+        using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
+        {
+          sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
+        }
       }
-      var studiiSdamThread = new Thread(ParseStudiiSdam);
-      studiiSdamThread.Start();
-      var oneSdamThread = new Thread(ParseOneSdam);
-      oneSdamThread.Start();
-      var twoThread = new Thread(ParseTwoSdam);
-      twoThread.Start();
-      var threeThread = new Thread(ParseThreeSdam);
-      threeThread.Start();
-      var fourThread = new Thread(ParseFourSdam);
-      fourThread.Start();
+      var studiiThreadOld = new Thread(ChangeDistrictAndPageSdam);
+      studiiThreadOld.Start("Студия");
+      var oneThreadOld = new Thread(ChangeDistrictAndPageSdam);
+      oneThreadOld.Start("1 км. кв.");
+      var twoThreadOld = new Thread(ChangeDistrictAndPageSdam);
+      twoThreadOld.Start("2 км. кв.");
+      var threeThreadOld = new Thread(ChangeDistrictAndPageSdam);
+      threeThreadOld.Start("3 км. кв.");
+      var fourThreadOld = new Thread(ChangeDistrictAndPageSdam);
+      fourThreadOld.Start("4 км. кв.");
     }
+
+     private void ChangeDistrictAndPageSdam(object typeRoom)
+    {
+      HtmlParser parser = new HtmlParser();
+      using (var webClient = new WebClient())
+      {
+        webClient.Encoding = Encoding.UTF8;
+        string url = "";
+        foreach (var distr in district)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            switch (typeRoom)
+            {
+              case "Студия":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-0-city_district-{distr.Key}/?from=&to=&lease_period%5B%5D=1&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=rent&page={i}";
+                break;
+              case "1 км. кв.":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-1-city_district-{distr.Key}/?from=&to=&lease_period%5B%5D=1&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=rent&page={i}";
+                break;
+              case "2 км. кв.":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-2-city_district-{distr.Key}/?from=&to=&lease_period%5B%5D=1&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=rent&page={i}";
+                break;
+              case "3 км. кв.":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-3-city_district-{distr.Key}/?from=&to=&lease_period%5B%5D=1&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=rent&page={i}";
+                break;
+              case "4 км. кв.":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-4-city_district-{distr.Key}/?from=&to=&lease_period%5B%5D=1&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&formName=rent&page={i}";
+                break;
+            }
+            if (!ExecuteParse(url, webClient, parser, (string)typeRoom,
+              ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First()))
+              break;
+          }
+        }
+      }
+
+      MessageBox.Show($"Закнсили - {typeRoom}");
+    }
+
     public void ParseStudiiSdam()
     {
       using (var webClient = new WebClient())

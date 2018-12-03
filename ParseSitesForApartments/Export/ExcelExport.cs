@@ -239,7 +239,7 @@ namespace ParseSitesForApartments.Export
       sheet.Cells[startRow, 17] = flat.Building.LivingSquare;
       sheet.Cells[startRow, 18] = flat.Building.NoLivingSqaure;
       sheet.Cells[startRow, 19] = flat.Building.MansardaSquare;
-      //sheet.Cells[startRow, 20] = flat.Building.CountInternal;
+      sheet.Cells[startRow, 20] = flat.Building.Residents;
       sheet.Cells[startRow, 21] = flat.Building.Otoplenie;
       sheet.Cells[startRow, 22] = flat.Building.Gvs;
       sheet.Cells[startRow, 23] = flat.Building.Es;
