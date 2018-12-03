@@ -495,13 +495,16 @@ namespace ParseSitesForApartments.Sites
           street = street.Replace(str, "");
 
         street = parseStreet.Execute(street, district);
-        Building building= null;
+
+        #endregion
+
+        Building building = null;
         Monitor.Enter(lockerDistrict);
         if (district.Buildings.Count != 0)
         {
           var bldsEnum =
             district.Buildings.Where(x => x.Street == street && x.Number == number && x.Structure == structure);
-          if(bldsEnum.Count()>0)
+          if (bldsEnum.Count() > 0)
             building = bldsEnum.First();
         }
         if (building == null)
@@ -511,12 +514,11 @@ namespace ParseSitesForApartments.Sites
             Street = street,
             Number = number,
             Structure = structure,
-            District = district
+            District = district,
           };
           district.Buildings.Add(building);
         }
         Monitor.Exit(lockerDistrict);
-        #endregion
 
         string metro = string.Empty;
         if (apartaments[i].GetElementsByClassName("object--metro").Length > 0)
@@ -536,6 +538,8 @@ namespace ParseSitesForApartments.Sites
         }
         flat.Building.Distance = flat.Building.Distance.Replace(".", ",");
 
+        #region Parse Floor
+
         if (apartaments[i].GetElementsByClassName("object--floor").Length > 0)
         {
           var floor = apartaments[i].GetElementsByClassName("object--floor")[0].TextContent;
@@ -544,6 +548,8 @@ namespace ParseSitesForApartments.Sites
           if (mas.Count > 0)
             flat.Floor = mas[0].Value;
         }
+
+        #endregion
         Monitor.Enter(locker);
         OnAppend(this, new AppendFlatEventArgs {Flat =flat });
         Monitor.Exit(locker);
