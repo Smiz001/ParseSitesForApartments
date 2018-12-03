@@ -530,13 +530,13 @@ namespace ParseSitesForApartments.Sites
         }
         flat.Building = building;
 
-        if (apartaments[i].GetElementsByClassName("object--metro-distance").Length > 0)
-        {
-          regex = new Regex(@"(\d+\.\d+)");
-          flat.Building.Distance = apartaments[i].GetElementsByClassName("object--metro-distance")[0].TextContent.Replace(",", "").Replace(" ", "");
-          flat.Building.Distance = regex.Match(flat.Building.Distance).Value;
-        }
-        flat.Building.Distance = flat.Building.Distance.Replace(".", ",");
+        //if (apartaments[i].GetElementsByClassName("object--metro-distance").Length > 0)
+        //{
+        //  regex = new Regex(@"(\d+\.\d+)");
+        //  flat.Building.Distance = apartaments[i].GetElementsByClassName("object--metro-distance")[0].TextContent.Replace(",", "").Replace(" ", "");
+        //  flat.Building.Distance = regex.Match(flat.Building.Distance).Value;
+        //}
+        //flat.Building.Distance = flat.Building.Distance.Replace(".", ",");
 
         #region Parse Floor
 
