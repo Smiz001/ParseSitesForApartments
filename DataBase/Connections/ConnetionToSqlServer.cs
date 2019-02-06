@@ -14,7 +14,7 @@ namespace DataBase.Connections
     #region private field
 
     protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-    private SqlConnectionStringBuilder m_builder = new SqlConnectionStringBuilder();
+    private SqlConnectionStringBuilder sqlConnectionStringBuilder = new SqlConnectionStringBuilder();
     private SqlConnection m_connection;
     private int m_countConnection = 0;
 
@@ -32,7 +32,7 @@ namespace DataBase.Connections
 
     private ConnetionToSqlServer()
     {
-      m_builder.IntegratedSecurity = true;
+      sqlConnectionStringBuilder.IntegratedSecurity = true;
     }
 
     //public ConnetionToSqlServer()
@@ -46,14 +46,14 @@ namespace DataBase.Connections
     {
       get
       {
-        return m_builder.UserID;
+        return sqlConnectionStringBuilder.UserID;
       }
       set
       {
         value = (value ?? string.Empty).Trim();
-        if (m_builder.UserID != value)
+        if (sqlConnectionStringBuilder.UserID != value)
         {
-          m_builder.UserID = value;
+          sqlConnectionStringBuilder.UserID = value;
         }
       }
     }
@@ -62,14 +62,14 @@ namespace DataBase.Connections
     {
       get
       {
-        return m_builder.Password;
+        return sqlConnectionStringBuilder.Password;
       }
       set
       {
         value = (value ?? string.Empty).Trim();
-        if (m_builder.Password != value)
+        if (sqlConnectionStringBuilder.Password != value)
         {
-          m_builder.Password = value;
+          sqlConnectionStringBuilder.Password = value;
         }
       }
     }
@@ -78,14 +78,14 @@ namespace DataBase.Connections
     {
       get
       {
-        return m_builder.DataSource;
+        return sqlConnectionStringBuilder.DataSource;
       }
       set
       {
         value = (value ?? string.Empty).Trim();
-        if (m_builder.DataSource != value)
+        if (sqlConnectionStringBuilder.DataSource != value)
         {
-          m_builder.DataSource = value;
+          sqlConnectionStringBuilder.DataSource = value;
         }
       }
     }
@@ -94,14 +94,14 @@ namespace DataBase.Connections
     {
       get
       {
-        return m_builder.InitialCatalog;
+        return sqlConnectionStringBuilder.InitialCatalog;
       }
       set
       {
         value = (value ?? string.Empty).Trim();
-        if (m_builder.InitialCatalog != value)
+        if (sqlConnectionStringBuilder.InitialCatalog != value)
         {
-          m_builder.InitialCatalog = value;
+          sqlConnectionStringBuilder.InitialCatalog = value;
         }
       }
     }
@@ -122,13 +122,13 @@ namespace DataBase.Connections
     {
       get
       {
-        return m_builder.IntegratedSecurity;
+        return sqlConnectionStringBuilder.IntegratedSecurity;
       }
       set
       {
-        if (m_builder.IntegratedSecurity != value)
+        if (sqlConnectionStringBuilder.IntegratedSecurity != value)
         {
-          m_builder.IntegratedSecurity = value;
+          sqlConnectionStringBuilder.IntegratedSecurity = value;
         }
       }
     }
@@ -138,7 +138,7 @@ namespace DataBase.Connections
       m_countConnection++;
       if (m_connection == null)
       {
-        m_connection = new SqlConnection(m_builder.ConnectionString);
+        m_connection = new SqlConnection(sqlConnectionStringBuilder.ConnectionString);
       }
       if (!IsOpen())
       {

@@ -2,6 +2,7 @@
 using log4net;
 using ParseSitesForApartments.Sites;
 using System;
+using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
@@ -12,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using DataBase.Connections;
 
 namespace ParseSitesForApartments.UnionWithBase
 {
@@ -19,18 +21,20 @@ namespace ParseSitesForApartments.UnionWithBase
   {
     private BaseParse baseSite;
     private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-    SqlConnection connection;
+    //SqlConnection connection;
+    private ConnetionToSqlServer connection;
 
     public UnionParseInfoWithDataBase(BaseParse baseSite)
     {
       this.baseSite = baseSite;
-      connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;");
-      connection.Open();
+      //connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;");
+      //connection.Open();
+      connection = ConnetionToSqlServer.Default();
     }
 
     public UnionParseInfoWithDataBase()
     {
-
+      connection = ConnetionToSqlServer.Default();
     }
 
     public void UnionInfoProdam()
@@ -41,9 +45,9 @@ namespace ParseSitesForApartments.UnionWithBase
         {
           using (var sw = new StreamWriter(baseSite.FilenameWithinfo, true, Encoding.UTF8))
           {
-            using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
-            {
-              connection.Open();
+            //using (var connection = new SqlConnection("Server= localhost; Database= ParseBulding; Integrated Security=True;"))
+            //{
+            //  connection.Open();
 
               sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
               string line = "";
@@ -51,7 +55,7 @@ namespace ParseSitesForApartments.UnionWithBase
               string select = "";
               while ((line = sr.ReadLine()) != null)
               {
-                SqlDataReader reader =null;
+                IDataReader reader =null;
                 try
                 {
                   string district = string.Empty;
@@ -135,8 +139,9 @@ namespace ParseSitesForApartments.UnionWithBase
                   }
                   Log.Debug("----------------------------");
                   Log.Debug(select);
-                  var command = new SqlCommand(select, connection);
-                  reader = command.ExecuteReader();
+
+                  //var command = new SqlCommand(select, connection);
+                  reader = connection.ExecuteReader(select);
                   while (reader.Read())
                   {
                     if (string.IsNullOrEmpty(district))
@@ -188,8 +193,8 @@ namespace ParseSitesForApartments.UnionWithBase
                         
                         Log.Debug("----------------------------");
                         Log.Debug(select);
-                        command = new SqlCommand(select, connection);
-                        reader = command.ExecuteReader();
+                        //command = new SqlCommand(select, connection);
+                        reader = connection.ExecuteReader(select);
                         while (reader.Read())
                         {
                           xmetro = (float)reader.GetDouble(0);
@@ -205,8 +210,9 @@ where ID='{IdBuilding}'";
                         Log.Debug("----------------------------Обновления метро----------------------------");
                         Log.Debug(update);
 
-                        command = new SqlCommand(update, connection);
-                        command.ExecuteNonQuery();
+                        //command = new SqlCommand(update, connection);
+                        //command.ExecuteNonQuery();
+                        connection.ExecuteNonQuery(update);
                         
                         if(xmetro >1 && ymetro > 1)
                         {
@@ -259,8 +265,9 @@ where ID='{IdBuilding}'";
 
                                 Log.Debug("----------------------------");
                                 Log.Debug(update);
-                                command = new SqlCommand(update, connection);
-                                command.ExecuteNonQuery();
+                                //command = new SqlCommand(update, connection);
+                                //command.ExecuteNonQuery();
+                                connection.ExecuteNonQuery(update);
                               }
                             }
                             responce = webClient.DownloadString(urlCar);
@@ -300,8 +307,9 @@ where ID='{IdBuilding}'";
 
                                 Log.Debug("----------------------------");
                                 Log.Debug(update);
-                                command = new SqlCommand(update, connection);
-                                command.ExecuteNonQuery();
+                                //command = new SqlCommand(update, connection);
+                                //command.ExecuteNonQuery();
+                                connection.ExecuteNonQuery(update);
                               }
                             }
                           }
@@ -366,8 +374,9 @@ where ID='{IdBuilding}'";
 
                                 Log.Debug("----------------------------");
                                 Log.Debug(update);
-                                command = new SqlCommand(update, connection);
-                                command.ExecuteNonQuery();
+                                //command = new SqlCommand(update, connection);
+                                //command.ExecuteNonQuery();
+                                connection.ExecuteNonQuery(update);
                               }
                             }
                           }
@@ -496,8 +505,9 @@ where ID='{IdBuilding}'";
                         string insert = $@"insert into [ParseBulding].[dbo].[MainInfoAboutBulding] (Id, Street, Number, Bulding, Letter, DistrictId, DateBulding, SeriesID,[CountCommApartament],[DateReconstruct],[DateRepair],[BuldingArea],[LivingArea],[NoLivingArea],[Stairs],[Storeys] ,[Residents],[MansardArea] ,[HeatingCentral],[HotWaterCentral],[ElectroCentral],[GascCntral],[FlatType],[FlatNum],[InternalNum],[TepCreateDate],[ManagCompanyId],[Failure],[RepairJob],[LiftCount],[BasementArea],[Xcoor],[Ycoor],[Metro],[DistanceAndTimeOnFoot],[DistanceAndTimeOnCar])
 values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D-9300-96D6A7364F68','','856E5C0B-F9C0-4F06-AD81-2405BF8357A6',0,'','',0,0,0,0,0,0,0,0,0,0,0,'','',null,null,'CE2CC208-8F15-44C5-94CC-29F5A971C196',0,'',0,0,{coords[0].ToString().Replace(",",".")},{coords[1].ToString().Replace(",", ".")},'{metroObj.Id}','{disFoot}, {timeFoot}','{disCar}, {timeCar}')";
                         Log.Debug(insert);
-                        command = new SqlCommand(insert, connection);
-                        command.ExecuteNonQuery();
+                        //command = new SqlCommand(insert, connection);
+                        //command.ExecuteNonQuery();
+                        connection.ExecuteNonQuery(insert);
                       }
                     }
                   }
@@ -530,7 +540,7 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
                   }
                 }
               }
-            }
+            //}
           }
         }
       }
@@ -574,7 +584,7 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
       return null;
     }
 
-    private Metro GetCoorMetroFromBase(string metroName, SqlConnection connection)
+    private Metro GetCoorMetroFromBase(string metroName, ConnetionToSqlServer connection)
     {
       string select = $@"SELECT [XCoor]
     ,[YCoor]
@@ -584,8 +594,8 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
 
       Log.Debug("----------------------------");
       Log.Debug(select);
-      var command = new SqlCommand(select, connection);
-      var reader = command.ExecuteReader();
+      //var command = new SqlCommand(select, connection);
+      var reader = connection.ExecuteReader(select);
       Metro metro= null;
       while (reader.Read())
       {
@@ -900,9 +910,8 @@ where ID='{IdBuilding}'";
                               var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
                               if (disDoc.Length > 0)
                               {
-                                timeCar = timeDoc[0].TextContent;
-                                disCar = disDoc[0].TextContent;
-
+                                //timeCar = timeDoc[0].TextContent;
+                                //disCar = disDoc[0].TextContent;
                                 if (timeDoc.Length == 2)
                                 {
                                   timeCar = timeDoc[1].TextContent;
@@ -971,7 +980,7 @@ where ID='{IdBuilding}'";
                     Metro metroObj = null;
                     if (xmetro < 1 || ymetro < 1)
                     {
-                      metroObj = GetCoorMetroFromBase(metro, connection);
+                      metroObj = GetCoorMetroFromBase(metro, this.connection);
                     }
                     if (metroObj != null)
                     {
@@ -1150,8 +1159,9 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
           Log.Debug("----------------------------");
           Log.Debug(select);
 
-          var command = new SqlCommand(select, connection);
-          var reader = command.ExecuteReader();
+          //connection
+          //var command = new SqlCommand(select, connection);
+          var reader = connection.ExecuteReader(select);
           if (reader != null)
           {
             while (reader.Read())
@@ -1181,10 +1191,37 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
               flat.Building.XCoor = (float)reader.GetDouble(24);
               flat.Building.YCoor = (float)reader.GetDouble(25);
 
-              flat.Building.DistanceOnFoot = reader.GetString(26).Split(',')[0];
-              flat.Building.TimeOnFootToMetro = reader.GetString(26).Split(',')[1];
-              flat.Building.DistanceOnCar = reader.GetString(27).Split(',')[0];
-              flat.Building.TimeOnCarToMetro = reader.GetString(27).Split(',')[1];
+              string disFoot = reader.GetString(26);
+              if (!string.IsNullOrWhiteSpace(disFoot))
+              {
+                var splitFoot = disFoot.Split(',');
+                if (splitFoot.Length == 2)
+                {
+                  flat.Building.DistanceOnFoot = splitFoot[0];
+                  flat.Building.TimeOnFootToMetro = splitFoot[1];
+                }
+                else
+                {
+                  //TODO запись строки с ошибками
+                  Log.Error(disFoot);
+                }
+              }
+              string disCar = reader.GetString(27);
+              if (!string.IsNullOrWhiteSpace(disCar))
+              {
+                var splitCar = disCar.Split(',');
+                if (splitCar.Length == 2)
+                {
+                  flat.Building.DistanceOnCar = splitCar[0];
+                  flat.Building.TimeOnCarToMetro = splitCar[1];
+                }
+                else
+                {
+                  //TODO запись строки с ошибками
+                  Log.Error(disCar);
+                }
+
+              }
               flat.Building.Guid = reader.GetGuid(31);
             }
             reader.Close();

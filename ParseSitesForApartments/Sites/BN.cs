@@ -24,8 +24,8 @@ namespace ParseSitesForApartments.Sites
     private int maxPage = 17;
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 5, "Калининский" }, { 4, "Кировский" }, { 16, "Колпинский" }, { 6, "Красногвардейский" }, { 7, "Красносельский" }, { 15, "Кронштадтский" }, { 17, "Курортный" }, { 8, "Московский" }, { 9, "Невский" }, { 10, "Петроградский" }, { 19, "Петродворцовый" }, { 11, "Приморский" }, { 20, "Пушкинский" }, { 12, "Фрунзенский" }, { 13, "Центральный" }, };
 
-    //public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.csv";
-    public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.xlsx";
+    public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.csv";
+    //public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.xlsx";
     public override string FilenameSdam => @"d:\ParserInfo\Appartament\BNSdam.csv";
     public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\BNProdamWithInfo.csv";
     public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\BNSdamWithInfo.csv";
@@ -37,10 +37,10 @@ namespace ParseSitesForApartments.Sites
 
     public BN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
-      //CoreCreator creator = new CsvExportCreator();
-      //export = creator.FactoryCreate(Filename);
-      CoreCreator creator = new ExcelExportCreator();
+      CoreCreator creator = new CsvExportCreator();
       export = creator.FactoryCreate(Filename);
+      //CoreCreator creator = new ExcelExportCreator();
+      //export = creator.FactoryCreate(Filename);
       OnAppend += export.AddFlatInList;
     }
 
@@ -61,31 +61,33 @@ namespace ParseSitesForApartments.Sites
       {
         using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
         {
-          sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
+          //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
+          sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
         }
       }
-      var studiiThread = new Thread(ChangeDistrictAndPage);
+      studiiThread = new Thread(ChangeDistrictAndPage);
       studiiThread.Start("Студия Н");
-      var oneThread = new Thread(ChangeDistrictAndPage);
+      oneThread = new Thread(ChangeDistrictAndPage);
       oneThread.Start("1 км. кв. Н");
-      var twoThread = new Thread(ChangeDistrictAndPage);
+      twoThread = new Thread(ChangeDistrictAndPage);
       twoThread.Start("2 км. кв. Н");
-      var threeThread = new Thread(ChangeDistrictAndPage);
+      threeThread = new Thread(ChangeDistrictAndPage);
       threeThread.Start("3 км. кв. Н");
-      var fourThread = new Thread(ChangeDistrictAndPage);
+      fourThread = new Thread(ChangeDistrictAndPage);
       fourThread.Start("4 км. кв. Н");
 
-      var studiiThreadOld = new Thread(ChangeDistrictAndPage);
+      studiiThreadOld = new Thread(ChangeDistrictAndPage);
       studiiThreadOld.Start("Студия");
-      var oneThreadOld = new Thread(ChangeDistrictAndPage);
+      oneThreadOld = new Thread(ChangeDistrictAndPage);
       oneThreadOld.Start("1 км. кв.");
-      var twoThreadOld = new Thread(ChangeDistrictAndPage);
+      twoThreadOld = new Thread(ChangeDistrictAndPage);
       twoThreadOld.Start("2 км. кв.");
-      var threeThreadOld = new Thread(ChangeDistrictAndPage);
+      threeThreadOld = new Thread(ChangeDistrictAndPage);
       threeThreadOld.Start("3 км. кв.");
-      var fourThreadOld = new Thread(ChangeDistrictAndPage);
+      fourThreadOld = new Thread(ChangeDistrictAndPage);
       fourThreadOld.Start("4 км. кв.");
 
+      Thread.Sleep(10000);
       var threadCheck = new Thread(CheckCloseThread);
       threadCheck.Start();
     }
@@ -126,8 +128,8 @@ namespace ParseSitesForApartments.Sites
           }
         }
       }
-      var excelExport = export as ExcelExport;
-      excelExport?.Save();
+      //var excelExport = export as ExcelExport;
+      //excelExport?.Save();
     }
 
     public void ParseStudiiOld()
@@ -568,10 +570,13 @@ namespace ParseSitesForApartments.Sites
 
         if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
         {
-          unionInfo.UnionInfoProdam(flat);
+          if(!string.IsNullOrWhiteSpace(flat.Building.Number))
+          {
+            unionInfo.UnionInfoProdam(flat);
+            OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+          }
         }
 
-        OnAppend(this, new AppendFlatEventArgs {Flat =flat });
         Monitor.Exit(locker);
       }
     }

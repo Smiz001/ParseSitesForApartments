@@ -732,14 +732,67 @@ WHERE ID ='{item.Id}'";
 
     private void MainForm_Load(object sender, EventArgs e)
     {
+      //var sb = new SqlConnectionStringBuilder();
+      //sb.DataSource = "localhost";
+      //sb.InitialCatalog = "ParseBulding";
+      //sb.IntegratedSecurity = true;
+      //CoreCreatorConnection creator = new SqlServerCreator();
+      //using (CoreConnetion connection = creator.FactoryCreate(sb.ToString()))
+      //{
+      //  string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
+      //  var reader = connection.ExecuteReader(select);
+      //  while (reader.Read())
+      //  {
+      //    listDistricts.Add(new District {Id = reader.GetGuid(0), Name = reader.GetString(1)});
+      //  }
+
+      //  reader.Close();
+      //  foreach (var district in listDistricts)
+      //  {
+      //    select = $@"SELECT [Id]
+      //        ,[Name]
+      //        ,[XCoor]
+      //        ,[YCoor]
+      //        ,[IdRegion]
+      //      FROM[ParseBulding].[dbo].[Metro]
+      //      where IdRegion = '{district.Id}'";
+      //    reader = connection.ExecuteReader(select);
+      //    while (reader.Read())
+      //    {
+      //      var metro = new Metro
+      //      {
+      //        Id = reader.GetGuid(0),
+      //        Name = reader.GetString(1),
+      //        XCoor = (float) reader.GetDouble(2),
+      //        YCoor = (float) reader.GetDouble(3)
+      //      };
+      //      district.Metros.Add(metro);
+      //      listMetros.Add(metro);
+      //    }
+
+      //    reader.Close();
+      //  }
+
+      //var sb = new SqlConnectionStringBuilder();
+      //sb.DataSource = "localhost";
+      //sb.InitialCatalog = "ParseBulding";
+      //sb.IntegratedSecurity = true;
+      //string s = sb.ConnectionString;
+      //using (var con = new SqlConnection(sb.ConnectionString))
+      //{
+      //  con.Open();
+
+      //}
+
       var connection = ConnetionToSqlServer.Default();
-      connection.DataBase = "ParseBulding;";
+      connection.DataBase = "ParseBulding";
       connection.Server = "localhost";
       connection.WindowsAuthentication = true;
+      connection.Connect();
 
       string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
       var reader = connection.ExecuteReader(select);
-      if(reader != null)
+      if (reader != null)
       {
         while (reader.Read())
         {
@@ -749,12 +802,12 @@ WHERE ID ='{item.Id}'";
         foreach (var district in listDistricts)
         {
           select = $@"SELECT [Id]
-            ,[Name]
-            ,[XCoor]
-            ,[YCoor]
-            ,[IdRegion]
-          FROM[ParseBulding].[dbo].[Metro]
-          where IdRegion = '{district.Id}'";
+              ,[Name]
+              ,[XCoor]
+              ,[YCoor]
+              ,[IdRegion]
+            FROM[ParseBulding].[dbo].[Metro]
+            where IdRegion = '{district.Id}'";
           reader = connection.ExecuteReader(select);
           while (reader.Read())
           {
