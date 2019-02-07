@@ -1225,9 +1225,125 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
               flat.Building.Guid = reader.GetGuid(31);
             }
             reader.Close();
+
+            if (string.IsNullOrWhiteSpace(flat.Building.DistanceOnFoot))
+            {
+              SearchDistanceBetweenBuildingAndMetro(flat);
+            }
           }
         }
       }
+    }
+
+    private void SearchDistanceBetweenBuildingAndMetro(Flat flat)
+    {
+      if (string.IsNullOrWhiteSpace(flat.Building.DistanceOnFoot))
+      {
+        var address = $@"Санкт-Петербург {flat.Building.Street}, {flat.Building.Number}к{flat.Building.Structure} лит.{flat.Building.Liter}";
+        Log.Debug(address);
+        var metroObj = flat.Building.MetroObj;
+        if (metroObj == null)
+          return;
+        var coords = GetCoorForBuildig(address);
+        if (coords != null)
+        {
+          string url = $@"https://2gis.ru/spb/routeSearch/rsType/pedestrian/from/{coords[1].ToString().Replace(",", ".")}%2C{coords[0].ToString().Replace(",", ".")}%7C{coords[0].ToString().Replace(",", ".")}%20{coords[1].ToString().Replace(",", ".")}%7Cgeo/to/{metroObj.YCoor.ToString().Replace(",", ".")}%2C{metroObj.XCoor.ToString().Replace(",", ".")}%7C{metroObj.XCoor.ToString().Replace(",", ".")}%20{metroObj.YCoor.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.352666%2C59.920495%2Fzoom%2F17%2FrouteTab";
+
+          string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{coords[1].ToString().Replace(",", ".")}%2C{coords[0].ToString().Replace(",", ".")}%7C{coords[0].ToString().Replace(",", ".")}%20{coords[1].ToString().Replace(",", ".")}%7Cgeo/to/{metroObj.YCoor.ToString().Replace(",", ".")}%2C{metroObj.XCoor.ToString().Replace(",", ".")}%7C{metroObj.XCoor.ToString().Replace(",", ".")}%20{metroObj.YCoor.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
+
+          using (var webClient = new WebClient())
+          {
+            var random = new Random();
+            Thread.Sleep(random.Next(100, 400));
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+            webClient.Encoding = Encoding.UTF8;
+            Log.Debug(url);
+            try
+            {
+              var responce = webClient.DownloadString(url);
+              var parser = new HtmlParser();
+              var document = parser.Parse(responce);
+
+              var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+              if (timeDoc.Length > 0)
+              {
+                string timeFoot = string.Empty;
+                string disFoot = string.Empty;
+                var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                if (disDoc.Length > 0)
+                {
+                  timeFoot = timeDoc[0].TextContent;
+                  disFoot = disDoc[0].TextContent;
+
+                  if (disFoot.Contains("км"))
+                  {
+                    var regex = new Regex(@"(\d+,\d+)");
+                    var km = regex.Match(disFoot).Value;
+                    km = km.Replace(".", "").Replace(",", "") + "00";
+                    if (km == "00")
+                    {
+                      regex = new Regex(@"(\d+)");
+                      km = regex.Match(disFoot).Value;
+                      km = km.Replace(".", "").Replace(",", "") + "000";
+                    }
+
+                    disFoot = km + " м";
+                  }
+
+                  flat.Building.DistanceOnFoot = disFoot;
+                  flat.Building.TimeOnFootToMetro = timeFoot;
+                }
+              }
+              responce = webClient.DownloadString(urlCar);
+              document = parser.Parse(responce);
+              timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+              if (timeDoc.Length > 0)
+              {
+                string timeCar = string.Empty;
+                string disCar = string.Empty;
+                var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                if (disDoc.Length > 0)
+                {
+                  if (timeDoc.Length == 2)
+                  {
+                    timeCar = timeDoc[1].TextContent;
+                    disCar = disDoc[1].TextContent;
+                  }
+                  else
+                  {
+                    timeCar = timeDoc[0].TextContent;
+                    disCar = disDoc[0].TextContent;
+                  }
+                  if (disCar.Contains("км"))
+                  {
+                    var regex = new Regex(@"(\d+,\d+)");
+                    var km = regex.Match(disCar).Value;
+                    km = km.Replace(".", "").Replace(",", "") + "00";
+                    if (km == "00")
+                    {
+                      regex = new Regex(@"(\d+)");
+                      km = regex.Match(disCar).Value;
+                      km = km.Replace(".", "").Replace(",", "") + "000";
+                    }
+                    disCar = km + " м";
+                  }
+
+                  flat.Building.DistanceOnCar = disCar;
+                  flat.Building.TimeOnCarToMetro = timeCar;
+                }
+              }
+            }
+            catch (Exception e)
+            {
+            }
+          }
+        }
+      }
+
     }
   }
 }

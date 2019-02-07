@@ -251,12 +251,20 @@ namespace ParseSitesForApartments.Sites
     {
       var random = new Random();
       Thread.Sleep(random.Next(2000, 4000));
-      var responce = webClient.DownloadString(url);
-      var document = parser.Parse(responce);
-      ParseSheet(typeRoom, document, district);
-      if (document.GetElementsByClassName("object--item").Length < 30)
-        return false;
-      return true;
+      try
+      {
+        var responce = webClient.DownloadString(url);
+        var document = parser.Parse(responce);
+        ParseSheet(typeRoom, document, district);
+        if (document.GetElementsByClassName("object--item").Length < 30)
+          return false;
+        return true;
+      }
+      catch (Exception e)
+      {
+        Thread.Sleep(10000);
+        return true;
+      }
     }
 
     private void ParseSheet(string typeRoom, IHtmlDocument document, District district)
