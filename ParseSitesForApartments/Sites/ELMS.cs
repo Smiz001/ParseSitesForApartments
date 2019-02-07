@@ -8,6 +8,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using ParseSitesForApartments.Export;
+using ParseSitesForApartments.UnionWithBase;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -27,48 +29,55 @@ namespace ParseSitesForApartments.Sites
     public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\ElmsSdamWithInfo.csv";
     public override string NameSite => "ELMS";
 
+    public delegate void Append(object sender, AppendFlatEventArgs e);
+    public event Append OnAppend;
+    private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
+    private Thread studiiThread;
+    private Thread oneThread;
+    private Thread twoThread;
+    private Thread threeThread;
+    private Thread fourThread;
+    private Thread fiveThread;
+    private Thread studiiThreadOld;
+    private Thread oneThreadOld;
+    private Thread twoThreadOld;
+    private Thread threeThreadOld;
+    private Thread fourThreadOld;
+    private Thread fiveThreadOld;
+
+
     public override void ParsingAll()
     {
       using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
       {
-        sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
+        //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
+        sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
       }
-      var studiiThread = new Thread(ParseStudii);
-      studiiThread.Start();
-      Thread.Sleep(55000);
-      var oneThread = new Thread(ParseOneRoom);
-      oneThread.Start();
-      Thread.Sleep(55000);
-      var twoThread = new Thread(ParseTwoRoom);
-      twoThread.Start();
-      Thread.Sleep(55000);
-      var threeThread = new Thread(ParseThreeRoom);
-      threeThread.Start();
-      Thread.Sleep(55000);
-      var fourThread = new Thread(ParseFourRoom);
-      fourThread.Start();
-      Thread.Sleep(55000);
-      var fiveThread = new Thread(ParseFiveRoom);
-      fiveThread.Start();
-      Thread.Sleep(55000);
+      studiiThreadOld = new Thread(ParseStudii);
+      studiiThreadOld.Start();
+      oneThreadOld = new Thread(ParseOneRoom);
+      oneThreadOld.Start();
+      twoThreadOld = new Thread(ParseTwoRoom);
+      twoThreadOld.Start();
+      threeThreadOld = new Thread(ParseThreeRoom);
+      threeThreadOld.Start();
+      fourThreadOld = new Thread(ParseFourRoom);
+      fourThreadOld.Start();
+      fiveThreadOld = new Thread(ParseFiveRoom);
+      fiveThreadOld.Start();
 
-      var studiiNovThread = new Thread(ParsingStudiiNov);
-      studiiNovThread.Start();
-      Thread.Sleep(55000);
-      var oneNovThread = new Thread(ParsingOneNov);
-      oneNovThread.Start();
-      Thread.Sleep(55000);
-      var twoNovThread = new Thread(ParsingTwoNov);
-      twoNovThread.Start();
-      Thread.Sleep(55000);
-      var threeNovThread = new Thread(ParsingThreeNov);
-      threeNovThread.Start();
-      Thread.Sleep(55000);
-      var fourNovThread = new Thread(ParsingFourNov);
-      fourNovThread.Start();
-      Thread.Sleep(55000);
-      var fiveNovThread = new Thread(ParsingFiveNov);
-      fiveNovThread.Start();
+      studiiThread = new Thread(ParsingStudiiNov);
+      studiiThread.Start();
+      oneThread = new Thread(ParsingOneNov);
+      oneThread.Start();
+      twoThread = new Thread(ParsingTwoNov);
+      twoThread.Start();
+      threeThread = new Thread(ParsingThreeNov);
+      threeThread.Start();
+      fourThread = new Thread(ParsingFourNov);
+      fourThread.Start();
+      fiveThread = new Thread(ParsingFiveNov);
+      fiveThread.Start();
     }
 
     public void ParseStudii()

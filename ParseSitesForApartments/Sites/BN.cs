@@ -262,7 +262,8 @@ namespace ParseSitesForApartments.Sites
       }
       catch (Exception e)
       {
-        Thread.Sleep(10000);
+        //TODO Если страница долго не отвечает то пропускаем ее
+        Thread.Sleep(1000);
         return true;
       }
     }
