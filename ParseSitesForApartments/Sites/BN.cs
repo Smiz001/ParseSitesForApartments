@@ -500,13 +500,14 @@ namespace ParseSitesForApartments.Sites
           street = street.Replace("СПб", "");
         }
 
-        street = street.Replace("ул.", "").Replace("улица", "").Replace("пр-кт", "").Replace("проспект", "").Replace("наб", "").Replace("б-р", "").Replace("б-р/2", "").Replace("б-р/4", "").Replace("проезд", "").Replace("пр", "").Replace("шос к", "").Replace("бульвар", "").Replace(" б", "").Replace("  к", "").Replace("  д", "").Replace("пл", "").Replace(",", "").Replace(".", "").Trim();
+        street = street.Replace("ул.", "").Replace("улица", "").Replace("пр-кт", "").Replace("пр-т", "").Replace("проспект", "").Replace("наб", "").Replace("б-р", "").Replace("б-р/2", "").Replace("б-р/4", "").Replace("проезд", "").Replace("пр", "").Replace("шос к", "").Replace("бульвар", "").Replace(" б", "").Replace("  к", "").Replace("  д", "").Replace("пл", "").Replace(",", "").Replace(".", "").Trim();
 
         regex = new Regex(@"(\/А\d+А)");
         var str = regex.Match(street).Value;
         if (!string.IsNullOrEmpty(str))
           street = street.Replace(str, "");
 
+        street = street.Replace(district.Name, "").Trim();
         street = parseStreet.Execute(street, district);
 
         #endregion
@@ -577,13 +578,16 @@ namespace ParseSitesForApartments.Sites
         #endregion
         if (!string.IsNullOrWhiteSpace(flat.Building.Number))
         {
-          Monitor.Enter(locker);
-          if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+          if (!string.IsNullOrWhiteSpace(flat.Square))
           {
-            unionInfo.UnionInfoProdam(flat);
+            Monitor.Enter(locker);
+            if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+            {
+              unionInfo.UnionInfoProdam(flat);
+            }
+            OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+            Monitor.Exit(locker);
           }
-          OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-          Monitor.Exit(locker);
         }
       }
     }

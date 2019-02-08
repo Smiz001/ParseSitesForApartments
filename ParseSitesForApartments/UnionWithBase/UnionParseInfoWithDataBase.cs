@@ -1334,6 +1334,25 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
 
                   flat.Building.DistanceOnCar = disCar;
                   flat.Building.TimeOnCarToMetro = timeCar;
+                  
+                  //TODO обновить данные в базе (Если дом есть, то обновить расстояние, если нет, то записать его в базу)
+                  var exist = $"EXEC dbo.ExistBuilding '{flat.Building.Guid}'";
+                  var isExist = (int)connection.ExecuteValue(exist);
+
+                  string query = string.Empty;
+                  if (isExist == 1)
+                  {
+                    query = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+	  set DistanceAndTimeOnFoot = '{flat.Building.DistanceOnFoot},{flat.Building.TimeOnFootToMetro}',
+	  DistanceAndTimeOnCar = '{flat.Building.DistanceOnCar},{flat.Building.TimeOnCarToMetro}'
+	  where Id = '{flat.Building.Guid}'";
+                  }
+                  else
+                  {
+                    query = $@"insert into dbo.MainInfoAboutBulding (Id, Street, Number, Bulding, Letter, DistrictId, DistanceAndTimeOnFoot, DistanceAndTimeOnCar)
+values ('{flat.Building.Guid}','{flat.Building.Street}','{flat.Building.Number}','{flat.Building.Structure}','{flat.Building.Liter}','{flat.Building.District.Id}','{flat.Building.DistanceOnFoot},{flat.Building.TimeOnFootToMetro}','{flat.Building.DistanceOnCar},{flat.Building.TimeOnCarToMetro}')";
+                  }
+                  connection.ExecuteNonQuery(query);
                 }
               }
             }

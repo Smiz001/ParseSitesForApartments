@@ -181,6 +181,18 @@ namespace ParseSitesForApartments.ParsClasses
       {
         return "Морская наб.";
       }
+      else if (str.Contains("подьяческая") && str.Contains("б"))
+      {
+        return "Большая Подьяческая";
+      }
+      else if (str.Contains("подьяческая") && str.Contains("м"))
+      {
+        return "Малая Подьяческая";
+      }
+      else if (str.Contains("Подьяческая"))
+      {
+        return "Средняя Подьяческая";
+      }
       else
         return street;
     }
