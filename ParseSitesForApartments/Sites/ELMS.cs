@@ -763,8 +763,9 @@ namespace ParseSitesForApartments.Sites
         {
           CountRoom = typeRoom
         };
-
-        flat.Url = $@"https://www.emls.ru{collection[i].ParentElement.GetAttribute("href")}";
+        var href = collection[i].ParentElement.GetAttribute("href");
+        if(href != "javascript:void(0)")
+          flat.Url = $@"https://www.emls.ru{href}";
         string street = string.Empty;
         string number = string.Empty;
         string structure = string.Empty;
