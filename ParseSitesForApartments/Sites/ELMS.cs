@@ -3,12 +3,14 @@ using AngleSharp.Parser.Html;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using ParseSitesForApartments.Export;
+using ParseSitesForApartments.Export.Creators;
 using ParseSitesForApartments.UnionWithBase;
 
 namespace ParseSitesForApartments.Sites
@@ -21,7 +23,11 @@ namespace ParseSitesForApartments.Sites
 
     private List<Flat> listBuild = new List<Flat>();
     static object locker = new object();
+    private static object lockerDistrict = new object();
     private const int MaxPage = 20;
+
+    private int minPage = 1;
+    private int maxPage = 20;
 
     public override string Filename => @"d:\ParserInfo\Appartament\ElmsProdam.csv";
     public override string FilenameSdam => @"d:\ParserInfo\Appartament\ElmsSdam.csv";
@@ -32,6 +38,7 @@ namespace ParseSitesForApartments.Sites
     public delegate void Append(object sender, AppendFlatEventArgs e);
     public event Append OnAppend;
     private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
+
     private Thread studiiThread;
     private Thread oneThread;
     private Thread twoThread;
@@ -44,7 +51,14 @@ namespace ParseSitesForApartments.Sites
     private Thread threeThreadOld;
     private Thread fourThreadOld;
     private Thread fiveThreadOld;
+    private CoreExport export;
 
+    public ELMS(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
+    {
+      CoreCreator creator = new CsvExportCreator();
+      export = creator.FactoryCreate(Filename);
+      OnAppend += export.AddFlatInList;
+    }
 
     public override void ParsingAll()
     {
@@ -53,31 +67,119 @@ namespace ParseSitesForApartments.Sites
         //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
         sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
       }
-      studiiThreadOld = new Thread(ParseStudii);
-      studiiThreadOld.Start();
-      oneThreadOld = new Thread(ParseOneRoom);
-      oneThreadOld.Start();
-      twoThreadOld = new Thread(ParseTwoRoom);
-      twoThreadOld.Start();
-      threeThreadOld = new Thread(ParseThreeRoom);
-      threeThreadOld.Start();
-      fourThreadOld = new Thread(ParseFourRoom);
-      fourThreadOld.Start();
-      fiveThreadOld = new Thread(ParseFiveRoom);
-      fiveThreadOld.Start();
+      studiiThreadOld = new Thread(ChangeDistrictAndPage);
+      studiiThreadOld.Start("Студия");
+      oneThreadOld = new Thread(ChangeDistrictAndPage);
+      oneThreadOld.Start("1 км. кв.");
+      twoThreadOld = new Thread(ChangeDistrictAndPage);
+      twoThreadOld.Start("2 км. кв.");
+      threeThreadOld = new Thread(ChangeDistrictAndPage);
+      threeThreadOld.Start("3 км. кв.");
+      fourThreadOld = new Thread(ChangeDistrictAndPage);
+      fourThreadOld.Start("4 км. кв.");
+      fiveThreadOld = new Thread(ChangeDistrictAndPage);
+      fiveThreadOld.Start("5 км. кв.");
 
-      studiiThread = new Thread(ParsingStudiiNov);
-      studiiThread.Start();
-      oneThread = new Thread(ParsingOneNov);
-      oneThread.Start();
-      twoThread = new Thread(ParsingTwoNov);
-      twoThread.Start();
-      threeThread = new Thread(ParsingThreeNov);
-      threeThread.Start();
-      fourThread = new Thread(ParsingFourNov);
-      fourThread.Start();
-      fiveThread = new Thread(ParsingFiveNov);
-      fiveThread.Start();
+      studiiThread = new Thread(ChangeDistrictAndPage);
+      studiiThread.Start("Студия Н");
+      oneThread = new Thread(ChangeDistrictAndPage);
+      oneThread.Start("1 км. кв. Н");
+      twoThread = new Thread(ChangeDistrictAndPage);
+      twoThread.Start("2 км. кв. Н");
+      threeThread = new Thread(ChangeDistrictAndPage);
+      threeThread.Start("3 км. кв. Н");
+      fourThread = new Thread(ChangeDistrictAndPage);
+      fourThread.Start("4 км. кв. Н");
+      fiveThread = new Thread(ChangeDistrictAndPage);
+      fiveThread.Start("5 км. кв. Н");
+    }
+
+    private void ChangeDistrictAndPage(object typeRoom)
+    {
+      HtmlParser parser = new HtmlParser();
+      using (var webClient = new WebClient())
+      {
+        webClient.Encoding = Encoding.GetEncoding("windows-1251");
+        string url = "";
+        foreach (var distr in district)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            switch (typeRoom)
+            {
+              case "Студия":
+                url =
+                  $@"https://www.emls.ru/flats/page{i}.html?query=s/1/r0/1/is_auction/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+                break;
+              case "Студия Н":
+                url = $@"https://www.emls.ru/new/page{i}.html?query=s/1/dist/{distr.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{distr.Key}/by_room/1";
+                break;
+              case "1 км. кв.":
+                url = $@"https://www.emls.ru/flats/page{i}.html?query=s/1/r1/1/is_auction/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+                break;
+              case "1 км. кв. Н":
+                url = $@"https://www.emls.ru/new/page{i}.html?query=s/1/dist/{distr.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{distr.Key}/r1/1/by_room/1";
+                break;
+              case "2 км. кв.":
+                url = $@"https://www.emls.ru/flats/page{i}.html?query=s/1/r2/1/is_auction/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+                break;
+              case "2 км. кв. Н":
+                url = $@"https://www.emls.ru/new/page{i}.html?query=s/1/dist/{distr.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{distr.Key}/r2/1/by_room/1";
+                break;
+              case "3 км. кв.":
+                url = $@"https://www.emls.ru/flats/page{i}.html?query=s/1/r3/1/is_auction/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+                break;
+              case "3 км. кв. Н":
+                url = $@"https://www.emls.ru/new/page{i}.html?query=s/1/dist/{distr.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{distr.Key}/r3/1/by_room/1";
+                break;
+              case "4 км. кв. Н":
+                url = $@"https://www.emls.ru/new/page{i}.html?query=s/1/dist/{distr.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{distr.Key}/r4/1/by_room/1";
+                break;
+              case "4 км. кв.":
+                url = $@"https://www.emls.ru/flats/page{i}.html?query=s/1/r4/1/is_auction/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+                break;
+              case "5 км. кв. Н":
+                url = $@"https://www.emls.ru/new/page{i}.html?query=s/1/dist/{distr.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{distr.Key}/r5/1/by_room/1";
+                break;
+              case "5 км. кв.":
+                url = $@"https://www.emls.ru/flats/page{i}.html?query=s/1/r5/1/is_auction/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
+                break;
+            }
+            if (!ExecuteParse(url, webClient, parser, (string)typeRoom,
+              ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First()))
+              break;
+          }
+        }
+      }
+
+      MessageBox.Show($"Закончили - {typeRoom}");
+    }
+
+    private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, District district)
+    {
+      var random = new Random();
+      Thread.Sleep(random.Next(2000, 4000));
+      //try
+      //{
+      var responce = webClient.DownloadString(url);
+      var document = parser.Parse(responce);
+      var tableElements = document.GetElementsByClassName("row1");
+
+      if (typeRoom.Contains("Н"))
+        ParseSheetNov(tableElements, typeRoom, district);
+      else
+        ParseSheet(tableElements, typeRoom, district);
+
+      if (tableElements.Length == 0)
+        return false;
+      return true;
+      //}
+      //catch (Exception e)
+      //{
+      //  //TODO Если страница долго не отвечает то пропускаем ее
+      //  Thread.Sleep(1000);
+      //  return true;
+      //}
     }
 
     public void ParseStudii()
@@ -101,8 +203,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheet(tableElements, "Студия", item.Value);
+              //else
+              //  ParseSheet(tableElements, "Студия", item.Value);
             }
           }
         }
@@ -113,7 +215,6 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили студии");
     }
-
     public void ParseOneRoom()
     {
       using (var webClient = new WebClient())
@@ -135,8 +236,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheet(tableElements, "1 км. кв.", item.Value);
+              //else
+              // ParseSheet(tableElements, "1 км. кв.", item.Value);
             }
           }
         }
@@ -147,7 +248,6 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили 1 км. кв.");
     }
-
     public void ParseTwoRoom()
     {
       using (var webClient = new WebClient())
@@ -169,8 +269,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheet(tableElements, "2 км. кв.", item.Value);
+              //else
+              //  ParseSheet(tableElements, "2 км. кв.", item.Value);
             }
           }
         }
@@ -181,7 +281,6 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили 2 км. кв.");
     }
-
     public void ParseThreeRoom()
     {
       using (var webClient = new WebClient())
@@ -203,8 +302,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheet(tableElements, "3 км. кв.", item.Value);
+              //else
+              //  ParseSheet(tableElements, "3 км. кв.", item.Value);
             }
           }
         }
@@ -215,7 +314,6 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили 3 км. кв.");
     }
-
     public void ParseFourRoom()
     {
       using (var webClient = new WebClient())
@@ -237,8 +335,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheet(tableElements, "4 км. кв.", item.Value);
+              //else
+              //  ParseSheet(tableElements, "4 км. кв.", item.Value);
             }
           }
         }
@@ -249,7 +347,6 @@ namespace ParseSitesForApartments.Sites
       }
       MessageBox.Show("Закончили 4 км. кв.");
     }
-
     public void ParseFiveRoom()
     {
       using (var webClient = new WebClient())
@@ -271,8 +368,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheet(tableElements, "5 км. кв.", item.Value);
+              //else
+              //  ParseSheet(tableElements, "5 км. кв.", item.Value);
             }
           }
         }
@@ -284,7 +381,7 @@ namespace ParseSitesForApartments.Sites
       MessageBox.Show("Закончили 5 км. кв.");
     }
 
-    private void  ParseSheet(IHtmlCollection<IElement> collection, string typeRoom, string district)
+    private void ParseSheet(IHtmlCollection<IElement> collection, string typeRoom, District district)
     {
       for (int i = 0; i < collection.Length; i++)
       {
@@ -292,46 +389,88 @@ namespace ParseSitesForApartments.Sites
         {
           CountRoom = typeRoom
         };
-        try
+        //try
+        //{
+        if (collection[i].GetElementsByClassName("w-image").Length > 0)
         {
-          if (collection[i].GetElementsByClassName("w-image").Length > 0)
+          //var divImage = collection[i].GetElementsByClassName("w-image")[0];
+          var square = collection[i].GetElementsByClassName("space-all");
+          if (square.Length > 0)
+            flat.Square = square[0].TextContent.Replace(".", ",");
+
+          string street = string.Empty;
+          string number = string.Empty;
+          string structure = string.Empty;
+          string liter = string.Empty;
+
+          if (collection[i].GetElementsByClassName("address-geo").Length > 0)
           {
-            //var divImage = collection[i].GetElementsByClassName("w-image")[0];
-            var square = collection[i].GetElementsByClassName("space-all");
-            if (square.Length > 0)
-              flat.Square = square[0].TextContent.Replace(".", ",");
-
-            if (collection[i].GetElementsByClassName("address-geo").Length > 0)
+            var adr = collection[i].GetElementsByClassName("address-geo")[0].TextContent.Split(',');
+            if (adr.Length == 3)
             {
-              var adr = collection[i].GetElementsByClassName("address-geo")[0].TextContent.Split(',');
-              if (adr.Length == 3)
-              {
-                flat.Building.Street = adr[0] + " " + adr[1];
-                flat.Building.Number = adr[2];
-              }
-              else
-              {
-                flat.Building.Street = adr[0];
-                if (adr.Length > 1)
-                  flat.Building.Number = adr[1].Trim();
-              }
+              street = adr[0] + " " + adr[1];
+              number = adr[2];
             }
-            var regex = new Regex(@"(к\d+)");
-            flat.Building.Structure = regex.Match(flat.Building.Number).Value;
-            if (!string.IsNullOrEmpty(flat.Building.Structure))
+            else
             {
-              flat.Building.Number = flat.Building.Number.Replace(flat.Building.Structure, "");
-              flat.Building.Structure = flat.Building.Structure.Replace("к", "");
+              street = adr[0];
+              if (adr.Length > 1)
+                number = adr[1].Trim();
             }
-            regex = new Regex(@"(\D)");
-            flat.Building.Liter = regex.Match(flat.Building.Number).Value;
-            if (!string.IsNullOrEmpty(flat.Building.Liter))
-              flat.Building.Number = flat.Building.Number.Replace(flat.Building.Liter, "");
+          }
+          var regex = new Regex(@"(к\d+)");
+          structure = regex.Match(number).Value;
+          if (!string.IsNullOrEmpty(structure))
+          {
+            number = number.Replace(structure, "");
+            structure = structure.Replace("к", "");
+          }
+          regex = new Regex(@"(\D)");
+          liter = regex.Match(number).Value;
+          if (!string.IsNullOrEmpty(liter))
+            number = number.Replace(liter, "");
 
+          if (street.Contains("(Горелово)"))
+          {
+            street = street.Replace("(Горелово)", "");
+          }
+          else if (street.Contains("Красное Село"))
+          {
+            street = street.Replace("Красное Село", "");
+          }
+          else if (street.Contains("Парголово"))
+          {
+            street = street.Replace("Парголово", "");
+          }
+          street = street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
+          Building building = null;
+          Monitor.Enter(lockerDistrict);
+          if (district.Buildings.Count != 0)
+          {
+            var bldsEnum =
+              district.Buildings.Where(x => x.Street == street && x.Number == number && x.Structure == structure);
+            if (bldsEnum.Count() > 0)
+              building = bldsEnum.First();
+          }
+          if (building == null)
+          {
+            building = new Building
+            {
+              Street = street,
+              Number = number,
+              Structure = structure,
+              District = district,
+            };
+            district.Buildings.Add(building);
+          }
+          Monitor.Exit(lockerDistrict);
+
+          if (building.MetroObj == null)
+          {
             var metro = collection[i].GetElementsByClassName("metroline-2");
             if (metro.Length > 0)
-              flat.Building.Metro = metro[0].TextContent;
+              building.Metro = metro[0].TextContent;
 
             regex = new Regex(@"(\d+)");
             var floor = collection[i].GetElementsByClassName("w-floor");
@@ -341,86 +480,78 @@ namespace ParseSitesForApartments.Sites
               if (ms.Count > 0)
                 flat.Floor = ms[0].Value;
             }
+          }
+          
+          flat.Building = building;
 
-            regex = new Regex(@"(\d+\s+\d+\s+метров)|(\d+\s+метров)");
-            var distance = collection[i].GetElementsByClassName("ellipsis em");
-            if (distance.Length > 0)
+          //regex = new Regex(@"(\d+\s+\d+\s+метров)|(\d+\s+метров)");
+          //var distance = collection[i].GetElementsByClassName("ellipsis em");
+          //if (distance.Length > 0)
+          //{
+          //  flat.Building.Distance = regex.Match(distance[0].TextContent.Replace("\n", "").Trim()).Value;
+          //}
+
+          var pr = collection[i].GetElementsByClassName("price");
+          if (pr.Length > 0)
+          {
+            string priceStr = pr[0].TextContent.Replace(" a", "").Replace(" ", "");
+            int price;
+            if (int.TryParse(priceStr, out price))
             {
-              flat.Building.Distance = regex.Match(distance[0].TextContent.Replace("\n", "").Trim()).Value;
-            }
-
-            var pr = collection[i].GetElementsByClassName("price");
-            if (pr.Length > 0)
-            {
-              string priceStr = pr[0].TextContent.Replace(" a", "").Replace(" ", "");
-              int price;
-              if (int.TryParse(priceStr, out price))
-              {
-                flat.Price = price;
-              }
-            }
-
-            string town = string.Empty;
-            if (flat.Building.Street.Contains("(Горелово)"))
-            {
-              town = "Горелово";
-              flat.Building.Street = flat.Building.Street.Replace("(Горелово)", "");
-            }
-            else if (flat.Building.Street.Contains("Красное Село"))
-            {
-              town = "Красное Село";
-              flat.Building.Street = flat.Building.Street.Replace(town, "");
-            }
-            else if (flat.Building.Street.Contains("Парголово"))
-            {
-              town = "Парголово";
-              flat.Building.Street = flat.Building.Street.Replace(town, "");
-            }
-            else
-              town = "Санкт-Петербург";
-
-
-            flat.Building.Street = flat.Building.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
-
-            flat.Building.Metro = flat.Building.Metro.Replace(" и-т", "");
-
-            regex = new Regex(@"(\d+)");
-            var val = regex.Match(flat.Building.Liter).Value;
-            if(string.IsNullOrWhiteSpace(val))
-            {
-              Monitor.Enter(locker);
-              bool flag = false;
-              foreach (var bl in listBuild)
-              {
-                if (flat.Building.Equals(bl))
-                {
-                  flag = true;
-                  break;
-                }
-              }
-              if (!flag)
-              {
-                if (!string.IsNullOrWhiteSpace(flat.Building.Number))
-                {
-                  if(flat.Building.Liter != "-" && !flat.Building.Liter.Contains("/"))
-                  {
-                    listBuild.Add(flat);
-                    using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
-                    {
-                      sw.BaseStream.Position = sw.BaseStream.Length;
-                      sw.WriteLine($@"{district};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
-                    }
-                  }
-                }
-              }
-              Monitor.Exit(locker);
+              flat.Price = price;
             }
           }
+          //flat.Building.Metro = flat.Building.Metro.Replace(" и-т", "");
+
+
+          if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+          {
+            if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+            {
+              Monitor.Enter(locker);
+              unionInfo.UnionInfoProdam(flat);
+              Monitor.Exit(locker);
+            }
+            OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+          }
+
+          //regex = new Regex(@"(\d+)");
+          //var val = regex.Match(flat.Building.Liter).Value;
+          //if (string.IsNullOrWhiteSpace(val))
+          //{
+          //  Monitor.Enter(locker);
+          //  bool flag = false;
+          //  foreach (var bl in listBuild)
+          //  {
+          //    if (flat.Building.Equals(bl))
+          //    {
+          //      flag = true;
+          //      break;
+          //    }
+          //  }
+          //  if (!flag)
+          //  {
+          //    if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+          //    {
+          //      if (flat.Building.Liter != "-" && !flat.Building.Liter.Contains("/"))
+          //      {
+          //        listBuild.Add(flat);
+          //        using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+          //        {
+          //          sw.BaseStream.Position = sw.BaseStream.Length;
+          //          sw.WriteLine($@"{district};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+          //        }
+          //      }
+          //    }
+          //  }
+          //  Monitor.Exit(locker);
+          //}
         }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message);
-        }
+        //}
+        //catch (Exception ex)
+        //{
+        //  MessageBox.Show(ex.Message);
+        //}
       }
     }
 
@@ -445,8 +576,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheetNov(tableElements, "Студия Н", item.Value);
+              //else
+              //  ParseSheetNov(tableElements, "Студия Н", item.Value);
             }
           }
         }
@@ -478,8 +609,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheetNov(tableElements, "1 км. кв. Н", item.Value);
+              //else
+              //  ParseSheetNov(tableElements, "1 км. кв. Н", item.Value);
             }
           }
         }
@@ -511,8 +642,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheetNov(tableElements, "2 км. кв. Н", item.Value);
+              //else
+              //  ParseSheetNov(tableElements, "2 км. кв. Н", item.Value);
             }
           }
         }
@@ -544,8 +675,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheetNov(tableElements, "3 км. кв. Н", item.Value);
+              //else
+              //  ParseSheetNov(tableElements, "3 км. кв. Н", item.Value);
             }
           }
         }
@@ -577,8 +708,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheetNov(tableElements, "4 км. кв. Н", item.Value);
+              //else
+              //  ParseSheetNov(tableElements, "4 км. кв. Н", item.Value);
             }
           }
         }
@@ -610,8 +741,8 @@ namespace ParseSitesForApartments.Sites
               var tableElements = document.GetElementsByClassName("row1");
               if (tableElements.Length == 0)
                 break;
-              else
-                ParseSheetNov(tableElements, "5 км. кв. Н", item.Value);
+              //else
+              //  ParseSheetNov(tableElements, "5 км. кв. Н", item.Value);
             }
           }
         }
@@ -623,18 +754,25 @@ namespace ParseSitesForApartments.Sites
       MessageBox.Show("Закончили 5 км. кв. нов.");
     }
 
-    private void ParseSheetNov(IHtmlCollection<IElement> collection, string typeRoom, string district)
+    private void ParseSheetNov(IHtmlCollection<IElement> collection, string typeRoom, District district)
     {
       for (int i = 0; i < collection.Length; i++)
       {
-        var listFlat = new List<Flat>();
+        var flat = new Flat
+        {
+          CountRoom = typeRoom
+        };
+        string street = string.Empty;
+        string number = string.Empty;
+        string structure = string.Empty;
+        string liter = string.Empty;
 
-        string street = "";
-        string number = "";
-        string building = "";
-        string liter = "";
-        string metro = "";
-        string distance = "";
+        //string street = "";
+        //string number = "";
+        //string building = "";
+        //string liter = "";
+        //string metro = "";
+        //string distance = "";
 
         #region Адрес
 
@@ -654,29 +792,29 @@ namespace ParseSitesForApartments.Sites
           }
         }
         var regex = new Regex(@"(к\d+)");
-        building = regex.Match(number).Value;
-        if (!string.IsNullOrEmpty(building))
+        structure = regex.Match(number).Value;
+        if (!string.IsNullOrEmpty(structure))
         {
-          number = number.Replace(building, "");
-          building = building.Replace("к", "");
+          number = number.Replace(structure, "");
+          structure = structure.Replace("к", "");
         }
         regex = new Regex(@"(\D)");
         liter = regex.Match(number).Value;
         if (!string.IsNullOrEmpty(liter))
           number = number.Replace(liter, "");
 
-        var met = collection[i].GetElementsByClassName("metroline-2");
-        if (met.Length > 0)
-          metro = met[0].TextContent;
+        //var met = collection[i].GetElementsByClassName("metroline-2");
+        //if (met.Length > 0)
+        //  metro = met[0].TextContent;
 
-        regex = new Regex(@"(\d+\s+\d+\s+метров)|(\d+\s+метров)");
-        var dis = collection[i].GetElementsByClassName("ellipsis em");
-        if (dis.Length > 0)
-        {
-          distance = dis[0].TextContent.Replace("\n", "").Trim();
-        }
-        if (!string.IsNullOrEmpty(distance))
-          metro = metro.Replace(distance, "").Trim();
+        //regex = new Regex(@"(\d+\s+\d+\s+метров)|(\d+\s+метров)");
+        //var dis = collection[i].GetElementsByClassName("ellipsis em");
+        //if (dis.Length > 0)
+        //{
+        //  distance = dis[0].TextContent.Replace("\n", "").Trim();
+        //}
+        //if (!string.IsNullOrEmpty(distance))
+        //  metro = metro.Replace(distance, "").Trim();
         #endregion
 
         var pr = collection[i].GetElementsByClassName("price");
@@ -685,20 +823,6 @@ namespace ParseSitesForApartments.Sites
           string priceStr = pr[0].TextContent.Replace(" a", "").Replace(" ", "");
           if (!string.IsNullOrEmpty(priceStr))
           {
-            var flat = new Flat
-            {
-              CountRoom = typeRoom,
-              Building = new Building()
-              {
-                Street = street,
-                Number = number,
-                Liter = liter,
-                Metro = metro,
-                Distance = distance,
-                Structure = building
-              }
-            };
-
             int price;
             if (int.TryParse(priceStr, out price))
             {
@@ -721,26 +845,12 @@ namespace ParseSitesForApartments.Sites
               if (ms.Count > 0)
                 flat.Floor = ms[0].Value;
             }
-            listFlat.Add(flat);
           }
           else
           {
             var rows = collection[i].GetElementsByClassName("w-kv-row");
             for (int j = 0; j < rows.Length; j++)
             {
-              var flat = new Flat
-              {
-                CountRoom = typeRoom,
-                Building = new Building()
-                {
-                  Street = street,
-                  Number = number,
-                  Liter = liter,
-                  Metro = metro,
-                  Distance = distance,
-                  Structure = building
-                }
-              };
               var floor = rows[j].GetElementsByClassName("circle-floor");
               if (floor.Length > 0)
                 flat.Floor = floor[0].TextContent.Trim();
@@ -758,67 +868,133 @@ namespace ParseSitesForApartments.Sites
                   flat.Price = pri;
                 }
               }
-              listFlat.Add(flat);
             }
           }
         }
 
-        foreach (var item in listFlat)
+        liter = regex.Match(number).Value;
+        if (!string.IsNullOrEmpty(liter))
+          number = number.Replace(liter, "");
+
+        if (street.Contains("(Горелово)"))
         {
-          string town = string.Empty;
-          if (item.Building.Street.Contains("(Горелово)"))
-          {
-            town = "Горелово";
-            item.Building.Street = item.Building.Street.Replace("(Горелово)", "");
-          }
-          else if (item.Building.Street.Contains("Красное Село"))
-          {
-            town = "Красное Село";
-            item.Building.Street = item.Building.Street.Replace(town, "");
-          }
-          else if (item.Building.Street.Contains("Парголово"))
-          {
-            town = "Парголово";
-            item.Building.Street = item.Building.Street.Replace(town, "");
-          }
-          else
-            town = "Санкт-Петербург";
+          street = street.Replace("(Горелово)", "");
+        }
+        else if (street.Contains("Красное Село"))
+        {
+          street = street.Replace("Красное Село", "");
+        }
+        else if (street.Contains("Парголово"))
+        {
+          street = street.Replace("Парголово", "");
+        }
+        street = street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
-
-          item.Building.Street = item.Building.Street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
-          if (!string.IsNullOrEmpty(item.Building.Number))
+        Building building = null;
+        Monitor.Enter(lockerDistrict);
+        if (district.Buildings.Count != 0)
+        {
+          var bldsEnum =
+            district.Buildings.Where(x => x.Street == street && x.Number == number && x.Structure == structure);
+          if (bldsEnum.Count() > 0)
+            building = bldsEnum.First();
+        }
+        if (building == null)
+        {
+          building = new Building
           {
-            regex = new Regex(@"(\d+)");
-            var val = regex.Match(item.Building.Liter).Value;
-            if (string.IsNullOrEmpty(val))
-            {
-              Monitor.Enter(locker);
-              bool flag = false;
-              foreach (var bl in listBuild)
-              {
-                if (item.Equals(bl))
-                {
-                  flag = true;
-                  break;
-                }
-              }
-              if (!flag)
-              {
-                if (item.Building.Liter != "-" && !item.Building.Liter.Contains("/"))
-                {
-                  listBuild.Add(item);
-                  using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
-                  {
-                    sw.BaseStream.Position = sw.BaseStream.Length;
-                    sw.WriteLine($@"{town};{item.Building.Street};{item.Building.Number};{item.Building.Structure};{item.Building.Liter};{item.CountRoom};{item.Square};{item.Price};{item.Floor};{item.Building.Metro};{item.Building.Distance};{district}");
-                  }
-                }
-              }
-              Monitor.Exit(locker);
-            }
-           
+            Street = street,
+            Number = number,
+            Structure = structure,
+            District = district,
+          };
+          district.Buildings.Add(building);
+        }
+        Monitor.Exit(lockerDistrict);
+
+        if (building.MetroObj == null)
+        {
+          var metro = collection[i].GetElementsByClassName("metroline-2");
+          if (metro.Length > 0)
+            building.Metro = metro[0].TextContent;
+
+          regex = new Regex(@"(\d+)");
+          var floor = collection[i].GetElementsByClassName("w-floor");
+          if (floor.Length > 0)
+          {
+            var ms = regex.Matches(floor[0].TextContent);
+            if (ms.Count > 0)
+              flat.Floor = ms[0].Value;
           }
         }
+
+        flat.Building = building;
+
+        regex = new Regex(@"(\d+\s+\d+\s+метров)|(\d+\s+метров)");
+        var distance = collection[i].GetElementsByClassName("ellipsis em");
+        if (distance.Length > 0)
+        {
+          flat.Building.Distance = regex.Match(distance[0].TextContent.Replace("\n", "").Trim()).Value;
+        }
+        //flat.Building.Metro = flat.Building.Metro.Replace(" и-т", "");
+
+
+        if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+        {
+          Monitor.Enter(locker);
+          if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+          {
+            unionInfo.UnionInfoProdam(flat);
+          }
+          OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+          Monitor.Exit(locker);
+        }
+        //if (!string.IsNullOrEmpty(flat.Building.Number))
+        //{
+        //  regex = new Regex(@"(\d+)");
+        //  var val = regex.Match(flat.Building.Liter).Value;
+        //  if (string.IsNullOrEmpty(val))
+        //  {
+        //Monitor.Enter(locker);
+        //bool flag = false;
+        //foreach (var bl in listBuild)
+        //{
+        //  if (item.Equals(bl))
+        //  {
+        //    flag = true;
+        //    break;
+        //  }
+        //}
+        //if (!flag)
+        //{
+        //  if (item.Building.Liter != "-" && !item.Building.Liter.Contains("/"))
+        //  {
+        //    listBuild.Add(item);
+        //    using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+        //    {
+        //      sw.BaseStream.Position = sw.BaseStream.Length;
+        //      sw.WriteLine($@"{town};{item.Building.Street};{item.Building.Number};{item.Building.Structure};{item.Building.Liter};{item.CountRoom};{item.Square};{item.Price};{item.Floor};{item.Building.Metro};{item.Building.Distance};{district}");
+        //    }
+        //  }
+        //}
+        //Monitor.Exit(locker);
+
+        //  if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+        //  {
+        //    if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+        //    {
+        //      Monitor.Enter(locker);
+        //      unionInfo.UnionInfoProdam(flat);
+        //      Monitor.Exit(locker);
+        //      OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+        //    }
+        //  }
+        //  else
+        //  {
+        //    OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+        //  }
+        //}
+        //}
       }
     }
 
@@ -1159,11 +1335,6 @@ namespace ParseSitesForApartments.Sites
           MessageBox.Show(ex.Message);
         }
       }
-    }
-  
-
-    public ELMS(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
-    {
     }
   }
 }

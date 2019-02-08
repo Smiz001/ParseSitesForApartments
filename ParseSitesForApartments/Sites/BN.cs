@@ -43,8 +43,7 @@ namespace ParseSitesForApartments.Sites
       //export = creator.FactoryCreate(Filename);
       OnAppend += export.AddFlatInList;
     }
-
-
+    
     Thread studiiThread;
     Thread oneThread;
     Thread twoThread;
@@ -55,6 +54,7 @@ namespace ParseSitesForApartments.Sites
     Thread twoThreadOld;
     Thread threeThreadOld;
     Thread fourThreadOld;
+
     public override void ParsingAll()
     {
       if (export is CsvExport)
@@ -244,7 +244,7 @@ namespace ParseSitesForApartments.Sites
         }
       }
 
-      MessageBox.Show($"Закнсили - {typeRoom}");
+      MessageBox.Show($"Закончили - {typeRoom}");
     }
 
     private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, District district)
@@ -575,18 +575,16 @@ namespace ParseSitesForApartments.Sites
         }
 
         #endregion
-        Monitor.Enter(locker);
-
-        if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+        if (!string.IsNullOrWhiteSpace(flat.Building.Number))
         {
-          if(!string.IsNullOrWhiteSpace(flat.Building.Number))
+          Monitor.Enter(locker);
+          if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
           {
             unionInfo.UnionInfoProdam(flat);
-            OnAppend(this, new AppendFlatEventArgs { Flat = flat });
           }
+          OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+          Monitor.Exit(locker);
         }
-
-        Monitor.Exit(locker);
       }
     }
 
