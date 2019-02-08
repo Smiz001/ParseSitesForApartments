@@ -507,13 +507,13 @@ namespace ParseSitesForApartments.Sites
 
           if (!string.IsNullOrWhiteSpace(flat.Building.Number))
           {
+            Monitor.Enter(locker);
             if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
             {
-              Monitor.Enter(locker);
               unionInfo.UnionInfoProdam(flat);
-              Monitor.Exit(locker);
             }
             OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+            Monitor.Exit(locker);
           }
 
           //regex = new Regex(@"(\d+)");
@@ -763,6 +763,8 @@ namespace ParseSitesForApartments.Sites
         {
           CountRoom = typeRoom
         };
+
+        flat.Url = $@"https://www.emls.ru{collection[i].ParentElement.GetAttribute("href")}";
         string street = string.Empty;
         string number = string.Empty;
         string structure = string.Empty;
