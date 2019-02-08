@@ -391,6 +391,7 @@ namespace ParseSitesForApartments.Sites
         };
         //try
         //{
+        flat.Url = $@"https://www.emls.ru{collection[i].ParentElement.GetAttribute("href")}";
         if (collection[i].GetElementsByClassName("w-image").Length > 0)
         {
           //var divImage = collection[i].GetElementsByClassName("w-image")[0];
