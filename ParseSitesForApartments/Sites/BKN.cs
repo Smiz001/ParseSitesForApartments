@@ -34,7 +34,7 @@ namespace ParseSitesForApartments.Sites
     private Thread fiveThread;
     private ProgressForm progress;
     private int count = 1;
-    private Dictionary<string, string> district = new Dictionary<string, string>() { { "admiralteiskii", "Адмиралтейский" }, { "vasileostrovskii", "Василеостровский" }, { "viborgskii", "Выборгский" }, { "kalininskii", "Калининский" }, { "kirovskii", "Кировский" }, { "kolpinskii", "Колпинский" }, { "krasnogvardeiskii", "Красногвардейский" }, { "krasnoselskii", "Красносельский" }, { "kronshtadtskii", "Кронштадтский" }, { "kurortnii", "Курортный" }, { "moskovskii", "Московский" }, { "nevskii", "Невский" }, { "petrogradskii", "Петроградский" }, { "petrodvorcovii", "Петродворцовый" }, { "primorskii", "Приморский" }, { "pushkinskii", "Пушкинский" }, { "frunzenskii", "Фрунзенский" }, { "centralnii", "Центральный" }, };
+    private Dictionary<string, string> districts = new Dictionary<string, string>() { { "admiralteiskii", "Адмиралтейский" }, { "vasileostrovskii", "Василеостровский" }, { "viborgskii", "Выборгский" }, { "kalininskii", "Калининский" }, { "kirovskii", "Кировский" }, { "kolpinskii", "Колпинский" }, { "krasnogvardeiskii", "Красногвардейский" }, { "krasnoselskii", "Красносельский" }, { "kronshtadtskii", "Кронштадтский" }, { "kurortnii", "Курортный" }, { "moskovskii", "Московский" }, { "nevskii", "Невский" }, { "petrogradskii", "Петроградский" }, { "petrodvorcovii", "Петродворцовый" }, { "primorskii", "Приморский" }, { "pushkinskii", "Пушкинский" }, { "frunzenskii", "Фрунзенский" }, { "centralnii", "Центральный" }, };
 
     private CoreExport export;
     public delegate void Append(object sender, AppendFlatEventArgs e);
@@ -72,24 +72,42 @@ namespace ParseSitesForApartments.Sites
         //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
         sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
       }
-      progress = new ProgressForm();
-      var threadbackground = new Thread(
-        new ThreadStart(() =>
-        {
-          try
-          {
-            ParsingVtorichka();
-            MessageBox.Show("Загрузка завершена");
-            progress.BeginInvoke(new Action(() => progress.Close()));
-          }
-          catch (Exception ex)
-          {
-            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-          }
-        }
-        ));
-      threadbackground.Start();
-      progress.Show();
+
+      studiiThread = new Thread(ChangeDistrictAndPage);
+      studiiThread.Start("Студия");
+      oneThread = new Thread(ChangeDistrictAndPage);
+      oneThread.Start("1 км. кв.");
+      twoThread = new Thread(ChangeDistrictAndPage);
+      twoThread.Start("2 км. кв.");
+      threeThread = new Thread(ChangeDistrictAndPage);
+      threeThread.Start("3 км. кв.");
+      fourThread = new Thread(ChangeDistrictAndPage);
+      fourThread.Start("4 км. кв.");
+      fiveThread = new Thread(ChangeDistrictAndPage);
+      fiveThread.Start("5 км. кв.");
+
+      Thread.Sleep(10000);
+      var threadCheck = new Thread(CheckCloseThread);
+      threadCheck.Start();
+
+      //progress = new ProgressForm();
+      //var threadbackground = new Thread(
+      //  new ThreadStart(() =>
+      //  {
+      //    try
+      //    {
+      //      ParsingVtorichka();
+      //      MessageBox.Show("Загрузка завершена");
+      //      progress.BeginInvoke(new Action(() => progress.Close()));
+      //    }
+      //    catch (Exception ex)
+      //    {
+      //      MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      //    }
+      //  }
+      //  ));
+      //threadbackground.Start();
+      //progress.Show();
       //ParsingVtorichka();
       //ParsingNovostroiki();
     }
@@ -180,7 +198,7 @@ namespace ParseSitesForApartments.Sites
       {
         webClient.Encoding = Encoding.UTF8;
         string url = "";
-        foreach (var distr in district)
+        foreach (var distr in districts)
         {
           for (int i = minPage; i < maxPage; i++)
           {
@@ -228,8 +246,8 @@ namespace ParseSitesForApartments.Sites
       {
         var responce = webClient.DownloadString(url);
         var document = parser.Parse(responce);
-        var col = document.GetElementsByClassName("price overflow");
-        if (col.Length == 00)
+        var col = document.GetElementsByClassName(Apartaments);
+        if (col.Length == 0)
           return false;
         ParseSheet(typeRoom, col, district);
         return true;
