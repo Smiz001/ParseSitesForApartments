@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using AngleSharp.Dom.Html;
 using ParseSitesForApartments.ParsClasses;
 
 namespace ParseSitesForApartments.Sites
@@ -209,9 +210,10 @@ namespace ParseSitesForApartments.Sites
       {
         var responce = webClient.DownloadString(url);
         var document = parser.Parse(responce);
-        ParseSheet(typeRoom, document, district);
-        if (document.GetElementsByClassName("object--item").Length < 30)
+        var col = document.GetElementsByClassName("price overflow");
+        if (col.Length == 00)
           return false;
+        ParseSheet(typeRoom, col, district);
         return true;
       }
       catch (Exception e)
@@ -221,6 +223,7 @@ namespace ParseSitesForApartments.Sites
         return true;
       }
     }
+   
 
     public void ParsingStudioVtorichka()
     {
@@ -301,10 +304,10 @@ namespace ParseSitesForApartments.Sites
           var document = parser.Parse(responce);
 
           var collections = document.GetElementsByClassName(Apartaments);
-          if (collections.Length > 0)
-            ParsingSheet(typeRoom, collections);
-          else
-            return false;
+          //if (collections.Length > 0)
+          //  ParseSheet(typeRoom, collections);
+          //else
+          //  return false;
         }
       }
       catch
@@ -314,15 +317,19 @@ namespace ParseSitesForApartments.Sites
       return true;
     }
 
-    private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection)
+    private void ParseSheet(string typeRoom, IHtmlCollection<IElement> collection, District district)
     {
-      string district = string.Empty;
       var parseStreet = new ParseStreet();
       for (int j = 0; j < collection.Length; j++)
       {
         string town = string.Empty;
         var flat = new Flat();
         flat.CountRoom = typeRoom;
+
+        string street = string.Empty;
+        string number = string.Empty;
+        string structure = string.Empty;
+        string liter = string.Empty;
 
         var priceDiv = collection[j].GetElementsByClassName("price overflow");
         if (priceDiv.Length == 0)
@@ -350,99 +357,98 @@ namespace ParseSitesForApartments.Sites
           else
             flat.Floor = "";
 
-          district = collection[j].GetElementsByClassName("overflow")[2].TextContent;
-          flat.Building.Street = collection[j].GetElementsByClassName("overflow")[3].TextContent;
+          street = collection[j].GetElementsByClassName("overflow")[3].TextContent;
 
-          if (flat.Building.Street.Contains("Заводская"))
+          if (street.Contains("Заводская"))
           {
             string a = "";
           }
 
-          if (flat.Building.Street.Contains("Сестрорецк г."))
+          if (street.Contains("Сестрорецк г."))
           {
             town = "Сестрорецк г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Шушары пос."))
+          else if (street.Contains("Шушары пос."))
           {
             town = "Шушары пос.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Петергоф г."))
+          else if (street.Contains("Петергоф г."))
           {
             town = "Петергоф г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Пушкин г."))
+          else if (street.Contains("Пушкин г."))
           {
             town = "Пушкин г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Зеленогорск г."))
+          else if (street.Contains("Зеленогорск г."))
           {
             town = "Зеленогорск г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Металлострой пос."))
+          else if (street.Contains("Металлострой пос."))
           {
             town = "Металлострой пос.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Колпино г."))
+          else if (street.Contains("Колпино г."))
           {
             town = "Колпино г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Парголово пос."))
+          else if (street.Contains("Парголово пос."))
           {
             town = "Парголово пос.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Красное Село г."))
+          else if (street.Contains("Красное Село г."))
           {
             town = "Красное Село г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Понтонный пос"))
+          else if (street.Contains("Понтонный пос"))
           {
             town = "Понтонный пос";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("г. Петергоф"))
+          else if (street.Contains("г. Петергоф"))
           {
             town = "Петергоф г.";
-            flat.Building.Street = flat.Building.Street.Replace("г. Петергоф", "");
+            street = street.Replace("г. Петергоф", "");
           }
-          else if (flat.Building.Street.Contains("Ломоносов г."))
+          else if (street.Contains("Ломоносов г."))
           {
             town = "Ломоносов г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Стрельна г."))
+          else if (street.Contains("Стрельна г."))
           {
             town = "Стрельна г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Павловск г."))
+          else if (street.Contains("Павловск г."))
           {
             town = "Павловск г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Кронштадт г."))
+          else if (street.Contains("Кронштадт г."))
           {
             town = "Кронштадт г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
-          else if (flat.Building.Street.Contains("Санкт-Петербург г."))
+          else if (street.Contains("Санкт-Петербург г."))
           {
             town = "Санкт-Петербург г.";
-            flat.Building.Street = flat.Building.Street.Replace(town, "");
+            street = street.Replace(town, "");
           }
           else
             town = "Санкт-Петербург г.";
 
           regex = new Regex(@"(д\.\s+\d+\,\s+к\.\s+\d+)");
-          flat.Building.Number = regex.Match(flat.Building.Street).Value;
+          number = regex.Match(street).Value;
 
           if (!string.IsNullOrWhiteSpace(flat.Building.Number))
           {
@@ -616,6 +622,8 @@ namespace ParseSitesForApartments.Sites
           flat.Building.Distance = regex.Match(flat.Building.Metro).Value;
 
           flat.Building.Street = flat.Building.Street.Replace("ул.", "").Replace("просп.", "").Replace("пр-кт", "").Replace("пер.", "").Replace("шос.", "").Replace("пр.", "").Replace("лит. а", "").Replace("лит. А", "").Replace("стр. 3", "").Replace("стр. 1", "").Replace("стр. 2", "").Replace("б-р.", "").Replace(" б", "").Replace("пр-д", "").Replace("тер.", "").Replace("пл.", "").Replace(",", "").Replace(".", "").Replace("-1","").Trim();
+
+          street = parseStreet.Execute(street, district);
 
           regex = new Regex(@"(к\d+)");
           var struc = regex.Match(flat.Building.Street).Value;
@@ -868,7 +876,7 @@ namespace ParseSitesForApartments.Sites
                 document = parser.Parse(responce);
 
                 var newApartment = document.GetElementsByClassName("main NewApartment");
-                ParsingSheet("Студия Н", newApartment);
+                //ParseSheet("Студия Н", newApartment);
               }
             }
           }
@@ -946,7 +954,7 @@ namespace ParseSitesForApartments.Sites
                     document = parser.Parse(responce);
 
                     var newApartment = document.GetElementsByClassName("main NewApartment");
-                    ParsingSheet("1 км. кв. Н", newApartment);
+                    // ParseSheet("1 км. кв. Н", newApartment);
                   }
                 }
               }
@@ -1026,7 +1034,7 @@ namespace ParseSitesForApartments.Sites
                 document = parser.Parse(responce);
 
                 var newApartment = document.GetElementsByClassName("main NewApartment");
-                ParsingSheet("2 км. кв. Н", newApartment);
+                //ParseSheet("2 км. кв. Н", newApartment);
               }
             }
             else
@@ -1108,7 +1116,7 @@ namespace ParseSitesForApartments.Sites
                 document = parser.Parse(responce);
 
                 var newApartment = document.GetElementsByClassName("main NewApartment");
-                ParsingSheet("3 км. кв. Н", newApartment);
+                // ParseSheet("3 км. кв. Н", newApartment);
               }
             }
             else
