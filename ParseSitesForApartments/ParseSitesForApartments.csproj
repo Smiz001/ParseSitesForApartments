@@ -83,6 +83,7 @@
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sites\AllSites.cs" />
     <Compile Include="Sites\Avito.cs" />
     <Compile Include="Sites\BaseParse.cs" />
     <Compile Include="Sites\BKN.cs" />

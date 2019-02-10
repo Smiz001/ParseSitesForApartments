@@ -37,10 +37,10 @@ namespace ParseSitesForApartments.Sites
     
     public BN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
-      CoreCreator creator = new CsvExportCreator();
-      export = creator.FactoryCreate(Filename);
       //CoreCreator creator = new ExcelExportCreator();
       //export = creator.FactoryCreate(Filename);
+      CoreCreator creator = new CsvExportCreator();
+      export = creator.FactoryCreate(Filename);
       OnAppend += export.AddFlatInList;
     }
 
@@ -72,8 +72,12 @@ namespace ParseSitesForApartments.Sites
     Thread threeThreadOld;
     Thread fourThreadOld;
 
-    public override void ParsingAll()
+    private void CreateExport()
     {
+      CoreCreator creator = new CsvExportCreator();
+      export = creator.FactoryCreate(Filename);
+      OnAppend += export.AddFlatInList;
+
       if (export is CsvExport)
       {
         using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
@@ -82,6 +86,11 @@ namespace ParseSitesForApartments.Sites
           sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
         }
       }
+    }
+
+    public override void ParsingAll()
+    {
+      CreateExport();
       studiiThread = new Thread(ChangeDistrictAndPage);
       studiiThread.Start("Студия Н");
       oneThread = new Thread(ChangeDistrictAndPage);
@@ -111,6 +120,7 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingStudii()
     {
+      CreateExport();
       studiiThreadOld = new Thread(ChangeDistrictAndPage);
       studiiThreadOld.Start("Студия");
       studiiThread = new Thread(ChangeDistrictAndPage);
@@ -119,6 +129,7 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingOne()
     {
+      CreateExport();
       oneThread = new Thread(ChangeDistrictAndPage);
       oneThread.Start("1 км. кв. Н");
       oneThreadOld = new Thread(ChangeDistrictAndPage);
@@ -127,6 +138,7 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingTwo()
     {
+      CreateExport();
       twoThread = new Thread(ChangeDistrictAndPage);
       twoThread.Start("2 км. кв. Н");
       twoThreadOld = new Thread(ChangeDistrictAndPage);
@@ -135,6 +147,7 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingThree()
     {
+      CreateExport();
       threeThread = new Thread(ChangeDistrictAndPage);
       threeThread.Start("3 км. кв. Н");
       threeThreadOld = new Thread(ChangeDistrictAndPage);
@@ -143,6 +156,7 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingFour()
     {
+      CreateExport();
       fourThread = new Thread(ChangeDistrictAndPage);
       fourThread.Start("4 км. кв. Н");
       fourThreadOld = new Thread(ChangeDistrictAndPage);

@@ -789,33 +789,60 @@ WHERE ID ='{item.Id}'";
     {
       if (sfdParseFile.ShowDialog() == DialogResult.OK)
       {
-        tpSelectedPath.Text = sfdParseFile.FileName;
+        tbSelectedPath.Text = sfdParseFile.FileName;
       }
     }
 
     private void tpSelectedPath_TextChanged(object sender, EventArgs e)
     {
-      if (!string.IsNullOrWhiteSpace(tpSelectedPath.Text))
+      if (!string.IsNullOrWhiteSpace(tbSelectedPath.Text))
         btnExecute.Enabled = true;
       else
         btnExecute.Enabled = false;
     }
 
-    private BaseParse parese = null;
+    private BaseParse parser = null;
     private void btnExecute_Click(object sender, EventArgs e)
     {
       switch (cbChooseParse.SelectedIndex)
       {
         case 0:
+          parser = new AllSites(listDistricts, listMetros);
           break;
         case 1:
-          parese = new ELMS(listDistricts, listMetros);
+          parser = new ELMS(listDistricts, listMetros);
           break;
         case 2:
-          parese = new BN(listDistricts, listMetros);
+          parser = new BN(listDistricts, listMetros);
           break;
         case 3:
-          parese = new BKN(listDistricts, listMetros);
+          parser = new BKN(listDistricts, listMetros);
+          break;
+      }
+      parser.Filename = tbSelectedPath.Text;
+
+      switch (cbTypeRoom.SelectedIndex)
+      {
+        case 0:
+          parser.ParsingAll();
+          break;
+        case 1:
+          parser.ParsingStudii();
+          break;
+        case 2:
+          parser.ParsingOne();
+          break;
+        case 3:
+          parser.ParsingTwo();
+          break;
+        case 4:
+          parser.ParsingThree();
+          break;
+        case 5:
+          parser.ParsingFour();
+          break;
+        case 6:
+          parser.ParsingMoreFour();
           break;
       }
     }

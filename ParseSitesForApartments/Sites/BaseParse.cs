@@ -1,11 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using log4net;
+using ParseSitesForApartments.Export;
+using ParseSitesForApartments.Export.Creators;
 
 namespace ParseSitesForApartments.Sites
 {
   public abstract class BaseParse
   {
+    //public CoreExport export;
+    //public delegate void Append(object sender, AppendFlatEventArgs e);
+    //public event Append OnAppend;
+
     public BaseParse(List<District> listDistricts, List<Metro> listMetros)
     {
       ListDistricts = new List<District>(listDistricts);
@@ -29,5 +37,7 @@ namespace ParseSitesForApartments.Sites
     public abstract void ParsingThree();
     public abstract void ParsingFour();
     public abstract void ParsingMoreFour();
+
+    
   }
 }

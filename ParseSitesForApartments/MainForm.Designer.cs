@@ -59,7 +59,7 @@
       this.lblTypeRoom = new System.Windows.Forms.Label();
       this.cbTypeRoom = new System.Windows.Forms.ComboBox();
       this.btnExecute = new System.Windows.Forms.Button();
-      this.tpSelectedPath = new System.Windows.Forms.TextBox();
+      this.tbSelectedPath = new System.Windows.Forms.TextBox();
       this.lblSavePath = new System.Windows.Forms.Label();
       this.btnSavePath = new System.Windows.Forms.Button();
       this.sfdParseFile = new System.Windows.Forms.SaveFileDialog();
@@ -380,14 +380,14 @@
       this.btnExecute.UseVisualStyleBackColor = true;
       this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
       // 
-      // tpSelectedPath
+      // tbSelectedPath
       // 
-      this.tpSelectedPath.Location = new System.Drawing.Point(12, 119);
-      this.tpSelectedPath.Name = "tpSelectedPath";
-      this.tpSelectedPath.ReadOnly = true;
-      this.tpSelectedPath.Size = new System.Drawing.Size(223, 20);
-      this.tpSelectedPath.TabIndex = 31;
-      this.tpSelectedPath.TextChanged += new System.EventHandler(this.tpSelectedPath_TextChanged);
+      this.tbSelectedPath.Location = new System.Drawing.Point(12, 119);
+      this.tbSelectedPath.Name = "tbSelectedPath";
+      this.tbSelectedPath.ReadOnly = true;
+      this.tbSelectedPath.Size = new System.Drawing.Size(223, 20);
+      this.tbSelectedPath.TabIndex = 31;
+      this.tbSelectedPath.TextChanged += new System.EventHandler(this.tpSelectedPath_TextChanged);
       // 
       // lblSavePath
       // 
@@ -415,7 +415,7 @@
       this.ClientSize = new System.Drawing.Size(800, 450);
       this.Controls.Add(this.btnSavePath);
       this.Controls.Add(this.lblSavePath);
-      this.Controls.Add(this.tpSelectedPath);
+      this.Controls.Add(this.tbSelectedPath);
       this.Controls.Add(this.btnExecute);
       this.Controls.Add(this.cbTypeRoom);
       this.Controls.Add(this.lblTypeRoom);
@@ -489,7 +489,7 @@
     private System.Windows.Forms.Label lblTypeRoom;
     private System.Windows.Forms.ComboBox cbTypeRoom;
     private System.Windows.Forms.Button btnExecute;
-    private System.Windows.Forms.TextBox tpSelectedPath;
+    private System.Windows.Forms.TextBox tbSelectedPath;
     private System.Windows.Forms.Label lblSavePath;
     private System.Windows.Forms.Button btnSavePath;
     private System.Windows.Forms.SaveFileDialog sfdParseFile;

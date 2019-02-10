@@ -62,18 +62,30 @@ namespace ParseSitesForApartments.Sites
 
     public ELMS(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
+      //CoreCreator creator = new CsvExportCreator();
+      //export = creator.FactoryCreate(Filename);
+      //OnAppend += export.AddFlatInList;
+    }
+
+    private void CreateExport()
+    {
       CoreCreator creator = new CsvExportCreator();
       export = creator.FactoryCreate(Filename);
       OnAppend += export.AddFlatInList;
+
+      if (export is CsvExport)
+      {
+        using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
+        {
+          //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
+          sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
+        }
+      }
     }
 
     public override void ParsingAll()
     {
-      using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
-      {
-        //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
-        sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
-      }
+      CreateExport();
       studiiThreadOld = new Thread(ChangeDistrictAndPage);
       studiiThreadOld.Start("Студия");
       oneThreadOld = new Thread(ChangeDistrictAndPage);
