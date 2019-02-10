@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using ParseSitesForApartments.Export;
+using System.Reflection;
+using log4net;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -11,6 +12,7 @@ namespace ParseSitesForApartments.Sites
       ListMetros = new List<Metro>(listMetros);
     }
 
+    protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
     protected List<District> ListDistricts { get; private set; }
     protected List<Metro> ListMetros { get; private set; }
     public abstract string Filename{get;}
