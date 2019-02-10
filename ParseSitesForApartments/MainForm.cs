@@ -778,99 +778,6 @@ WHERE ID ='{item.Id}'";
           reader.Close();
         }
       }
-
-      //var sb = new SqlConnectionStringBuilder();
-      //sb.DataSource = "localhost";
-      //sb.InitialCatalog = "ParseBulding";
-      //sb.IntegratedSecurity = true;
-      //CoreCreatorConnection creator = new SqlServerCreator();
-      //using (CoreConnetion connection = creator.FactoryCreate(sb.ToString()))
-      //{
-      //  string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
-      //  var reader = connection.ExecuteReader(select);
-      //  while (reader.Read())
-      //  {
-      //    listDistricts.Add(new District {Id = reader.GetGuid(0), Name = reader.GetString(1)});
-      //  }
-
-      //  reader.Close();
-      //  foreach (var district in listDistricts)
-      //  {
-      //    select = $@"SELECT [Id]
-      //        ,[Name]
-      //        ,[XCoor]
-      //        ,[YCoor]
-      //        ,[IdRegion]
-      //      FROM[ParseBulding].[dbo].[Metro]
-      //      where IdRegion = '{district.Id}'";
-      //    reader = connection.ExecuteReader(select);
-      //    while (reader.Read())
-      //    {
-      //      var metro = new Metro
-      //      {
-      //        Id = reader.GetGuid(0),
-      //        Name = reader.GetString(1),
-      //        XCoor = (float) reader.GetDouble(2),
-      //        YCoor = (float) reader.GetDouble(3)
-      //      };
-      //      district.Metros.Add(metro);
-      //      listMetros.Add(metro);
-      //    }
-
-      //    reader.Close();
-      //  }
-
-      //var sb = new SqlConnectionStringBuilder();
-      //sb.DataSource = "localhost";
-      //sb.InitialCatalog = "ParseBulding";
-      //sb.IntegratedSecurity = true;
-      //string s = sb.ConnectionString;
-      //using (var con = new SqlConnection(sb.ConnectionString))
-      //{
-      //  con.Open();
-
-      //}
-
-
-      //SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
-      //sb.DataSource = "localhost";
-      ////sb.DataSource = @"N1081\SQLEXPRESS";
-      //sb.InitialCatalog = "ParseBulding";
-      //sb.IntegratedSecurity = true;
-
-      //CoreCreatorConnection creator = new SqlServerCreator();
-      //using (CoreConnetion connection = creator.FactoryCreate(sb.ToString()))
-      //{
-      //  string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
-      //  var reader = connection.ExecuteReader(select);
-      //  while (reader.Read())
-      //  {
-      //    listDistricts.Add(new District { Id = reader.GetGuid(0), Name = reader.GetString(1) });
-      //  }
-      //  reader.Close();
-      //  foreach (var district in listDistricts)
-      //  {
-      //    select = $@"SELECT [Id]
-      //      ,[Name]
-      //      ,[XCoor]
-      //      ,[YCoor]
-      //      ,[IdRegion]
-      //    FROM[ParseBulding].[dbo].[Metro]
-      //    where IdRegion = '{district.Id}'";
-      //    reader = connection.ExecuteReader(select);
-      //    while (reader.Read())
-      //    {
-      //      var metro = new Metro
-      //      {
-      //        Id = reader.GetGuid(0), Name = reader.GetString(1), XCoor = (float) reader.GetDouble(2),
-      //        YCoor = (float) reader.GetDouble(3)
-      //      };
-      //      district.Metros.Add(metro);
-      //      listMetros.Add(metro);
-      //    }
-      //    reader.Close();
-      //  }
-      //}
     }
 
     private void tspmExit_Click(object sender, EventArgs e)
@@ -892,6 +799,25 @@ WHERE ID ='{item.Id}'";
         btnExecute.Enabled = true;
       else
         btnExecute.Enabled = false;
+    }
+
+    private BaseParse parese = null;
+    private void btnExecute_Click(object sender, EventArgs e)
+    {
+      switch (cbChooseParse.SelectedIndex)
+      {
+        case 0:
+          break;
+        case 1:
+          parese = new ELMS(listDistricts, listMetros);
+          break;
+        case 2:
+          parese = new BN(listDistricts, listMetros);
+          break;
+        case 3:
+          parese = new BKN(listDistricts, listMetros);
+          break;
+      }
     }
   }
 }

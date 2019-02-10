@@ -378,6 +378,7 @@
       this.btnExecute.TabIndex = 30;
       this.btnExecute.Text = "Выполнить";
       this.btnExecute.UseVisualStyleBackColor = true;
+      this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
       // 
       // tpSelectedPath
       // 

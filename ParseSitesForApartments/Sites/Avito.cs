@@ -14,18 +14,30 @@ namespace ParseSitesForApartments.Sites
 {
   public class Avito : BaseParse
   {
+    #region Fields
+
     private int minPage = 1;
     private int maxPage = 100;
-    
     private List<string> stantions = new List<string>() { "Автово", "Адмиралтейская", "Академическая", "Балтийская", "Беговая", "Бухарестская", "Василеостровская", "Владимирская", "Волковская", "Выборгская", "Горьковская", "Гостиный двор", "Гражданский проспект", "Девяткино", "Достоевская", "Елизаровская", "Звёздная", "Звенигородская", "Кировский завод", "Комендантский проспект", "Крестовский остров", "Купчино", "Ладожская", "Ленинский проспект", "Лесная", "Лиговский проспект", "Ломоносовская", "Маяковская", "Международная", "Московская", "Московские ворота", "Нарвская", "Невский проспект", "Новокрестовская", "Новочеркасская", "Обводный канал", "Обухово", "Озерки", "Парк Победы", "Парнас", "Петроградская", "Пионерская", "Площадь Александра Невского", "Площадь Восстания", "Площадь Ленина", "Площадь Мужества", "Политехническая", "Приморская", "Пролетарская", "Проспект Большевиков", "Проспект Ветеранов", "Проспект Просвещения", "Пушкинская", "Рыбацкое", "Садовая", "Сенная площадь", "Спасская", "Спортивная", "Старая Деревня", "Технологический институт", "Удельная", "Улица Дыбенко", "Фрунзенская", "Чёрная речка", "Чернышевская", "Чкаловская", "Электросила" };
-
     private static object locker = new object();
+    private string filename = @"d:\ParserInfo\Appartament\AvitoProdam.csv";
 
-    public override string Filename { get => @"d:\ParserInfo\Appartament\AvitoProdam.csv"; }
-    public override string FilenameSdam { get => @"d:\ParserInfo\Appartament\AvitoSdam.csv";  }
+    #endregion
+
+    #region Properties
+
+    public override string Filename
+    {
+      get => filename;
+      set => filename = value;
+    }
+    public override string FilenameSdam { get => @"d:\ParserInfo\Appartament\AvitoSdam.csv"; }
     public override string FilenameWithinfo { get => @"d:\ParserInfo\Appartament\AvitoProdamWithInfo.csv"; }
     public override string FilenameWithinfoSdam { get => @"d:\ParserInfo\Appartament\AvitoSdamWithInfo.csv"; }
     public override string NameSite => "Avito";
+
+    #endregion
+    
 
     public void ParsingStudio()
     {

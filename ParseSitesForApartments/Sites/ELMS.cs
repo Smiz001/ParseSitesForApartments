@@ -28,8 +28,15 @@ namespace ParseSitesForApartments.Sites
 
     private int minPage = 1;
     private int maxPage = 20;
+    private string filename = @"d:\ParserInfo\Appartament\ElmsProdam.csv";
 
-    public override string Filename => @"d:\ParserInfo\Appartament\ElmsProdam.csv";
+    public override string Filename
+    {
+      get => filename;
+      set => filename = value;
+    }
+
+
     public override string FilenameSdam => @"d:\ParserInfo\Appartament\ElmsSdam.csv";
     public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\ElmsProdamWithInfo.csv";
     public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\ElmsSdamWithInfo.csv";

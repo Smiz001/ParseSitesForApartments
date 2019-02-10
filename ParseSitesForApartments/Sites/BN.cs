@@ -18,23 +18,23 @@ namespace ParseSitesForApartments.Sites
 {
   public class BN : BaseParse
   {
+    #region Fields
+
     private static object locker = new object();
     private static object lockerDistrict = new object();
     private int minPage = 1;
     private int maxPage = 17;
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 5, "Калининский" }, { 4, "Кировский" }, { 16, "Колпинский" }, { 6, "Красногвардейский" }, { 7, "Красносельский" }, { 15, "Кронштадтский" }, { 17, "Курортный" }, { 8, "Московский" }, { 9, "Невский" }, { 10, "Петроградский" }, { 19, "Петродворцовый" }, { 11, "Приморский" }, { 20, "Пушкинский" }, { 12, "Фрунзенский" }, { 13, "Центральный" }, };
-
-    public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.csv";
-    //public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.xlsx";
-    public override string FilenameSdam => @"d:\ParserInfo\Appartament\BNSdam.csv";
-    public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\BNProdamWithInfo.csv";
-    public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\BNSdamWithInfo.csv";
-    public override string NameSite => "БН";
+    private string filename = @"d:\ParserInfo\Appartament\BNProdam.csv";
     private CoreExport export;
     public delegate void Append(object sender, AppendFlatEventArgs e);
     public event Append OnAppend;
     private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
 
+    #endregion
+
+    #region Constructor
+    
     public BN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
       CoreCreator creator = new CsvExportCreator();
@@ -43,6 +43,23 @@ namespace ParseSitesForApartments.Sites
       //export = creator.FactoryCreate(Filename);
       OnAppend += export.AddFlatInList;
     }
+
+    #endregion
+
+    #region Properties
+
+    public override string Filename
+    {
+      get => filename;
+      set => filename = value;
+    }
+    //public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.xlsx";
+    public override string FilenameSdam => @"d:\ParserInfo\Appartament\BNSdam.csv";
+    public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\BNProdamWithInfo.csv";
+    public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\BNSdamWithInfo.csv";
+    public override string NameSite => "БН";
+
+    #endregion
     
     Thread studiiThread;
     Thread oneThread;

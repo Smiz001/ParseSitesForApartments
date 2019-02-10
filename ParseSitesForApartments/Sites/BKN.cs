@@ -40,6 +40,7 @@ namespace ParseSitesForApartments.Sites
     public delegate void Append(object sender, AppendFlatEventArgs e);
     public event Append OnAppend;
     private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
+    private string filename = @"d:\ParserInfo\Appartament\BKNProdam.csv";
 
     #endregion
 
@@ -56,7 +57,11 @@ namespace ParseSitesForApartments.Sites
 
     #region Properties
 
-    public override string Filename => @"d:\ParserInfo\Appartament\BKNProdam.csv";
+    public override string Filename
+    {
+      get => filename;
+      set => filename = value;
+    }
     public override string FilenameSdam => @"d:\ParserInfo\Appartament\BKNSdam.csv";
     public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\BKNProdamWithInfo.csv";
     public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\BKNSdamWithInfo.csv";

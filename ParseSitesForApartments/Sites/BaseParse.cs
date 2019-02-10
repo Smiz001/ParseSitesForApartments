@@ -15,7 +15,7 @@ namespace ParseSitesForApartments.Sites
     protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
     protected List<District> ListDistricts { get; private set; }
     protected List<Metro> ListMetros { get; private set; }
-    public abstract string Filename{get;}
+    public abstract string Filename{get; set; }
     public abstract string FilenameSdam { get; }
     public abstract string FilenameWithinfo { get; }
     public abstract string FilenameWithinfoSdam { get; }
