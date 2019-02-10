@@ -715,6 +715,32 @@ namespace ParseSitesForApartments.Sites
         }
         metro = metro.Replace("Пл.", "").Replace("пр.", "").Replace("Пр.", "").Replace("●", "").Replace("Пл. А.", "").Trim();
 
+        if (string.IsNullOrWhiteSpace(number))
+        {
+          regex = new Regex(@"(д\s+\d+\s+корпус\s+\d+)");
+          number = regex.Match(street).Value;
+          if (string.IsNullOrEmpty(number))
+          {
+            regex = new Regex(@"(д\s+\d+)");
+            number = regex.Match(street).Value;
+            if (string.IsNullOrWhiteSpace(number))
+            {
+            }
+            else
+            {
+              street = street.Replace(number, "").Trim();
+              number = number.Replace("д", "").Trim();
+            }
+          }
+          else
+          {
+            street = street.Replace(number, "").Trim();
+            regex = new Regex(@"(корпус\s+\d+)");
+            structure = regex.Match(number).Value.Replace("корпус","");
+            number = number.Replace($"корпус{structure}", "").Replace("д","").Trim();
+          }
+        }
+
         street = parseStreet.Execute(street, district);
 
         Building building = null;
@@ -756,22 +782,30 @@ namespace ParseSitesForApartments.Sites
         flat.Building = building;
 
 
-        if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+        //if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+        //{
+        //  if (!string.IsNullOrWhiteSpace(flat.Square))
+        //  {
+        //    if (!string.IsNullOrWhiteSpace(flat.Building.Street))
+        //    {
+        //      Monitor.Enter(locker);
+        //      if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+        //      {
+        //        unionInfo.UnionInfoProdam(flat);
+        //      }
+        //      OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+        //      Monitor.Exit(locker);
+        //    }
+        //  }
+        //}
+
+        Monitor.Enter(locker);
+        if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
         {
-          if (!string.IsNullOrWhiteSpace(flat.Square))
-          {
-            if (!string.IsNullOrWhiteSpace(flat.Building.Street))
-            {
-              Monitor.Enter(locker);
-              if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-              {
-                unionInfo.UnionInfoProdam(flat);
-              }
-              OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-              Monitor.Exit(locker);
-            }
-          }
+          unionInfo.UnionInfoProdam(flat);
         }
+        OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+        Monitor.Exit(locker);
 
         //flat.Building.Street = parseStreet.Execute()
         //Monitor.Enter(locker);
