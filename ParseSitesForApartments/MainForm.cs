@@ -732,6 +732,53 @@ WHERE ID ='{item.Id}'";
 
     private void MainForm_Load(object sender, EventArgs e)
     {
+      cbChooseParse.SelectedIndex = 0;
+      cbTypeRoom.SelectedIndex = 0;
+
+      sfdParseFile.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+      sfdParseFile.FilterIndex = 1;
+
+      var connection = ConnetionToSqlServer.Default();
+      connection.DataBase = "ParseBulding";
+      connection.Server = "localhost";
+      connection.WindowsAuthentication = true;
+      connection.Connect();
+
+      string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
+      var reader = connection.ExecuteReader(select);
+      if (reader != null)
+      {
+        while (reader.Read())
+        {
+          listDistricts.Add(new District { Id = reader.GetGuid(0), Name = reader.GetString(1) });
+        }
+        reader.Close();
+        foreach (var district in listDistricts)
+        {
+          select = $@"SELECT [Id]
+              ,[Name]
+              ,[XCoor]
+              ,[YCoor]
+              ,[IdRegion]
+            FROM[ParseBulding].[dbo].[Metro]
+            where IdRegion = '{district.Id}'";
+          reader = connection.ExecuteReader(select);
+          while (reader.Read())
+          {
+            var metro = new Metro
+            {
+              Id = reader.GetGuid(0),
+              Name = reader.GetString(1),
+              XCoor = (float)reader.GetDouble(2),
+              YCoor = (float)reader.GetDouble(3)
+            };
+            district.Metros.Add(metro);
+            listMetros.Add(metro);
+          }
+          reader.Close();
+        }
+      }
+
       //var sb = new SqlConnectionStringBuilder();
       //sb.DataSource = "localhost";
       //sb.InitialCatalog = "ParseBulding";
@@ -784,47 +831,6 @@ WHERE ID ='{item.Id}'";
 
       //}
 
-      var connection = ConnetionToSqlServer.Default();
-      connection.DataBase = "ParseBulding";
-      connection.Server = "localhost";
-      connection.WindowsAuthentication = true;
-      connection.Connect();
-
-      string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
-      var reader = connection.ExecuteReader(select);
-      if (reader != null)
-      {
-        while (reader.Read())
-        {
-          listDistricts.Add(new District { Id = reader.GetGuid(0), Name = reader.GetString(1) });
-        }
-        reader.Close();
-        foreach (var district in listDistricts)
-        {
-          select = $@"SELECT [Id]
-              ,[Name]
-              ,[XCoor]
-              ,[YCoor]
-              ,[IdRegion]
-            FROM[ParseBulding].[dbo].[Metro]
-            where IdRegion = '{district.Id}'";
-          reader = connection.ExecuteReader(select);
-          while (reader.Read())
-          {
-            var metro = new Metro
-            {
-              Id = reader.GetGuid(0),
-              Name = reader.GetString(1),
-              XCoor = (float)reader.GetDouble(2),
-              YCoor = (float)reader.GetDouble(3)
-            };
-            district.Metros.Add(metro);
-            listMetros.Add(metro);
-          }
-          reader.Close();
-        }
-      }
-
 
       //SqlConnectionStringBuilder sb = new SqlConnectionStringBuilder();
       //sb.DataSource = "localhost";
@@ -870,6 +876,22 @@ WHERE ID ='{item.Id}'";
     private void tspmExit_Click(object sender, EventArgs e)
     {
       this.Close();
+    }
+
+    private void btnSavePath_Click(object sender, EventArgs e)
+    {
+      if (sfdParseFile.ShowDialog() == DialogResult.OK)
+      {
+        tpSelectedPath.Text = sfdParseFile.FileName;
+      }
+    }
+
+    private void tpSelectedPath_TextChanged(object sender, EventArgs e)
+    {
+      if (!string.IsNullOrWhiteSpace(tpSelectedPath.Text))
+        btnExecute.Enabled = true;
+      else
+        btnExecute.Enabled = false;
     }
   }
 }

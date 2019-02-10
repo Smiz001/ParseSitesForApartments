@@ -54,12 +54,21 @@
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.tspmFile = new System.Windows.Forms.ToolStripMenuItem();
       this.tspmExit = new System.Windows.Forms.ToolStripMenuItem();
+      this.lblChooseParse = new System.Windows.Forms.Label();
+      this.cbChooseParse = new System.Windows.Forms.ComboBox();
+      this.lblTypeRoom = new System.Windows.Forms.Label();
+      this.cbTypeRoom = new System.Windows.Forms.ComboBox();
+      this.btnExecute = new System.Windows.Forms.Button();
+      this.tpSelectedPath = new System.Windows.Forms.TextBox();
+      this.lblSavePath = new System.Windows.Forms.Label();
+      this.btnSavePath = new System.Windows.Forms.Button();
+      this.sfdParseFile = new System.Windows.Forms.SaveFileDialog();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
       // button1
       // 
-      this.button1.Location = new System.Drawing.Point(12, 82);
+      this.button1.Location = new System.Drawing.Point(36, 213);
       this.button1.Name = "button1";
       this.button1.Size = new System.Drawing.Size(134, 23);
       this.button1.TabIndex = 0;
@@ -79,7 +88,7 @@
       // 
       // button3
       // 
-      this.button3.Location = new System.Drawing.Point(12, 111);
+      this.button3.Location = new System.Drawing.Point(36, 242);
       this.button3.Name = "button3";
       this.button3.Size = new System.Drawing.Size(134, 23);
       this.button3.TabIndex = 2;
@@ -89,7 +98,7 @@
       // 
       // button4
       // 
-      this.button4.Location = new System.Drawing.Point(12, 140);
+      this.button4.Location = new System.Drawing.Point(36, 271);
       this.button4.Name = "button4";
       this.button4.Size = new System.Drawing.Size(134, 23);
       this.button4.TabIndex = 3;
@@ -99,7 +108,7 @@
       // 
       // button5
       // 
-      this.button5.Location = new System.Drawing.Point(12, 169);
+      this.button5.Location = new System.Drawing.Point(36, 300);
       this.button5.Name = "button5";
       this.button5.Size = new System.Drawing.Size(134, 23);
       this.button5.TabIndex = 4;
@@ -109,7 +118,7 @@
       // 
       // button6
       // 
-      this.button6.Location = new System.Drawing.Point(152, 82);
+      this.button6.Location = new System.Drawing.Point(176, 213);
       this.button6.Name = "button6";
       this.button6.Size = new System.Drawing.Size(131, 23);
       this.button6.TabIndex = 5;
@@ -119,7 +128,7 @@
       // 
       // button7
       // 
-      this.button7.Location = new System.Drawing.Point(289, 82);
+      this.button7.Location = new System.Drawing.Point(313, 213);
       this.button7.Name = "button7";
       this.button7.Size = new System.Drawing.Size(139, 23);
       this.button7.TabIndex = 6;
@@ -129,7 +138,7 @@
       // 
       // button8
       // 
-      this.button8.Location = new System.Drawing.Point(434, 82);
+      this.button8.Location = new System.Drawing.Point(458, 213);
       this.button8.Name = "button8";
       this.button8.Size = new System.Drawing.Size(139, 23);
       this.button8.TabIndex = 7;
@@ -139,7 +148,7 @@
       // 
       // button9
       // 
-      this.button9.Location = new System.Drawing.Point(579, 82);
+      this.button9.Location = new System.Drawing.Point(603, 213);
       this.button9.Name = "button9";
       this.button9.Size = new System.Drawing.Size(139, 23);
       this.button9.TabIndex = 8;
@@ -159,7 +168,7 @@
       // 
       // button12
       // 
-      this.button12.Location = new System.Drawing.Point(579, 198);
+      this.button12.Location = new System.Drawing.Point(603, 329);
       this.button12.Name = "button12";
       this.button12.Size = new System.Drawing.Size(139, 23);
       this.button12.TabIndex = 11;
@@ -169,7 +178,7 @@
       // 
       // button11
       // 
-      this.button11.Location = new System.Drawing.Point(289, 198);
+      this.button11.Location = new System.Drawing.Point(313, 329);
       this.button11.Name = "button11";
       this.button11.Size = new System.Drawing.Size(139, 23);
       this.button11.TabIndex = 12;
@@ -179,7 +188,7 @@
       // 
       // button13
       // 
-      this.button13.Location = new System.Drawing.Point(434, 198);
+      this.button13.Location = new System.Drawing.Point(458, 329);
       this.button13.Name = "button13";
       this.button13.Size = new System.Drawing.Size(139, 23);
       this.button13.TabIndex = 13;
@@ -189,7 +198,7 @@
       // 
       // button15
       // 
-      this.button15.Location = new System.Drawing.Point(12, 198);
+      this.button15.Location = new System.Drawing.Point(36, 329);
       this.button15.Name = "button15";
       this.button15.Size = new System.Drawing.Size(134, 23);
       this.button15.TabIndex = 15;
@@ -209,7 +218,7 @@
       // 
       // button17
       // 
-      this.button17.Location = new System.Drawing.Point(579, 111);
+      this.button17.Location = new System.Drawing.Point(603, 242);
       this.button17.Name = "button17";
       this.button17.Size = new System.Drawing.Size(139, 23);
       this.button17.TabIndex = 17;
@@ -219,7 +228,7 @@
       // 
       // button18
       // 
-      this.button18.Location = new System.Drawing.Point(434, 111);
+      this.button18.Location = new System.Drawing.Point(458, 242);
       this.button18.Name = "button18";
       this.button18.Size = new System.Drawing.Size(139, 23);
       this.button18.TabIndex = 18;
@@ -229,7 +238,7 @@
       // 
       // button19
       // 
-      this.button19.Location = new System.Drawing.Point(289, 111);
+      this.button19.Location = new System.Drawing.Point(313, 242);
       this.button19.Name = "button19";
       this.button19.Size = new System.Drawing.Size(139, 23);
       this.button19.TabIndex = 19;
@@ -259,7 +268,7 @@
       // 
       // button21
       // 
-      this.button21.Location = new System.Drawing.Point(289, 227);
+      this.button21.Location = new System.Drawing.Point(313, 358);
       this.button21.Name = "button21";
       this.button21.Size = new System.Drawing.Size(139, 23);
       this.button21.TabIndex = 22;
@@ -269,7 +278,7 @@
       // 
       // button22
       // 
-      this.button22.Location = new System.Drawing.Point(434, 227);
+      this.button22.Location = new System.Drawing.Point(458, 358);
       this.button22.Name = "button22";
       this.button22.Size = new System.Drawing.Size(139, 23);
       this.button22.TabIndex = 23;
@@ -279,7 +288,7 @@
       // 
       // button23
       // 
-      this.button23.Location = new System.Drawing.Point(579, 227);
+      this.button23.Location = new System.Drawing.Point(603, 358);
       this.button23.Name = "button23";
       this.button23.Size = new System.Drawing.Size(139, 23);
       this.button23.TabIndex = 24;
@@ -308,15 +317,109 @@
       // tspmExit
       // 
       this.tspmExit.Name = "tspmExit";
-      this.tspmExit.Size = new System.Drawing.Size(180, 22);
+      this.tspmExit.Size = new System.Drawing.Size(108, 22);
       this.tspmExit.Text = "Выход";
       this.tspmExit.Click += new System.EventHandler(this.tspmExit_Click);
+      // 
+      // lblChooseParse
+      // 
+      this.lblChooseParse.AutoSize = true;
+      this.lblChooseParse.Location = new System.Drawing.Point(12, 51);
+      this.lblChooseParse.Name = "lblChooseParse";
+      this.lblChooseParse.Size = new System.Drawing.Size(70, 13);
+      this.lblChooseParse.TabIndex = 26;
+      this.lblChooseParse.Text = "Что парсить";
+      // 
+      // cbChooseParse
+      // 
+      this.cbChooseParse.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cbChooseParse.Items.AddRange(new object[] {
+            "Все сайты",
+            "ELMS",
+            "BN",
+            "BKN"});
+      this.cbChooseParse.Location = new System.Drawing.Point(12, 67);
+      this.cbChooseParse.Name = "cbChooseParse";
+      this.cbChooseParse.Size = new System.Drawing.Size(121, 21);
+      this.cbChooseParse.TabIndex = 27;
+      // 
+      // lblTypeRoom
+      // 
+      this.lblTypeRoom.AutoSize = true;
+      this.lblTypeRoom.Location = new System.Drawing.Point(147, 51);
+      this.lblTypeRoom.Name = "lblTypeRoom";
+      this.lblTypeRoom.Size = new System.Drawing.Size(81, 13);
+      this.lblTypeRoom.TabIndex = 28;
+      this.lblTypeRoom.Text = "Кол-во комнат";
+      // 
+      // cbTypeRoom
+      // 
+      this.cbTypeRoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cbTypeRoom.FormattingEnabled = true;
+      this.cbTypeRoom.Items.AddRange(new object[] {
+            "Все",
+            "Студии",
+            "1 ком.",
+            "2 ком.",
+            "3 ком.",
+            "4 ком.",
+            "Более 4 ком."});
+      this.cbTypeRoom.Location = new System.Drawing.Point(150, 67);
+      this.cbTypeRoom.Name = "cbTypeRoom";
+      this.cbTypeRoom.Size = new System.Drawing.Size(121, 21);
+      this.cbTypeRoom.TabIndex = 29;
+      // 
+      // btnExecute
+      // 
+      this.btnExecute.Enabled = false;
+      this.btnExecute.Location = new System.Drawing.Point(12, 158);
+      this.btnExecute.Name = "btnExecute";
+      this.btnExecute.Size = new System.Drawing.Size(94, 23);
+      this.btnExecute.TabIndex = 30;
+      this.btnExecute.Text = "Выполнить";
+      this.btnExecute.UseVisualStyleBackColor = true;
+      // 
+      // tpSelectedPath
+      // 
+      this.tpSelectedPath.Location = new System.Drawing.Point(12, 119);
+      this.tpSelectedPath.Name = "tpSelectedPath";
+      this.tpSelectedPath.ReadOnly = true;
+      this.tpSelectedPath.Size = new System.Drawing.Size(223, 20);
+      this.tpSelectedPath.TabIndex = 31;
+      this.tpSelectedPath.TextChanged += new System.EventHandler(this.tpSelectedPath_TextChanged);
+      // 
+      // lblSavePath
+      // 
+      this.lblSavePath.AutoSize = true;
+      this.lblSavePath.Location = new System.Drawing.Point(12, 103);
+      this.lblSavePath.Name = "lblSavePath";
+      this.lblSavePath.Size = new System.Drawing.Size(128, 13);
+      this.lblSavePath.TabIndex = 32;
+      this.lblSavePath.Text = "Путь сохранения файла";
+      // 
+      // btnSavePath
+      // 
+      this.btnSavePath.Location = new System.Drawing.Point(241, 117);
+      this.btnSavePath.Name = "btnSavePath";
+      this.btnSavePath.Size = new System.Drawing.Size(30, 23);
+      this.btnSavePath.TabIndex = 33;
+      this.btnSavePath.Text = "...";
+      this.btnSavePath.UseVisualStyleBackColor = true;
+      this.btnSavePath.Click += new System.EventHandler(this.btnSavePath_Click);
       // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(800, 450);
+      this.Controls.Add(this.btnSavePath);
+      this.Controls.Add(this.lblSavePath);
+      this.Controls.Add(this.tpSelectedPath);
+      this.Controls.Add(this.btnExecute);
+      this.Controls.Add(this.cbTypeRoom);
+      this.Controls.Add(this.lblTypeRoom);
+      this.Controls.Add(this.cbChooseParse);
+      this.Controls.Add(this.lblChooseParse);
       this.Controls.Add(this.button23);
       this.Controls.Add(this.button22);
       this.Controls.Add(this.button21);
@@ -343,7 +446,7 @@
       this.Controls.Add(this.menuStrip1);
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "MainForm";
-      this.Text = "Form1";
+      this.Text = "Парсер квартир";
       this.Load += new System.EventHandler(this.MainForm_Load);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
@@ -380,6 +483,15 @@
     private System.Windows.Forms.MenuStrip menuStrip1;
     private System.Windows.Forms.ToolStripMenuItem tspmFile;
     private System.Windows.Forms.ToolStripMenuItem tspmExit;
+    private System.Windows.Forms.Label lblChooseParse;
+    private System.Windows.Forms.ComboBox cbChooseParse;
+    private System.Windows.Forms.Label lblTypeRoom;
+    private System.Windows.Forms.ComboBox cbTypeRoom;
+    private System.Windows.Forms.Button btnExecute;
+    private System.Windows.Forms.TextBox tpSelectedPath;
+    private System.Windows.Forms.Label lblSavePath;
+    private System.Windows.Forms.Button btnSavePath;
+    private System.Windows.Forms.SaveFileDialog sfdParseFile;
   }
 }
 
