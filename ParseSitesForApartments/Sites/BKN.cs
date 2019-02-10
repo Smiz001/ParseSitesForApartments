@@ -782,45 +782,45 @@ namespace ParseSitesForApartments.Sites
         flat.Building = building;
 
 
-        //if (!string.IsNullOrWhiteSpace(flat.Building.Number))
-        //{
-        //  if (!string.IsNullOrWhiteSpace(flat.Square))
-        //  {
-        //    if (!string.IsNullOrWhiteSpace(flat.Building.Street))
-        //    {
-        //      Monitor.Enter(locker);
-        //      if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-        //      {
-        //        unionInfo.UnionInfoProdam(flat);
-        //      }
-        //      OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-        //      Monitor.Exit(locker);
-        //    }
-        //  }
-        //}
-
-        Monitor.Enter(locker);
-        if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+        if (!string.IsNullOrWhiteSpace(flat.Building.Number))
         {
-          unionInfo.UnionInfoProdam(flat);
+          if (!string.IsNullOrWhiteSpace(flat.Square))
+          {
+            if (!string.IsNullOrWhiteSpace(flat.Building.Street))
+            {
+              Monitor.Enter(locker);
+              if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+              {
+                unionInfo.UnionInfoProdam(flat);
+              }
+              OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+              Monitor.Exit(locker);
+            }
+          }
         }
-        OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-        Monitor.Exit(locker);
+
+        //Monitor.Enter(locker);
+        //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+        //{
+        //  unionInfo.UnionInfoProdam(flat);
+        //}
+        //OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+        //Monitor.Exit(locker);
 
         //flat.Building.Street = parseStreet.Execute()
-        //Monitor.Enter(locker);
-        //progress.UpdateProgress(count);
-        //count++;
-        //if (!string.IsNullOrEmpty(flat.Building.Number))
-        //{
-        //  using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+        //  Monitor.Enter(locker);
+        //  progress.UpdateProgress(count);
+        //  count++;
+        //  if (!string.IsNullOrEmpty(flat.Building.Number))
         //  {
-        //    sw.BaseStream.Position = sw.BaseStream.Length;
-        //    sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+        //    using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
+        //    {
+        //      sw.BaseStream.Position = sw.BaseStream.Length;
+        //      sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
+        //    }
         //  }
-        //}
-        //Monitor.Exit(locker);
-        //}
+        //  Monitor.Exit(locker);
+        ////}
       }
     }
 

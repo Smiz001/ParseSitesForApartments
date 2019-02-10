@@ -866,5 +866,10 @@ WHERE ID ='{item.Id}'";
       //  }
       //}
     }
+
+    private void tspmExit_Click(object sender, EventArgs e)
+    {
+      this.Close();
+    }
   }
 }
