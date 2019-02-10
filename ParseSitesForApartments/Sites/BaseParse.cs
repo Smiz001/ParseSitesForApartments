@@ -20,7 +20,14 @@ namespace ParseSitesForApartments.Sites
     public abstract string FilenameWithinfo { get; }
     public abstract string FilenameWithinfoSdam { get; }
     public abstract string NameSite { get; }
-    public abstract void ParsingAll();
     public abstract void ParsingSdamAll();
+
+    public abstract void ParsingAll();
+    public abstract void ParsingStudii();
+    public abstract void ParsingOne();
+    public abstract void ParsingTwo();
+    public abstract void ParsingThree();
+    public abstract void ParsingFour();
+    public abstract void ParsingMoreFour();
   }
 }

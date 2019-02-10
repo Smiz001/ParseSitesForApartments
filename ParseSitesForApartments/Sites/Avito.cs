@@ -451,6 +451,36 @@ namespace ParseSitesForApartments.Sites
 
     }
 
+    public override void ParsingStudii()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingOne()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingTwo()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingThree()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingFour()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingMoreFour()
+    {
+      throw new NotImplementedException();
+    }
+
     private bool LinkProcessingProdam(string link, string typeRoom)
     {
       try

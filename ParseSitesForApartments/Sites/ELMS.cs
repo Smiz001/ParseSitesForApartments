@@ -101,6 +101,54 @@ namespace ParseSitesForApartments.Sites
       fiveThread.Start("5 км. кв. Н");
     }
 
+    public override void ParsingStudii()
+    {
+      studiiThreadOld = new Thread(ChangeDistrictAndPage);
+      studiiThreadOld.Start("Студия");
+      studiiThread = new Thread(ChangeDistrictAndPage);
+      studiiThread.Start("Студия Н");
+    }
+
+    public override void ParsingOne()
+    {
+      oneThreadOld = new Thread(ChangeDistrictAndPage);
+      oneThreadOld.Start("1 км. кв.");
+      oneThread = new Thread(ChangeDistrictAndPage);
+      oneThread.Start("1 км. кв. Н");
+    }
+
+    public override void ParsingTwo()
+    {
+      twoThreadOld = new Thread(ChangeDistrictAndPage);
+      twoThreadOld.Start("2 км. кв.");
+      twoThread = new Thread(ChangeDistrictAndPage);
+      twoThread.Start("2 км. кв. Н");
+    }
+
+    public override void ParsingThree()
+    {
+      threeThreadOld = new Thread(ChangeDistrictAndPage);
+      threeThreadOld.Start("3 км. кв.");
+      threeThread = new Thread(ChangeDistrictAndPage);
+      threeThread.Start("3 км. кв. Н");
+    }
+
+    public override void ParsingFour()
+    {
+      fourThreadOld = new Thread(ChangeDistrictAndPage);
+      fourThreadOld.Start("4 км. кв.");
+      fourThread = new Thread(ChangeDistrictAndPage);
+      fourThread.Start("4 км. кв. Н");
+    }
+
+    public override void ParsingMoreFour()
+    {
+      fiveThreadOld = new Thread(ChangeDistrictAndPage);
+      fiveThreadOld.Start("5 км. кв.");
+      fiveThread = new Thread(ChangeDistrictAndPage);
+      fiveThread.Start("5 км. кв. Н");
+    }
+
     private void ChangeDistrictAndPage(object typeRoom)
     {
       HtmlParser parser = new HtmlParser();

@@ -117,6 +117,42 @@ namespace ParseSitesForApartments.Sites
       //ParsingNovostroiki();
     }
 
+    public override void ParsingStudii()
+    {
+      studiiThread = new Thread(ChangeDistrictAndPage);
+      studiiThread.Start("Студия");
+    }
+
+    public override void ParsingOne()
+    {
+      oneThread = new Thread(ChangeDistrictAndPage);
+      oneThread.Start("1 км. кв.");
+    }
+
+    public override void ParsingTwo()
+    {
+      twoThread = new Thread(ChangeDistrictAndPage);
+      twoThread.Start("2 км. кв.");
+    }
+
+    public override void ParsingThree()
+    {
+      threeThread = new Thread(ChangeDistrictAndPage);
+      threeThread.Start("3 км. кв.");
+    }
+
+    public override void ParsingFour()
+    {
+      fourThread = new Thread(ChangeDistrictAndPage);
+      fourThread.Start("4 км. кв.");
+    }
+
+    public override void ParsingMoreFour()
+    {
+      fiveThread = new Thread(ChangeDistrictAndPage);
+      fiveThread.Start("5 км. кв.");
+    }
+
 
     public void ParsingVtorichka()
     {

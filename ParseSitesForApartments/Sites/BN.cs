@@ -109,6 +109,52 @@ namespace ParseSitesForApartments.Sites
       threadCheck.Start();
     }
 
+    public override void ParsingStudii()
+    {
+      studiiThreadOld = new Thread(ChangeDistrictAndPage);
+      studiiThreadOld.Start("Студия");
+      studiiThread = new Thread(ChangeDistrictAndPage);
+      studiiThread.Start("Студия Н");
+    }
+
+    public override void ParsingOne()
+    {
+      oneThread = new Thread(ChangeDistrictAndPage);
+      oneThread.Start("1 км. кв. Н");
+      oneThreadOld = new Thread(ChangeDistrictAndPage);
+      oneThreadOld.Start("1 км. кв.");
+    }
+
+    public override void ParsingTwo()
+    {
+      twoThread = new Thread(ChangeDistrictAndPage);
+      twoThread.Start("2 км. кв. Н");
+      twoThreadOld = new Thread(ChangeDistrictAndPage);
+      twoThreadOld.Start("2 км. кв.");
+    }
+
+    public override void ParsingThree()
+    {
+      threeThread = new Thread(ChangeDistrictAndPage);
+      threeThread.Start("3 км. кв. Н");
+      threeThreadOld = new Thread(ChangeDistrictAndPage);
+      threeThreadOld.Start("3 км. кв.");
+    }
+
+    public override void ParsingFour()
+    {
+      fourThread = new Thread(ChangeDistrictAndPage);
+      fourThread.Start("4 км. кв. Н");
+      fourThreadOld = new Thread(ChangeDistrictAndPage);
+      fourThreadOld.Start("4 км. кв.");
+    }
+
+    public override void ParsingMoreFour()
+    {
+      //Nothing
+      //throw new NotImplementedException();
+    }
+
     private void CheckCloseThread()
     {
       while (true)
