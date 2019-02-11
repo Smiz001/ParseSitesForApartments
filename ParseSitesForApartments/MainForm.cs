@@ -734,6 +734,7 @@ WHERE ID ='{item.Id}'";
     {
       cbChooseParse.SelectedIndex = 0;
       cbTypeRoom.SelectedIndex = 0;
+      cbTypeSell.SelectedIndex = 0;
 
       sfdParseFile.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
       sfdParseFile.FilterIndex = 1;
