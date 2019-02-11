@@ -739,16 +739,33 @@ namespace ParseSitesForApartments.Sites
           {
             var metro = collection[i].GetElementsByClassName("metroline-2");
             if (metro.Length > 0)
-              building.Metro = metro[0].TextContent;
-
-            regex = new Regex(@"(\d+)");
-            var floor = collection[i].GetElementsByClassName("w-floor");
-            if (floor.Length > 0)
             {
-              var ms = regex.Matches(floor[0].TextContent);
-              if (ms.Count > 0)
-                flat.Floor = ms[0].Value;
+              var mt = metro[0].TextContent.Replace("пр.", "").Replace("ул.", "").Replace("и-т", "");
+              if (mt == "А.Hевского пл.")
+                mt = "Площадь Александра Невского";
+              else if (mt == "Мужества пл.")
+                mt = "Площадь Мужества";
+              else if (mt == "Восстания пл.")
+                mt = "Площадь Восстания";
+              else if (mt == "Ленина пл.")
+                mt = "Площадь Ленина  ";
+              else if (mt == "Сенная пл.")
+                mt = "Сенная площадь";
+              var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper().Contains(mt.ToUpper()));
+              if (metroObjEnum.Count() > 0)
+              {
+                building.MetroObj = metroObjEnum.First();
+              }
             }
+          }
+
+          regex = new Regex(@"(\d+)");
+          var floor = collection[i].GetElementsByClassName("w-floor");
+          if (floor.Length > 0)
+          {
+            var ms = regex.Matches(floor[0].TextContent);
+            if (ms.Count > 0)
+              flat.Floor = ms[0].Value;
           }
 
           flat.Building = building;
