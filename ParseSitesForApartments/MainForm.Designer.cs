@@ -63,6 +63,8 @@
       this.lblSavePath = new System.Windows.Forms.Label();
       this.btnSavePath = new System.Windows.Forms.Button();
       this.sfdParseFile = new System.Windows.Forms.SaveFileDialog();
+      this.lblTypeSell = new System.Windows.Forms.Label();
+      this.cbTypeSell = new System.Windows.Forms.ComboBox();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -408,11 +410,34 @@
       this.btnSavePath.UseVisualStyleBackColor = true;
       this.btnSavePath.Click += new System.EventHandler(this.btnSavePath_Click);
       // 
+      // lblTypeSell
+      // 
+      this.lblTypeSell.AutoSize = true;
+      this.lblTypeSell.Location = new System.Drawing.Point(281, 51);
+      this.lblTypeSell.Name = "lblTypeSell";
+      this.lblTypeSell.Size = new System.Drawing.Size(107, 13);
+      this.lblTypeSell.TabIndex = 34;
+      this.lblTypeSell.Text = "Продажа или Сдать";
+      // 
+      // cbTypeSell
+      // 
+      this.cbTypeSell.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cbTypeSell.FormattingEnabled = true;
+      this.cbTypeSell.Items.AddRange(new object[] {
+            "Продажа",
+            "Сдать"});
+      this.cbTypeSell.Location = new System.Drawing.Point(284, 67);
+      this.cbTypeSell.Name = "cbTypeSell";
+      this.cbTypeSell.Size = new System.Drawing.Size(121, 21);
+      this.cbTypeSell.TabIndex = 35;
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(800, 450);
+      this.Controls.Add(this.cbTypeSell);
+      this.Controls.Add(this.lblTypeSell);
       this.Controls.Add(this.btnSavePath);
       this.Controls.Add(this.lblSavePath);
       this.Controls.Add(this.tbSelectedPath);
@@ -493,6 +518,8 @@
     private System.Windows.Forms.Label lblSavePath;
     private System.Windows.Forms.Button btnSavePath;
     private System.Windows.Forms.SaveFileDialog sfdParseFile;
+    private System.Windows.Forms.Label lblTypeSell;
+    private System.Windows.Forms.ComboBox cbTypeSell;
   }
 }
 

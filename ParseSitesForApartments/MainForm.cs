@@ -734,6 +734,7 @@ WHERE ID ='{item.Id}'";
     {
       cbChooseParse.SelectedIndex = 0;
       cbTypeRoom.SelectedIndex = 0;
+      cbTypeSell.SelectedIndex = 0;
 
       sfdParseFile.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
       sfdParseFile.FilterIndex = 1;
@@ -787,6 +788,50 @@ WHERE ID ='{item.Id}'";
 
     private void btnSavePath_Click(object sender, EventArgs e)
     {
+      string fileName = string.Empty;
+      switch (cbChooseParse.SelectedIndex)
+      {
+        case 0:
+          fileName = $"Все сайты - ";
+          break;
+        case 1:
+          fileName = $"ELMS - ";
+          break;
+        case 2:
+          fileName = $"БН - ";
+          break;
+        case 3:
+          fileName = $"БКН - ";
+          break;
+      }
+      switch (cbTypeRoom.SelectedIndex)
+      {
+        case 0:
+          fileName += "Все квартиры ";
+          break;
+        case 1:
+          fileName += "Студии ";
+          break;
+        case 2:
+          fileName += "1 ком. кв. ";
+          break;
+        case 3:
+          fileName += "2 ком. кв. ";
+          break;
+        case 4:
+          fileName += "3 ком. кв. ";
+          break;
+        case 5:
+          fileName += "4 ком. кв. ";
+          break;
+        case 6:
+          fileName += "Больше 4 ком. ";
+          break;
+      }
+      fileName += DateTime.Now.ToShortDateString();
+      //TODO проверить имя
+      sfdParseFile.FileName = fileName;
+
       if (sfdParseFile.ShowDialog() == DialogResult.OK)
       {
         tbSelectedPath.Text = sfdParseFile.FileName;
