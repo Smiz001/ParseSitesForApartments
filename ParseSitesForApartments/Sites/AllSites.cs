@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ParseSitesForApartments.Sites
@@ -14,6 +15,9 @@ namespace ParseSitesForApartments.Sites
     private BKN bkn;
     private BN bn;
     private ELMS elms;
+    private Thread elmsThread;
+    private Thread bnThread;
+    private Thread bknThread;
 
     #endregion
 
@@ -60,16 +64,25 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingAll()
     {
-      bkn.ParsingAll();
-      bn.ParsingAll();
-      elms.ParsingAll();
+      //TODO нужно переделать обработку сайтов
+      // Каждый сайт парсится в свой файл, после того как все спарсилось, все сливается в один файл
+      elmsThread = new Thread(elms.ParsingAll);
+      elmsThread.Start();
+      bnThread = new Thread(bn.ParsingAll);
+      bnThread.Start();
+      bknThread = new Thread(bkn.ParsingAll);
+      bknThread.Start();
     }
 
     public override void ParsingStudii()
     {
-      bkn.ParsingStudii();
-      bn.ParsingStudii();
-      elms.ParsingStudii();
+      elmsThread = new Thread(elms.ParsingStudii);
+      elmsThread.Start();
+      bnThread = new Thread(bn.ParsingStudii);
+      bnThread.Start();
+      bknThread = new Thread(bkn.ParsingStudii);
+      bknThread.Start();
+
     }
 
     public override void ParsingOne()
