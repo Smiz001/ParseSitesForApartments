@@ -7,7 +7,6 @@ namespace ParseSitesForApartments.Export
 {
   public class CsvExport:CoreExport
   {
-    private static object locker = new object();
 
     public CsvExport(string filename):base(filename)
     {
@@ -20,7 +19,6 @@ namespace ParseSitesForApartments.Export
 
     public override void Execute()
     {
-      Monitor.Enter(locker);
       using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
       {
         foreach (var flat in listFlats)
@@ -34,7 +32,6 @@ namespace ParseSitesForApartments.Export
         }
         listFlats.Clear();
       }
-      Monitor.Enter(locker);
     }
 
     public override void AddFlatInList(object sender, AppendFlatEventArgs arg)
