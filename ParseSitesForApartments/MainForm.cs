@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Xml;
 using DataBase.Connections;
 using DataBase.Creators;
+using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.UnionWithBase;
 
 namespace ParseSitesForApartments
@@ -865,6 +866,16 @@ WHERE ID ='{item.Id}'";
           break;
       }
       parser.Filename = tbSelectedPath.Text;
+
+      switch (cbTypeSell.SelectedIndex)
+      {
+        case 0:
+          parser.TypeParseFlat = TypeParseFlat.Sale;
+          break;
+        case 1:
+          parser.TypeParseFlat = TypeParseFlat.Rent;
+          break;
+      }
 
       switch (cbTypeRoom.SelectedIndex)
       {

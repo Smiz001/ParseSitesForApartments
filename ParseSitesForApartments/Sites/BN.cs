@@ -117,33 +117,50 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingAll()
     {
-      CreateExport();
-      studiiThread = new Thread(ChangeDistrictAndPage);
-      studiiThread.Start("Студия Н");
-      oneThread = new Thread(ChangeDistrictAndPage);
-      oneThread.Start("1 км. кв. Н");
-      twoThread = new Thread(ChangeDistrictAndPage);
-      twoThread.Start("2 км. кв. Н");
-      threeThread = new Thread(ChangeDistrictAndPage);
-      threeThread.Start("3 км. кв. Н");
-      fourThread = new Thread(ChangeDistrictAndPage);
-      fourThread.Start("4 км. кв. Н");
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        CreateExport();
+        studiiThread = new Thread(ChangeDistrictAndPage);
+        studiiThread.Start("Студия Н");
+        oneThread = new Thread(ChangeDistrictAndPage);
+        oneThread.Start("1 км. кв. Н");
+        twoThread = new Thread(ChangeDistrictAndPage);
+        twoThread.Start("2 км. кв. Н");
+        threeThread = new Thread(ChangeDistrictAndPage);
+        threeThread.Start("3 км. кв. Н");
+        fourThread = new Thread(ChangeDistrictAndPage);
+        fourThread.Start("4 км. кв. Н");
 
-      studiiThreadOld = new Thread(ChangeDistrictAndPage);
-      studiiThreadOld.Start("Студия");
-      oneThreadOld = new Thread(ChangeDistrictAndPage);
-      oneThreadOld.Start("1 км. кв.");
-      twoThreadOld = new Thread(ChangeDistrictAndPage);
-      twoThreadOld.Start("2 км. кв.");
-      threeThreadOld = new Thread(ChangeDistrictAndPage);
-      threeThreadOld.Start("3 км. кв.");
-      fourThreadOld = new Thread(ChangeDistrictAndPage);
-      fourThreadOld.Start("4 км. кв.");
+        studiiThreadOld = new Thread(ChangeDistrictAndPage);
+        studiiThreadOld.Start("Студия");
+        oneThreadOld = new Thread(ChangeDistrictAndPage);
+        oneThreadOld.Start("1 км. кв.");
+        twoThreadOld = new Thread(ChangeDistrictAndPage);
+        twoThreadOld.Start("2 км. кв.");
+        threeThreadOld = new Thread(ChangeDistrictAndPage);
+        threeThreadOld.Start("3 км. кв.");
+        fourThreadOld = new Thread(ChangeDistrictAndPage);
+        fourThreadOld.Start("4 км. кв.");
 
-      //Thread.Sleep(10000);
-      //var threadCheck = new Thread(CheckCloseThread);
-      //threadCheck.Start();
-      CheckCloseThread();
+        //Thread.Sleep(10000);
+        //var threadCheck = new Thread(CheckCloseThread);
+        //threadCheck.Start();
+        CheckCloseThread();
+      }
+      else
+      {
+        CreateExportSdam();
+        studiiSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        studiiSdamThread.Start("Студия");
+        oneSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        oneSdamThread.Start("1 км. кв.");
+        twoSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        twoSdamThread.Start("2 км. кв.");
+        threeSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        threeSdamThread.Start("3 км. кв.");
+        fourSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        fourSdamThread.Start("4 км. кв.");
+      }
     }
 
     public override void ParsingStudii()
@@ -402,9 +419,15 @@ namespace ParseSitesForApartments.Sites
         var priceString = apartaments[i].GetElementsByClassName("object--price_original")[0].TextContent.Trim();
         var ms = regex.Matches(priceString);
         if (ms.Count > 1)
-          flat.Price = int.Parse($"{ms[0].Value}{ms[1].Value}000");
-        else
+          if(TypeParseFlat == TypeParseFlat.Sale)
+            flat.Price = int.Parse($"{ms[0].Value}{ms[1].Value}000");
+          else
+            flat.Price = int.Parse($"{ms[0].Value}{ms[1].Value}");
+        else 
+        if (TypeParseFlat == TypeParseFlat.Sale)
           flat.Price = int.Parse($"{ms[0].Value}000");
+        else
+          flat.Price = int.Parse($"{ms[0].Value}");
 
         //var building = district.Buildings.Where(x=> x.Street = )
 
