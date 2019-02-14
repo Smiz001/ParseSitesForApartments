@@ -1162,6 +1162,36 @@ namespace ParseSitesForApartments.Sites
       fiveThread.Start();
     }
 
+    public override void ParsingSdamStudii()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamOne()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamTwo()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamThree()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamFour()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamMoreFour()
+    {
+      throw new NotImplementedException();
+    }
+
     public void ParseStudiiSdam()
     {
       using (var webClient = new WebClient())

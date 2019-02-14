@@ -28,7 +28,6 @@ namespace ParseSitesForApartments.Sites
     public abstract string FilenameWithinfo { get; }
     public abstract string FilenameWithinfoSdam { get; }
     public abstract string NameSite { get; }
-    public abstract void ParsingSdamAll();
 
     public abstract void ParsingAll();
     public abstract void ParsingStudii();
@@ -38,6 +37,15 @@ namespace ParseSitesForApartments.Sites
     public abstract void ParsingFour();
     public abstract void ParsingMoreFour();
 
-    
+
+    public abstract void ParsingSdamAll();
+    public abstract void ParsingSdamStudii();
+    public abstract void ParsingSdamOne();
+    public abstract void ParsingSdamTwo();
+    public abstract void ParsingSdamThree();
+    public abstract void ParsingSdamFour();
+    public abstract void ParsingSdamMoreFour();
+
+
   }
 }

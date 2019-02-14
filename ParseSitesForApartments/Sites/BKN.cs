@@ -211,9 +211,10 @@ namespace ParseSitesForApartments.Sites
       fiveThread = new Thread(ChangeDistrictAndPage);
       fiveThread.Start("5 км. кв.");
 
-      Thread.Sleep(10000);
-      var threadCheck = new Thread(CheckCloseThread);
-      threadCheck.Start();
+      //Thread.Sleep(10000);
+      //var threadCheck = new Thread(CheckCloseThread);
+      //threadCheck.Start();
+      CheckCloseThread()
     }
 
     private void CheckCloseThread()
@@ -1356,6 +1357,36 @@ namespace ParseSitesForApartments.Sites
       Thread.Sleep(55000);
       var fiveThread = new Thread(ParseFiveSdam);
       fiveThread.Start();
+    }
+
+    public override void ParsingSdamStudii()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamOne()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamTwo()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamThree()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamFour()
+    {
+      throw new NotImplementedException();
+    }
+
+    public override void ParsingSdamMoreFour()
+    {
+      throw new NotImplementedException();
     }
 
     public void ParseStudiiSdam()
