@@ -214,7 +214,7 @@ namespace ParseSitesForApartments.Sites
       //Thread.Sleep(10000);
       //var threadCheck = new Thread(CheckCloseThread);
       //threadCheck.Start();
-      CheckCloseThread()
+      CheckCloseThread();
     }
 
     private void CheckCloseThread()

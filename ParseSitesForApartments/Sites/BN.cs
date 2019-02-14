@@ -30,11 +30,27 @@ namespace ParseSitesForApartments.Sites
     public delegate void Append(object sender, AppendFlatEventArgs e);
     public event Append OnAppend;
     private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
+    private Thread studiiThread;
+    private Thread oneThread;
+    private Thread twoThread;
+    private Thread threeThread;
+    private Thread fourThread;
+    private Thread studiiThreadOld;
+    private Thread oneThreadOld;
+    private Thread twoThreadOld;
+    private Thread threeThreadOld;
+    private Thread fourThreadOld;
+
+    private Thread studiiSdamThread;
+    private Thread oneSdamThread;
+    private Thread twoSdamThread;
+    private Thread threeSdamThread;
+    private Thread fourSdamThread;
 
     #endregion
 
     #region Constructor
-    
+
     public BN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
       //CoreCreator creator = new ExcelExportCreator();
@@ -60,17 +76,6 @@ namespace ParseSitesForApartments.Sites
     public override string NameSite => "БН";
 
     #endregion
-    
-    Thread studiiThread;
-    Thread oneThread;
-    Thread twoThread;
-    Thread threeThread;
-    Thread fourThread;
-    Thread studiiThreadOld;
-    Thread oneThreadOld;
-    Thread twoThreadOld;
-    Thread threeThreadOld;
-    Thread fourThreadOld;
 
     private void CreateExport()
     {
@@ -85,6 +90,24 @@ namespace ParseSitesForApartments.Sites
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
           {
             //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
+            sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
+          }
+        }
+      }
+    }
+
+    private void CreateExportSdam()
+    {
+      CoreCreator creator = new CsvExportCreator();
+      export = creator.FactoryCreate(Filename);
+      OnAppend += export.AddFlatInList;
+
+      if (export is CsvExport)
+      {
+        if (!File.Exists(Filename))
+        {
+          using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
+          {
             sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
           }
         }
@@ -213,57 +236,6 @@ namespace ParseSitesForApartments.Sites
       //excelExport?.Save();
     }
 
-    public void ParseStudiiOld()
-    {
-      var studiiThreadOld = new Thread(ChangeDistrictAndPage);
-      studiiThreadOld.Start("Студия");
-    }
-    public void ParseOneRoomOld()
-    {
-      var oneThreadOld = new Thread(ChangeDistrictAndPage);
-      oneThreadOld.Start("1 км. кв.");
-    }
-    public void ParseTwoRoomOld()
-    {
-      var twoThreadOld = new Thread(ChangeDistrictAndPage);
-      twoThreadOld.Start("2 км. кв.");
-    }
-    public void ParseThreeRoomOld()
-    {
-      var threeThreadOld = new Thread(ChangeDistrictAndPage);
-      threeThreadOld.Start("3 км. кв.");
-    }
-    public void ParseFourRoomOld()
-    {
-      var fourThreadOld = new Thread(ChangeDistrictAndPage);
-      fourThreadOld.Start("4 км. кв.");
-    }
-    public void ParseStudii()
-    {
-      var studiiThread = new Thread(ChangeDistrictAndPage);
-      studiiThread.Start("Студия Н");
-    }
-    public void ParseOneRoom()
-    {
-      var oneThread = new Thread(ChangeDistrictAndPage);
-      oneThread.Start("1 км. кв. Н");
-    }
-    public void ParseTwoRoom()
-    {
-      var twoThread = new Thread(ChangeDistrictAndPage);
-      twoThread.Start("2 км. кв. Н");
-    }
-    public void ParseThreeRoom()
-    {
-      var threeThread = new Thread(ChangeDistrictAndPage);
-      threeThread.Start("3 км. кв. Н");
-    }
-    public void ParseFourRoom()
-    {
-      var fourThread = new Thread(ChangeDistrictAndPage);
-      fourThread.Start("4 км. кв. Н");
-    }
-
     private void ChangeDistrictAndPage(object typeRoom)
     {
       HtmlParser parser = new HtmlParser();
@@ -316,6 +288,50 @@ namespace ParseSitesForApartments.Sites
               case "4 км. кв.":
                 url =
                   $@"https://www.bn.ru/kvartiry-vtorichka/kkv-4-city_district-{distr.Key}/?cpu=kkv-4-city_district-1&kkv%5B0%5D=4&city_district%5B0%5D=1&from=&to=&areaFrom=&areaTo=&livingFrom=&livingTo=&kitchenFrom=&kitchenTo=&floor=0&floorFrom=&floorTo=&preferPhoto=1&exceptNewBuildings=1&exceptPortion=1&formName=secondary&page={i}";
+                break;
+            }
+            if (!ExecuteParse(url, webClient, parser, (string)typeRoom,
+              ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First()))
+              break;
+          }
+        }
+      }
+
+      MessageBox.Show($"Закончили - {typeRoom}");
+    }
+
+    private void ChangeDistrictAndPageForSdam(object typeRoom)
+    {
+      HtmlParser parser = new HtmlParser();
+      using (var webClient = new WebClient())
+      {
+        webClient.Encoding = Encoding.UTF8;
+        string url = "";
+        foreach (var distr in district)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            switch (typeRoom)
+            {
+              case "Студия":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-0-city_district-{distr.Key}/?lease_period%5B%5D=1&floor=0&formName=rent&page={i}";
+                break;
+              case "1 км. кв.":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-1-city_district-{distr.Key}/?lease_period%5B%5D=1&floor=0&formName=rent&page={i}";
+                break;
+              case "2 км. кв.":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-2-city_district-{distr.Key}/?lease_period%5B%5D=1&floor=0&formName=rent&page={i}";
+                break;
+              case "3 км. кв.":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-3-city_district-{distr.Key}/?lease_period%5B%5D=1&floor=0&formName=rent&page={i}";
+                break;
+              case "4 км. кв.":
+                url =
+                  $@"https://www.bn.ru/arenda-kvartiry/kkv-4-city_district-{distr.Key}/?lease_period%5B%5D=1&floor=0&formName=rent&page={i}";
                 break;
             }
             if (!ExecuteParse(url, webClient, parser, (string)typeRoom,
