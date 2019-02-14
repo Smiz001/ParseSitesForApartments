@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.ParsClasses;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.Export.Creators;
@@ -147,11 +148,18 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingStudii()
     {
-      CreateExport();
-      studiiThreadOld = new Thread(ChangeDistrictAndPage);
-      studiiThreadOld.Start("Студия");
-      studiiThread = new Thread(ChangeDistrictAndPage);
-      studiiThread.Start("Студия Н");
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        CreateExport();
+        studiiThreadOld = new Thread(ChangeDistrictAndPage);
+        studiiThreadOld.Start("Студия");
+        studiiThread = new Thread(ChangeDistrictAndPage);
+        studiiThread.Start("Студия Н");
+      }
+      else
+      {
+        CreateExportSdam();
+      }
     }
 
     public override void ParsingOne()
@@ -708,36 +716,6 @@ namespace ParseSitesForApartments.Sites
       threeThreadOld.Start("3 км. кв.");
       var fourThreadOld = new Thread(ChangeDistrictAndPageSdam);
       fourThreadOld.Start("4 км. кв.");
-    }
-
-    public override void ParsingSdamStudii()
-    {
-      throw new NotImplementedException();
-    }
-
-    public override void ParsingSdamOne()
-    {
-      throw new NotImplementedException();
-    }
-
-    public override void ParsingSdamTwo()
-    {
-      throw new NotImplementedException();
-    }
-
-    public override void ParsingSdamThree()
-    {
-      throw new NotImplementedException();
-    }
-
-    public override void ParsingSdamFour()
-    {
-      throw new NotImplementedException();
-    }
-
-    public override void ParsingSdamMoreFour()
-    {
-      throw new NotImplementedException();
     }
 
     public void ParseStudiiSdam()

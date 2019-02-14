@@ -3,6 +3,6 @@
   public enum TypeParseFlat
   {
     Sale,
-    Rant
+    Rent
   }
 }

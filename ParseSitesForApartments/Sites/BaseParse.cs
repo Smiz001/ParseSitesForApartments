@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using log4net;
+using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.Export.Creators;
 
@@ -28,6 +29,7 @@ namespace ParseSitesForApartments.Sites
     public abstract string FilenameWithinfo { get; }
     public abstract string FilenameWithinfoSdam { get; }
     public abstract string NameSite { get; }
+    public TypeParseFlat TypeParseFlat { get; set; }
 
     public abstract void ParsingAll();
     public abstract void ParsingStudii();
@@ -39,13 +41,5 @@ namespace ParseSitesForApartments.Sites
 
 
     public abstract void ParsingSdamAll();
-    public abstract void ParsingSdamStudii();
-    public abstract void ParsingSdamOne();
-    public abstract void ParsingSdamTwo();
-    public abstract void ParsingSdamThree();
-    public abstract void ParsingSdamFour();
-    public abstract void ParsingSdamMoreFour();
-
-
   }
 }
