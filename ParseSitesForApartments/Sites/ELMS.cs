@@ -86,6 +86,50 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
+    private void CheckCloseThread()
+    {
+      while (true)
+      {
+        if (!studiiThread.IsAlive)
+        {
+          if (!oneThread.IsAlive)
+          {
+            if (!twoThread.IsAlive)
+            {
+              if (!threeThread.IsAlive)
+              {
+                if (!fourThread.IsAlive)
+                {
+                  if (!fiveThread.IsAlive)
+                  {
+                    if (!studiiThreadOld.IsAlive)
+                    {
+                      if (!oneThreadOld.IsAlive)
+                      {
+                        if (!twoThreadOld.IsAlive)
+                        {
+                          if (!threeThreadOld.IsAlive)
+                          {
+                            if (!fourThreadOld.IsAlive)
+                            {
+                              if (!fiveThreadOld.IsAlive)
+                              {
+                                break;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     public override void ParsingAll()
     {
       CreateExport();
@@ -114,6 +158,7 @@ namespace ParseSitesForApartments.Sites
       fourThread.Start("4 км. кв. Н");
       fiveThread = new Thread(ChangeDistrictAndPage);
       fiveThread.Start("5 км. кв. Н");
+      CheckCloseThread();
     }
 
     public override void ParsingStudii()
