@@ -176,43 +176,81 @@ namespace ParseSitesForApartments.Sites
       else
       {
         CreateExportSdam();
+        studiiSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        studiiSdamThread.Start("Студия");
       }
     }
 
     public override void ParsingOne()
     {
-      CreateExport();
-      oneThread = new Thread(ChangeDistrictAndPage);
-      oneThread.Start("1 км. кв. Н");
-      oneThreadOld = new Thread(ChangeDistrictAndPage);
-      oneThreadOld.Start("1 км. кв.");
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        CreateExport();
+        oneThread = new Thread(ChangeDistrictAndPage);
+        oneThread.Start("1 км. кв. Н");
+        oneThreadOld = new Thread(ChangeDistrictAndPage);
+        oneThreadOld.Start("1 км. кв.");
+      }
+      else
+      {
+        CreateExportSdam();
+        oneSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        oneSdamThread.Start("1 км. кв.");
+      }
     }
 
     public override void ParsingTwo()
     {
-      CreateExport();
-      twoThread = new Thread(ChangeDistrictAndPage);
-      twoThread.Start("2 км. кв. Н");
-      twoThreadOld = new Thread(ChangeDistrictAndPage);
-      twoThreadOld.Start("2 км. кв.");
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        CreateExport();
+        twoThread = new Thread(ChangeDistrictAndPage);
+        twoThread.Start("2 км. кв. Н");
+        twoThreadOld = new Thread(ChangeDistrictAndPage);
+        twoThreadOld.Start("2 км. кв.");
+      }
+      else
+      {
+        CreateExportSdam();
+        twoSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        twoSdamThread.Start("2 км. кв.");
+      }
     }
 
     public override void ParsingThree()
     {
-      CreateExport();
-      threeThread = new Thread(ChangeDistrictAndPage);
-      threeThread.Start("3 км. кв. Н");
-      threeThreadOld = new Thread(ChangeDistrictAndPage);
-      threeThreadOld.Start("3 км. кв.");
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        CreateExport();
+        threeThread = new Thread(ChangeDistrictAndPage);
+        threeThread.Start("3 км. кв. Н");
+        threeThreadOld = new Thread(ChangeDistrictAndPage);
+        threeThreadOld.Start("3 км. кв.");
+      }
+      else
+      {
+        CreateExportSdam();
+        threeSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        threeSdamThread.Start("3 км. кв.");
+      }
     }
 
     public override void ParsingFour()
     {
-      CreateExport();
-      fourThread = new Thread(ChangeDistrictAndPage);
-      fourThread.Start("4 км. кв. Н");
-      fourThreadOld = new Thread(ChangeDistrictAndPage);
-      fourThreadOld.Start("4 км. кв.");
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        CreateExport();
+        fourThread = new Thread(ChangeDistrictAndPage);
+        fourThread.Start("4 км. кв. Н");
+        fourThreadOld = new Thread(ChangeDistrictAndPage);
+        fourThreadOld.Start("4 км. кв.");
+      }
+      else
+      {
+        CreateExportSdam();
+        fourSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+        fourSdamThread.Start("4 км. кв.");
+      }
     }
 
     public override void ParsingMoreFour()
