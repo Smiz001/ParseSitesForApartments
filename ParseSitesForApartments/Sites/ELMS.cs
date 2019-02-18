@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.Export.Creators;
 using ParseSitesForApartments.UnionWithBase;
@@ -59,6 +60,14 @@ namespace ParseSitesForApartments.Sites
     private Thread fourThreadOld;
     private Thread fiveThreadOld;
     private CoreExport export;
+
+    private Thread studiiRentThread;
+    private Thread oneRentThread;
+    private Thread twoRentThread;
+    private Thread threeRentThread;
+    private Thread fourRentThread;
+    private Thread fiveRentThread;
+    private Thread sixRentThreadOld;
 
     public ELMS(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
     {
@@ -133,32 +142,52 @@ namespace ParseSitesForApartments.Sites
     public override void ParsingAll()
     {
       CreateExport();
-      studiiThreadOld = new Thread(ChangeDistrictAndPage);
-      studiiThreadOld.Start("Студия");
-      oneThreadOld = new Thread(ChangeDistrictAndPage);
-      oneThreadOld.Start("1 км. кв.");
-      twoThreadOld = new Thread(ChangeDistrictAndPage);
-      twoThreadOld.Start("2 км. кв.");
-      threeThreadOld = new Thread(ChangeDistrictAndPage);
-      threeThreadOld.Start("3 км. кв.");
-      fourThreadOld = new Thread(ChangeDistrictAndPage);
-      fourThreadOld.Start("4 км. кв.");
-      fiveThreadOld = new Thread(ChangeDistrictAndPage);
-      fiveThreadOld.Start("5 км. кв.");
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        studiiThreadOld = new Thread(ChangeDistrictAndPage);
+        studiiThreadOld.Start("Студия");
+        oneThreadOld = new Thread(ChangeDistrictAndPage);
+        oneThreadOld.Start("1 км. кв.");
+        twoThreadOld = new Thread(ChangeDistrictAndPage);
+        twoThreadOld.Start("2 км. кв.");
+        threeThreadOld = new Thread(ChangeDistrictAndPage);
+        threeThreadOld.Start("3 км. кв.");
+        fourThreadOld = new Thread(ChangeDistrictAndPage);
+        fourThreadOld.Start("4 км. кв.");
+        fiveThreadOld = new Thread(ChangeDistrictAndPage);
+        fiveThreadOld.Start("5 км. кв.");
 
-      studiiThread = new Thread(ChangeDistrictAndPage);
-      studiiThread.Start("Студия Н");
-      oneThread = new Thread(ChangeDistrictAndPage);
-      oneThread.Start("1 км. кв. Н");
-      twoThread = new Thread(ChangeDistrictAndPage);
-      twoThread.Start("2 км. кв. Н");
-      threeThread = new Thread(ChangeDistrictAndPage);
-      threeThread.Start("3 км. кв. Н");
-      fourThread = new Thread(ChangeDistrictAndPage);
-      fourThread.Start("4 км. кв. Н");
-      fiveThread = new Thread(ChangeDistrictAndPage);
-      fiveThread.Start("5 км. кв. Н");
-      CheckCloseThread();
+        studiiThread = new Thread(ChangeDistrictAndPage);
+        studiiThread.Start("Студия Н");
+        oneThread = new Thread(ChangeDistrictAndPage);
+        oneThread.Start("1 км. кв. Н");
+        twoThread = new Thread(ChangeDistrictAndPage);
+        twoThread.Start("2 км. кв. Н");
+        threeThread = new Thread(ChangeDistrictAndPage);
+        threeThread.Start("3 км. кв. Н");
+        fourThread = new Thread(ChangeDistrictAndPage);
+        fourThread.Start("4 км. кв. Н");
+        fiveThread = new Thread(ChangeDistrictAndPage);
+        fiveThread.Start("5 км. кв. Н");
+        CheckCloseThread();
+      }
+      else
+      {
+        studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
+        studiiRentThread.Start("Студия");
+        oneRentThread = new Thread(ChangeDistrictAndPageForRent);
+        oneRentThread.Start("1 км. кв.");
+        twoRentThread = new Thread(ChangeDistrictAndPageForRent);
+        twoRentThread.Start("2 км. кв.");
+        threeRentThread = new Thread(ChangeDistrictAndPageForRent);
+        threeRentThread.Start("3 км. кв.");
+        fourRentThread = new Thread(ChangeDistrictAndPageForRent);
+        fourRentThread.Start("4 км. кв.");
+        fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
+        fiveRentThread.Start("5 км. кв.");
+        sixRentThreadOld = new Thread(ChangeDistrictAndPageForRent);
+        sixRentThreadOld.Start("6 км. кв.");
+      }
     }
 
     public override void ParsingStudii()
@@ -207,6 +236,11 @@ namespace ParseSitesForApartments.Sites
       fiveThreadOld.Start("5 км. кв.");
       fiveThread = new Thread(ChangeDistrictAndPage);
       fiveThread.Start("5 км. кв. Н");
+    }
+
+    public override void ParsingSdamAll()
+    {
+      //throw new NotImplementedException();
     }
 
     private void ChangeDistrictAndPage(object typeRoom)
@@ -297,406 +331,6 @@ namespace ParseSitesForApartments.Sites
       //}
     }
 
-    public void ParseStudii()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r0/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheet(tableElements, "Студия", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили студии");
-    }
-    public void ParseOneRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r1/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              // ParseSheet(tableElements, "1 км. кв.", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 1 км. кв.");
-    }
-    public void ParseTwoRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r2/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheet(tableElements, "2 км. кв.", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 2 км. кв.");
-    }
-    public void ParseThreeRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r3/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheet(tableElements, "3 км. кв.", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 3 км. кв.");
-    }
-    public void ParseFourRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r4/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheet(tableElements, "4 км. кв.", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 4 км. кв.");
-    }
-    public void ParseFiveRoom()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/flats/page{j}.html?query=s/1/r5/1/is_auction/2/place/address/reg/2/dept/2/dist/{item.Key}/sort1/1/dir1/2/sort2/3/dir2/1/interval/3";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheet(tableElements, "5 км. кв.", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 5 км. кв.");
-    }
-
-
-
-    public void ParsingStudiiNov()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/by_room/1";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheetNov(tableElements, "Студия Н", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили студии");
-    }
-    public void ParsingOneNov()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r1/1/by_room/1";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheetNov(tableElements, "1 км. кв. Н", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 1 км. кв. нов.");
-    }
-    public void ParsingTwoNov()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r2/1/by_room/1";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheetNov(tableElements, "2 км. кв. Н", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 2 км. кв. нов.");
-    }
-    public void ParsingThreeNov()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r3/1/by_room/1";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheetNov(tableElements, "3 км. кв. Н", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 3 км. кв. нов.");
-    }
-    public void ParsingFourNov()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r4/1/by_room/1";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheetNov(tableElements, "4 км. кв. Н", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 4 км. кв. нов.");
-    }
-    public void ParsingFiveNov()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          foreach (var item in district)
-          {
-            for (int j = 1; j < MaxPage; j++)
-            {
-              Thread.Sleep(random.Next(2000, 3000));
-              string sdutii = $@"https://www.emls.ru/new/page{j}.html?query=s/1/dist/{item.Key}/dir2/2/sort2/1/dir1/2/sort1/3/stext/%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9/district/{item.Key}/r5/1/by_room/1";
-              webClient.Encoding = Encoding.GetEncoding("windows-1251");
-              var responce = webClient.DownloadString(sdutii);
-              var parser = new HtmlParser();
-              var document = parser.Parse(responce);
-
-              var tableElements = document.GetElementsByClassName("row1");
-              if (tableElements.Length == 0)
-                break;
-              //else
-              //  ParseSheetNov(tableElements, "5 км. кв. Н", item.Value);
-            }
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 5 км. кв. нов.");
-    }
-
     private void ParseSheet(IHtmlCollection<IElement> collection, string typeRoom, District district)
     {
       for (int i = 0; i < collection.Length; i++)
@@ -707,10 +341,22 @@ namespace ParseSitesForApartments.Sites
         };
         //try
         //{
-        flat.Url = $@"https://www.emls.ru{collection[i].ParentElement.GetAttribute("href")}";
+        var href = collection[i].ParentElement.GetAttribute("href");
+        if (href != "javascript:void(0)")
+          flat.Url = $@"https://www.emls.ru{href}";
+
         if (collection[i].GetElementsByClassName("w-image").Length > 0)
         {
-          //var divImage = collection[i].GetElementsByClassName("w-image")[0];
+          var divImage = collection[i].GetElementsByClassName("w-image")[0];
+          if (typeRoom == "6 км. кв.")
+          {
+            var reg = new Regex(@"(\d+-комн\. квартира)");
+            var room = reg.Match(divImage.TextContent).Value;
+            reg = new Regex(@"(\d+)");
+            room = reg.Match(room).Value;
+            flat.CountRoom = $@"{room}  км. кв.";
+          }
+
           var square = collection[i].GetElementsByClassName("space-all");
           if (square.Length > 0)
             flat.Square = square[0].TextContent.Replace(".", ",");
@@ -828,7 +474,7 @@ namespace ParseSitesForApartments.Sites
           var pr = collection[i].GetElementsByClassName("price");
           if (pr.Length > 0)
           {
-            string priceStr = pr[0].TextContent.Replace(" a", "").Replace(" ", "");
+            string priceStr = pr[0].TextContent.Replace("a", "").Replace(" ", "").Replace("\n","").Replace("\t", "").Replace("/мес", "");
             int price;
             if (int.TryParse(priceStr, out price))
             {
@@ -1136,216 +782,281 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
-    public override void ParsingSdamAll()
+    private void ChangeDistrictAndPageForRent(object typeRoom)
     {
-      using (var sw = new StreamWriter(new FileStream(FilenameSdam, FileMode.Create), Encoding.UTF8))
-      {
-        sw.WriteLine($@"Нас. пункт;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
-      }
-
-      var studiiThread = new Thread(ParseStudiiSdam);
-      studiiThread.Start();
-      Thread.Sleep(30000);
-      var oneThread = new Thread(ParseOneSdam);
-      oneThread.Start();
-      Thread.Sleep(30000);
-      var twoThread = new Thread(ParseTwoSdam);
-      twoThread.Start();
-      Thread.Sleep(30000);
-      var threeThread = new Thread(ParseThreeSdam);
-      threeThread.Start();
-      Thread.Sleep(30000);
-      var fourThread = new Thread(ParseFourSdam);
-      fourThread.Start();
-      Thread.Sleep(30000);
-      var fiveThread = new Thread(ParseFiveSdam);
-      fiveThread.Start();
-    }
-
-
-    public void ParseStudiiSdam()
-    {
+      HtmlParser parser = new HtmlParser();
       using (var webClient = new WebClient())
       {
-        try
+        webClient.Encoding = Encoding.GetEncoding("windows-1251");
+        string url = "";
+        foreach (var distr in district)
         {
-          var random = new Random();
-          for (int j = 1; j < MaxPage; j++)
+          for (int i = minPage; i < maxPage; i++)
           {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
+            switch (typeRoom)
+            {
+              case "Студия":
+                url =
+                  $@"https://www.emls.ru/arenda/page{i}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/4/dir1/1/dir2/2/interval/3";
+                break;
+              case "1 км. кв.":
+                url = $@"https://www.emls.ru/arenda/page{i}.html?query=s/1/r1/1/type/2/rtype/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/4/dir1/1/dir2/2/interval/3";
+                break;
+              case "2 км. кв.":
+                url = $@"https://www.emls.ru/arenda/page{i}.html?query=s/1/r2/1/type/2/rtype/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/4/dir1/1/dir2/2/interval/3";
+                break;
+              case "3 км. кв.":
+                url = $@"https://www.emls.ru/arenda/page{i}.html?query=s/1/r3/1/type/2/rtype/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/4/dir1/1/dir2/2/interval/3";
+                break;
+              case "4 км. кв.":
+                url = $@"https://www.emls.ru/arenda/page{i}.html?query=s/1/r4/1/type/2/rtype/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/4/dir1/1/dir2/2/interval/3";
+                break;
+              case "5 км. кв.":
+                url = $@"https://www.emls.ru/arenda/page{i}.html?query=s/1/r5/1/type/2/rtype/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/4/dir1/1/dir2/2/interval/3";
+                break;
+              case "6 км. кв.":
+                url = $@"https://www.emls.ru/arenda/page{i}.html?query=s/1/r6/1/type/2/rtype/2/place/address/reg/2/dept/2/dist/{distr.Key}/sort1/4/dir1/1/dir2/2/interval/3";
+                break;
+            }
+            if (!ExecuteParseRent(url, webClient, parser, (string)typeRoom,
+              ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First()))
               break;
-            else
-              ParseSheetSdam(tableElements, "Студия");
           }
         }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
       }
-      MessageBox.Show("Закончили студии сдам");
+
+      MessageBox.Show($"Закончили - {typeRoom}");
     }
-    public void ParseOneSdam()
+
+    private bool ExecuteParseRent(string url, WebClient webClient, HtmlParser parser, string typeRoom, District district)
     {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          for (int j = 1; j < MaxPage; j++)
-          {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r1/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheetSdam(tableElements, "1 км. кв.");
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 1 км. кв. сдам");
-    }
-    public void ParseTwoSdam()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          for (int j = 1; j < MaxPage; j++)
-          {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r2/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheetSdam(tableElements, "2 км. кв.");
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 2 км. кв. сдам");
-    }
-    public void ParseThreeSdam()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          for (int j = 1; j < MaxPage; j++)
-          {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r3/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheetSdam(tableElements, "3 км. кв.");
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 3 км. кв. сдам");
-    }
-    public void ParseFourSdam()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          for (int j = 1; j < MaxPage; j++)
-          {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r4/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheetSdam(tableElements, "4 км. кв.");
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 4 км. кв. сдам");
-    }
-    public void ParseFiveSdam()
-    {
-      using (var webClient = new WebClient())
-      {
-        try
-        {
-          var random = new Random();
-          for (int j = 1; j < MaxPage; j++)
-          {
-            Thread.Sleep(random.Next(2000, 3000));
-            string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r5/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
-            webClient.Encoding = Encoding.GetEncoding("windows-1251");
-            var responce = webClient.DownloadString(sdutii);
-            var parser = new HtmlParser();
-            var document = parser.Parse(responce);
-
-            var tableElements = document.GetElementsByClassName("row1");
-            if (tableElements.Length == 0)
-              break;
-            else
-              ParseSheetSdam(tableElements, "5 км. кв.");
-          }
-        }
-        catch (Exception ex)
-        {
-          MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      MessageBox.Show("Закончили 5 км. кв. сдам");
+      var random = new Random();
+      Thread.Sleep(random.Next(2000, 4000));
+      //try
+      //{
+      var responce = webClient.DownloadString(url);
+      var document = parser.Parse(responce);
+      var tableElements = document.GetElementsByClassName("row1");
+      ParseSheet(tableElements, typeRoom, district);
+      if (tableElements.Length == 0)
+        return false;
+      return true;
+      //}
+      //catch (Exception e)
+      //{
+      //  //TODO Если страница долго не отвечает то пропускаем ее
+      //  Thread.Sleep(1000);
+      //  return true;
+      //}
     }
 
+    //public override void ParsingSdamAll()
+    //{
+    //  using (var sw = new StreamWriter(new FileStream(FilenameSdam, FileMode.Create), Encoding.UTF8))
+    //  {
+    //    sw.WriteLine($@"Нас. пункт;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
+    //  }
 
-    private void ParseSheetSdam(IHtmlCollection<IElement> collection, string typeRoom)
+    //  var studiiThread = new Thread(ParseStudiiSdam);
+    //  studiiThread.Start();
+    //  Thread.Sleep(30000);
+    //  var oneThread = new Thread(ParseOneSdam);
+    //  oneThread.Start();
+    //  Thread.Sleep(30000);
+    //  var twoThread = new Thread(ParseTwoSdam);
+    //  twoThread.Start();
+    //  Thread.Sleep(30000);
+    //  var threeThread = new Thread(ParseThreeSdam);
+    //  threeThread.Start();
+    //  Thread.Sleep(30000);
+    //  var fourThread = new Thread(ParseFourSdam);
+    //  fourThread.Start();
+    //  Thread.Sleep(30000);
+    //  var fiveThread = new Thread(ParseFiveSdam);
+    //  fiveThread.Start();
+    //}
+    //public void ParseStudiiSdam()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    try
+    //    {
+    //      var random = new Random();
+    //      for (int j = 1; j < MaxPage; j++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 3000));
+    //        string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r0/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+    //        webClient.Encoding = Encoding.GetEncoding("windows-1251");
+    //        var responce = webClient.DownloadString(sdutii);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+
+    //        var tableElements = document.GetElementsByClassName("row1");
+    //        if (tableElements.Length == 0)
+    //          break;
+    //        else
+    //          ParseSheetRent(tableElements, "Студия");
+    //      }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //      MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили студии сдам");
+    //}
+    //public void ParseOneSdam()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    try
+    //    {
+    //      var random = new Random();
+    //      for (int j = 1; j < MaxPage; j++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 3000));
+    //        string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r1/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+    //        webClient.Encoding = Encoding.GetEncoding("windows-1251");
+    //        var responce = webClient.DownloadString(sdutii);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+
+    //        var tableElements = document.GetElementsByClassName("row1");
+    //        if (tableElements.Length == 0)
+    //          break;
+    //        else
+    //          ParseSheetRent(tableElements, "1 км. кв.");
+    //      }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //      MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 1 км. кв. сдам");
+    //}
+    //public void ParseTwoSdam()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    try
+    //    {
+    //      var random = new Random();
+    //      for (int j = 1; j < MaxPage; j++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 3000));
+    //        string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r2/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+    //        webClient.Encoding = Encoding.GetEncoding("windows-1251");
+    //        var responce = webClient.DownloadString(sdutii);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+
+    //        var tableElements = document.GetElementsByClassName("row1");
+    //        if (tableElements.Length == 0)
+    //          break;
+    //        else
+    //          ParseSheetRent(tableElements, "2 км. кв.");
+    //      }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //      MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 2 км. кв. сдам");
+    //}
+    //public void ParseThreeSdam()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    try
+    //    {
+    //      var random = new Random();
+    //      for (int j = 1; j < MaxPage; j++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 3000));
+    //        string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r3/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+    //        webClient.Encoding = Encoding.GetEncoding("windows-1251");
+    //        var responce = webClient.DownloadString(sdutii);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+
+    //        var tableElements = document.GetElementsByClassName("row1");
+    //        if (tableElements.Length == 0)
+    //          break;
+    //        else
+    //          ParseSheetRent(tableElements, "3 км. кв.");
+    //      }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //      MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 3 км. кв. сдам");
+    //}
+    //public void ParseFourSdam()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    try
+    //    {
+    //      var random = new Random();
+    //      for (int j = 1; j < MaxPage; j++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 3000));
+    //        string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r4/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+    //        webClient.Encoding = Encoding.GetEncoding("windows-1251");
+    //        var responce = webClient.DownloadString(sdutii);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+
+    //        var tableElements = document.GetElementsByClassName("row1");
+    //        if (tableElements.Length == 0)
+    //          break;
+    //        else
+    //          ParseSheetRent(tableElements, "4 км. кв.");
+    //      }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //      MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 4 км. кв. сдам");
+    //}
+    //public void ParseFiveSdam()
+    //{
+    //  using (var webClient = new WebClient())
+    //  {
+    //    try
+    //    {
+    //      var random = new Random();
+    //      for (int j = 1; j < MaxPage; j++)
+    //      {
+    //        Thread.Sleep(random.Next(2000, 3000));
+    //        string sdutii = $@"https://www.emls.ru/arenda/page{j}.html?query=s/1/r5/1/type/2/rtype/2/place/address/reg/2/dept/2/sort1/4/dir1/1/dir2/2/interval/3";
+    //        webClient.Encoding = Encoding.GetEncoding("windows-1251");
+    //        var responce = webClient.DownloadString(sdutii);
+    //        var parser = new HtmlParser();
+    //        var document = parser.Parse(responce);
+
+    //        var tableElements = document.GetElementsByClassName("row1");
+    //        if (tableElements.Length == 0)
+    //          break;
+    //        else
+    //          ParseSheetRent(tableElements, "5 км. кв.");
+    //      }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //      MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    }
+    //  }
+    //  MessageBox.Show("Закончили 5 км. кв. сдам");
+    //}
+
+    private void ParseSheetRent(IHtmlCollection<IElement> collection, string typeRoom, District district)
     {
       for (int i = 0; i < collection.Length; i++)
       {
@@ -1358,6 +1069,15 @@ namespace ParseSitesForApartments.Sites
           if (collection[i].GetElementsByClassName("w-image").Length > 0)
           {
             var divImage = collection[i].GetElementsByClassName("w-image")[0];
+            if (typeRoom == "6 км. кв.")
+            {
+              var reg = new Regex(@"(\d+-комн\. квартира)");
+              var room = reg.Match(divImage.TextContent).Value;
+              reg = new Regex(@"(\d+)");
+              room = reg.Match(room).Value;
+              flat.CountRoom = $@"{room}  км. кв.";
+            }
+
             var square = collection[i].GetElementsByClassName("space-all");
             if (square.Length > 0)
               flat.Square = square[0].TextContent;
