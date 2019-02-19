@@ -157,38 +157,92 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingStudii()
     {
-      studiiThread = new Thread(ChangeDistrictAndPage);
-      studiiThread.Start("Студия");
+      CreateExport();
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        studiiThread = new Thread(ChangeDistrictAndPage);
+        studiiThread.Start("Студия");
+      }
+      else
+      {
+        studiiRentThread = new Thread(ChangeDistrictAndPage);
+        studiiRentThread.Start("Студия");
+      }
     }
 
     public override void ParsingOne()
     {
-      oneThread = new Thread(ChangeDistrictAndPage);
-      oneThread.Start("1 км. кв.");
+      CreateExport();
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        oneThread = new Thread(ChangeDistrictAndPage);
+        oneThread.Start("1 км. кв.");
+      }
+      else
+      {
+        oneRentThread = new Thread(ChangeDistrictAndPageForRent);
+        oneRentThread.Start("1 км. кв.");
+      }
     }
 
     public override void ParsingTwo()
     {
-      twoThread = new Thread(ChangeDistrictAndPage);
-      twoThread.Start("2 км. кв.");
+      CreateExport();
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        twoThread = new Thread(ChangeDistrictAndPage);
+        twoThread.Start("2 км. кв.");
+      }
+      else
+      {
+        twoRentThread = new Thread(ChangeDistrictAndPageForRent);
+        twoRentThread.Start("2 км. кв.");
+      }
     }
 
     public override void ParsingThree()
     {
-      threeThread = new Thread(ChangeDistrictAndPage);
-      threeThread.Start("3 км. кв.");
+      CreateExport();
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        threeThread = new Thread(ChangeDistrictAndPage);
+        threeThread.Start("3 км. кв.");
+      }
+      else
+      {
+        threeRentThread = new Thread(ChangeDistrictAndPageForRent);
+        threeRentThread.Start("3 км. кв.");
+      }
     }
 
     public override void ParsingFour()
     {
-      fourThread = new Thread(ChangeDistrictAndPage);
-      fourThread.Start("4 км. кв.");
+      CreateExport();
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        fourThread = new Thread(ChangeDistrictAndPage);
+        fourThread.Start("4 км. кв.");
+      }
+      else
+      {
+        fourRentThread = new Thread(ChangeDistrictAndPageForRent);
+        fourRentThread.Start("4 км. кв.");
+      }
     }
 
     public override void ParsingMoreFour()
     {
-      fiveThread = new Thread(ChangeDistrictAndPage);
-      fiveThread.Start("5 км. кв.");
+      CreateExport();
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        fiveThread = new Thread(ChangeDistrictAndPage);
+        fiveThread.Start("5 км. кв.");
+      }
+      else
+      {
+        fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
+        fiveRentThread.Start("5 км. кв.");
+      }
     }
 
     private void ChangeDistrictAndPage(object typeRoom)
