@@ -79,24 +79,8 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
-    public override void ParsingAll()
+    private void UnionFiles()
     {
-      string path = ExctractPath();
-      //TODO нужно переделать обработку сайтов
-      // Каждый сайт парсится в свой файл, после того как все спарсилось, все сливается в один файл
-      elms.Filename = $@"{path}ELMS.csv";
-      elmsThread = new Thread(elms.ParsingAll);
-      elmsThread.Start();
-      WaitUntilWorkThread(elmsThread);
-      bn.Filename = $@"{path}BN.csv";
-      bnThread = new Thread(bn.ParsingAll);
-      bnThread.Start();
-      WaitUntilWorkThread(bnThread);
-      bkn.Filename = $@"{path}BKN.csv";
-      bknThread = new Thread(bkn.ParsingAll);
-      bknThread.Start();
-      WaitUntilWorkThread(bknThread);
-
       using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
       {
         sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
@@ -133,50 +117,154 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
+    public override void ParsingAll()
+    {
+      string path = ExctractPath();
+      //TODO нужно переделать обработку сайтов
+      // Каждый сайт парсится в свой файл, после того как все спарсилось, все сливается в один файл
+      bn.TypeParseFlat = this.TypeParseFlat;
+      bn.Filename = $@"{path}BN.csv";
+      bnThread = new Thread(bn.ParsingAll);
+      bnThread.Start();
+      WaitUntilWorkThread(bnThread);
+      bkn.TypeParseFlat = this.TypeParseFlat;
+      bkn.Filename = $@"{path}BKN.csv";
+      bknThread = new Thread(bkn.ParsingAll);
+      bknThread.Start();
+      WaitUntilWorkThread(bknThread);
+      elms.TypeParseFlat = this.TypeParseFlat;
+      elms.Filename = $@"{path}ELMS.csv";
+      elmsThread = new Thread(elms.ParsingAll);
+      elmsThread.Start();
+      WaitUntilWorkThread(elmsThread);
+
+      UnionFiles();
+    }
+
     public override void ParsingStudii()
     {
-      elmsThread = new Thread(elms.ParsingStudii);
-      elmsThread.Start();
+      string path = ExctractPath();
+      bn.TypeParseFlat = this.TypeParseFlat;
+      bn.Filename = $@"{path}BN.csv";
       bnThread = new Thread(bn.ParsingStudii);
       bnThread.Start();
+      WaitUntilWorkThread(bnThread);
+      bkn.TypeParseFlat = this.TypeParseFlat;
+      bkn.Filename = $@"{path}BKN.csv";
       bknThread = new Thread(bkn.ParsingStudii);
       bknThread.Start();
-
+      WaitUntilWorkThread(bknThread);
+      elms.TypeParseFlat = this.TypeParseFlat;
+      elms.Filename = $@"{path}ELMS.csv";
+      elmsThread = new Thread(elms.ParsingStudii);
+      elmsThread.Start();
+      WaitUntilWorkThread(elmsThread);
+      UnionFiles();
     }
 
     public override void ParsingOne()
     {
-      bkn.ParsingOne();
-      bn.ParsingOne();
-      elms.ParsingOne();
+      string path = ExctractPath();
+      bn.TypeParseFlat = this.TypeParseFlat;
+      bn.Filename = $@"{path}BN.csv";
+      bnThread = new Thread(bn.ParsingOne);
+      bnThread.Start();
+      WaitUntilWorkThread(bnThread);
+      bkn.TypeParseFlat = this.TypeParseFlat;
+      bkn.Filename = $@"{path}BKN.csv";
+      bknThread = new Thread(bkn.ParsingOne);
+      bknThread.Start();
+      WaitUntilWorkThread(bknThread);
+      elms.TypeParseFlat = this.TypeParseFlat;
+      elms.Filename = $@"{path}ELMS.csv";
+      elmsThread = new Thread(elms.ParsingOne);
+      elmsThread.Start();
+      WaitUntilWorkThread(elmsThread);
+      UnionFiles();
     }
 
     public override void ParsingTwo()
     {
-      bkn.ParsingTwo();
-      bn.ParsingTwo();
-      elms.ParsingTwo();
+      string path = ExctractPath();
+      bn.TypeParseFlat = this.TypeParseFlat;
+      bn.Filename = $@"{path}BN.csv";
+      bnThread = new Thread(bn.ParsingTwo);
+      bnThread.Start();
+      WaitUntilWorkThread(bnThread);
+      bkn.TypeParseFlat = this.TypeParseFlat;
+      bkn.Filename = $@"{path}BKN.csv";
+      bknThread = new Thread(bkn.ParsingTwo);
+      bknThread.Start();
+      WaitUntilWorkThread(bknThread);
+      elms.TypeParseFlat = this.TypeParseFlat;
+      elms.Filename = $@"{path}ELMS.csv";
+      elmsThread = new Thread(elms.ParsingTwo);
+      elmsThread.Start();
+      WaitUntilWorkThread(elmsThread);
+      UnionFiles();
     }
 
     public override void ParsingThree()
     {
-      bkn.ParsingThree();
-      bn.ParsingThree();
-      elms.ParsingThree();
+      string path = ExctractPath();
+      bn.TypeParseFlat = this.TypeParseFlat;
+      bn.Filename = $@"{path}BN.csv";
+      bnThread = new Thread(bn.ParsingThree);
+      bnThread.Start();
+      WaitUntilWorkThread(bnThread);
+      bkn.TypeParseFlat = this.TypeParseFlat;
+      bkn.Filename = $@"{path}BKN.csv";
+      bknThread = new Thread(bkn.ParsingThree);
+      bknThread.Start();
+      WaitUntilWorkThread(bknThread);
+      elms.TypeParseFlat = this.TypeParseFlat;
+      elms.Filename = $@"{path}ELMS.csv";
+      elmsThread = new Thread(elms.ParsingThree);
+      elmsThread.Start();
+      WaitUntilWorkThread(elmsThread);
+      UnionFiles();
     }
 
     public override void ParsingFour()
     {
-      bkn.ParsingFour();
-      bn.ParsingFour();
-      elms.ParsingFour();
+      string path = ExctractPath();
+      bn.TypeParseFlat = this.TypeParseFlat;
+      bn.Filename = $@"{path}BN.csv";
+      bnThread = new Thread(bn.ParsingFour);
+      bnThread.Start();
+      WaitUntilWorkThread(bnThread);
+      bkn.TypeParseFlat = this.TypeParseFlat;
+      bkn.Filename = $@"{path}BKN.csv";
+      bknThread = new Thread(bkn.ParsingFour);
+      bknThread.Start();
+      WaitUntilWorkThread(bknThread);
+      elms.TypeParseFlat = this.TypeParseFlat;
+      elms.Filename = $@"{path}ELMS.csv";
+      elmsThread = new Thread(elms.ParsingFour);
+      elmsThread.Start();
+      WaitUntilWorkThread(elmsThread);
+      UnionFiles();
     }
 
     public override void ParsingMoreFour()
     {
-      bkn.ParsingMoreFour();
-      bn.ParsingMoreFour();
-      elms.ParsingMoreFour();
+      string path = ExctractPath();
+      bn.TypeParseFlat = this.TypeParseFlat;
+      bn.Filename = $@"{path}BN.csv";
+      bnThread = new Thread(bn.ParsingMoreFour);
+      bnThread.Start();
+      WaitUntilWorkThread(bnThread);
+      bkn.TypeParseFlat = this.TypeParseFlat;
+      bkn.Filename = $@"{path}BKN.csv";
+      bknThread = new Thread(bkn.ParsingMoreFour);
+      bknThread.Start();
+      WaitUntilWorkThread(bknThread);
+      elms.TypeParseFlat = this.TypeParseFlat;
+      elms.Filename = $@"{path}ELMS.csv";
+      elmsThread = new Thread(elms.ParsingMoreFour);
+      elmsThread.Start();
+      WaitUntilWorkThread(elmsThread);
+      UnionFiles();
     }
   }
 }
