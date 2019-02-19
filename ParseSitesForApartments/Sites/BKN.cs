@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.ParsClasses;
 using ParseSitesForApartments.Export.Creators;
@@ -32,6 +33,12 @@ namespace ParseSitesForApartments.Sites
     private Thread threeThread;
     private Thread fourThread;
     private Thread fiveThread;
+    private Thread studiiRentThread;
+    private Thread oneRentThread;
+    private Thread twoRentThread;
+    private Thread threeRentThread;
+    private Thread fourRentThread;
+    private Thread fiveRentThread;
     private ProgressForm progress;
     private int count = 1;
     private Dictionary<string, string> districts = new Dictionary<string, string>() { { "admiralteiskii", "Адмиралтейский" }, { "vasileostrovskii", "Василеостровский" }, { "viborgskii", "Выборгский" }, { "kalininskii", "Калининский" }, { "kirovskii", "Кировский" }, { "kolpinskii", "Колпинский" }, { "krasnogvardeiskii", "Красногвардейский" }, { "krasnoselskii", "Красносельский" }, { "kronshtadtskii", "Кронштадтский" }, { "kurortnii", "Курортный" }, { "moskovskii", "Московский" }, { "nevskii", "Невский" }, { "petrogradskii", "Петроградский" }, { "petrodvorcovii", "Петродворцовый" }, { "primorskii", "Приморский" }, { "pushkinskii", "Пушкинский" }, { "frunzenskii", "Фрунзенский" }, { "centralnii", "Центральный" }, };
@@ -91,22 +98,40 @@ namespace ParseSitesForApartments.Sites
     public override void ParsingAll()
     {
       CreateExport();
-      studiiThread = new Thread(ChangeDistrictAndPage);
-      studiiThread.Start("Студия");
-      oneThread = new Thread(ChangeDistrictAndPage);
-      oneThread.Start("1 км. кв.");
-      twoThread = new Thread(ChangeDistrictAndPage);
-      twoThread.Start("2 км. кв.");
-      threeThread = new Thread(ChangeDistrictAndPage);
-      threeThread.Start("3 км. кв.");
-      fourThread = new Thread(ChangeDistrictAndPage);
-      fourThread.Start("4 км. кв.");
-      fiveThread = new Thread(ChangeDistrictAndPage);
-      fiveThread.Start("5 км. кв.");
+      if (TypeParseFlat == TypeParseFlat.Sale)
+      {
+        studiiThread = new Thread(ChangeDistrictAndPage);
+        studiiThread.Start("Студия");
+        oneThread = new Thread(ChangeDistrictAndPage);
+        oneThread.Start("1 км. кв.");
+        twoThread = new Thread(ChangeDistrictAndPage);
+        twoThread.Start("2 км. кв.");
+        threeThread = new Thread(ChangeDistrictAndPage);
+        threeThread.Start("3 км. кв.");
+        fourThread = new Thread(ChangeDistrictAndPage);
+        fourThread.Start("4 км. кв.");
+        fiveThread = new Thread(ChangeDistrictAndPage);
+        fiveThread.Start("5 км. кв.");
+      }
+      else
+      {
+        studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
+        studiiRentThread.Start("Студия");
+        oneRentThread = new Thread(ChangeDistrictAndPageForRent);
+        oneRentThread.Start("1 км. кв.");
+        twoRentThread = new Thread(ChangeDistrictAndPageForRent);
+        twoRentThread.Start("2 км. кв.");
+        threeRentThread = new Thread(ChangeDistrictAndPageForRent);
+        threeRentThread.Start("3 км. кв.");
+        fourRentThread = new Thread(ChangeDistrictAndPageForRent);
+        fourRentThread.Start("4 км. кв.");
+        fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
+        fiveRentThread.Start("5 км. кв.");
+      }
 
-      Thread.Sleep(10000);
-      var threadCheck = new Thread(CheckCloseThread);
-      threadCheck.Start();
+      //Thread.Sleep(10000);
+      //var threadCheck = new Thread(CheckCloseThread);
+      //threadCheck.Start();
 
       //progress = new ProgressForm();
       //var threadbackground = new Thread(
@@ -166,86 +191,6 @@ namespace ParseSitesForApartments.Sites
       fiveThread.Start("5 км. кв.");
     }
 
-
-    public void ParsingVtorichka()
-    {
-      //var studiiThread = new Thread(ParsingStudioVtorichka);
-      //studiiThread.Start();
-      //Thread.Sleep(55000);
-      //var oneThread = new Thread(ParsingOneRoomVtorichka);
-      //oneThread.Start();
-      //Thread.Sleep(55000);
-      //var twoThread = new Thread(ParsingTwoRoomVtorichka);
-      //twoThread.Start();
-      //Thread.Sleep(55000);
-      //var threeThread = new Thread(ParsingThreeRoomVtorichka);
-      //threeThread.Start();
-      //Thread.Sleep(55000);
-      //var fourThread = new Thread(ParsingFourRoomVtorichka);
-      //fourThread.Start();
-      //Thread.Sleep(55000);
-      //var fiveThread = new Thread(ParsingFiveAndMoreRoomVtorichka);
-      //fiveThread.Start();
-      //while(true)
-      //{
-      //  if (studiiThread.IsAlive)
-      //    if (oneThread.IsAlive)
-      //      if (twoThread.IsAlive)
-      //        if (threeThread.IsAlive)
-      //          if (fourThread.IsAlive)
-      //            if (fiveThread.IsAlive)
-      //              break;
-      //  Thread.Sleep(2000);
-      //}
-
-      studiiThread = new Thread(ChangeDistrictAndPage);
-      studiiThread.Start("Студия");
-      oneThread = new Thread(ChangeDistrictAndPage);
-      oneThread.Start("1 км. кв.");
-      twoThread = new Thread(ChangeDistrictAndPage);
-      twoThread.Start("2 км. кв.");
-      threeThread = new Thread(ChangeDistrictAndPage);
-      threeThread.Start("3 км. кв.");
-      fourThread = new Thread(ChangeDistrictAndPage);
-      fourThread.Start("4 км. кв.");
-      fiveThread = new Thread(ChangeDistrictAndPage);
-      fiveThread.Start("5 км. кв.");
-
-      //Thread.Sleep(10000);
-      //var threadCheck = new Thread(CheckCloseThread);
-      //threadCheck.Start();
-      CheckCloseThread();
-    }
-
-    private void CheckCloseThread()
-    {
-      while (true)
-      {
-        if (!studiiThread.IsAlive)
-        {
-          if (!oneThread.IsAlive)
-          {
-            if (!twoThread.IsAlive)
-            {
-              if (!threeThread.IsAlive)
-              {
-                if (!fourThread.IsAlive)
-                {
-                  if (!fiveThread.IsAlive)
-                  {
-                    break;
-
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      //var excelExport = export as ExcelExport;
-      //excelExport?.Save();
-    }
-
     private void ChangeDistrictAndPage(object typeRoom)
     {
       HtmlParser parser = new HtmlParser();
@@ -293,6 +238,53 @@ namespace ParseSitesForApartments.Sites
       MessageBox.Show($"Закончили - {typeRoom}");
     }
 
+    private void ChangeDistrictAndPageForRent(object typeRoom)
+    {
+      HtmlParser parser = new HtmlParser();
+      using (var webClient = new WebClient())
+      {
+        webClient.Encoding = Encoding.UTF8;
+        string url = "";
+        foreach (var distr in districts)
+        {
+          for (int i = minPage; i < maxPage; i++)
+          {
+            switch (typeRoom)
+            {
+              case "Студия":
+                url =
+                  $@"https://www.bkn.ru/arenda/vtorichka/studii/{distr.Key}-raion?page={i}";
+                break;
+              case "1 км. кв.":
+                url =
+                  $@"https://www.bkn.ru/arenda/vtorichka/odnokomnatnye-kvartiry/{distr.Key}-raion?page={i}";
+                break;
+              case "2 км. кв.":
+                url =
+                  $@"https://www.bkn.ru/arenda/vtorichka/dvuhkomnatnye-kvartiry/{distr.Key}-raion?page={i}";
+                break;
+              case "3 км. кв.":
+                url =
+                  $@"https://www.bkn.ru/arenda/vtorichka/trehkomnatnye-kvartiry/{distr.Key}-raion?page={i}";
+                break;
+              case "4 км. кв.":
+                url =
+                  $@"https://www.bkn.ru/arenda/vtorichka/chetyrehkomnatnye-kvartiry/{distr.Key}-raion?page={i}";
+                break;
+              case "5 км. кв.":
+                url =
+                  $@"https://www.bkn.ru/arenda/vtorichka/pyatikomnatnye-kvartiry/{distr.Key}-raion?page={i}";
+                break;
+            }
+            if (!ExecuteParse(url, webClient, parser, (string)typeRoom,
+              ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First()))
+              break;
+          }
+        }
+      }
+      MessageBox.Show($"Закончили - {typeRoom}");
+    }
+
     private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, District district)
     {
       var random = new Random();
@@ -315,99 +307,6 @@ namespace ParseSitesForApartments.Sites
         Thread.Sleep(1000);
         return true;
       }
-    }
-
-
-    public void ParsingStudioVtorichka()
-    {
-      for (int i = minPage; i < maxPage; i++)
-      {
-        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/studii?page={i}";
-        if (!LinkProcessingProdam(prodam, "Студия"))
-          break;
-      }
-      MessageBox.Show("Закончили Студии");
-    }
-    public void ParsingOneRoomVtorichka()
-    {
-      for (int i = minPage; i < maxPage; i++)
-      {
-        string prodam = $@"https://www.bkn.ru/prodazha/kvartiri/odnokomnatnye-kvartiry?page={i}";
-        if (!LinkProcessingProdam(prodam, "1 км. кв."))
-          break;
-      }
-      MessageBox.Show("Закончили 1");
-    }
-    public void ParsingTwoRoomVtorichka()
-    {
-      for (int i = minPage; i < maxPage; i++)
-      {
-        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/dvuhkomnatnye-kvartiry?page={i}";
-        if (!LinkProcessingProdam(prodam, "2 км. кв."))
-          break;
-      }
-      MessageBox.Show("Закончили 2");
-    }
-    public void ParsingThreeRoomVtorichka()
-    {
-      for (int i = minPage; i < maxPage; i++)
-      {
-        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/trehkomnatnye-kvartiry?page={i}";
-        if (!LinkProcessingProdam(prodam, "3 км. кв."))
-          break;
-      }
-      MessageBox.Show("Закончили 3");
-    }
-    public void ParsingFourRoomVtorichka()
-    {
-      for (int i = minPage; i < maxPage; i++)
-      {
-        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/chetyrehkomnatnye-kvartiry?page={i}";
-        if (!LinkProcessingProdam(prodam, "4 км. кв."))
-          break;
-      }
-      MessageBox.Show("Закончили 4");
-    }
-    public void ParsingFiveAndMoreRoomVtorichka()
-    {
-      for (int i = minPage; i < maxPage; i++)
-      {
-        string prodam = $@"https://www.bkn.ru/prodazha/vtorichka/pyatikomnatnye-kvartiry?page={i}";
-        if (!LinkProcessingProdam(prodam, "4 км. кв."))
-          break;
-      }
-      MessageBox.Show("Закончили 5+");
-    }
-
-    private bool LinkProcessingProdam(string link, string typeRoom)
-    {
-      try
-      {
-        using (var webClient = new WebClient())
-        {
-          var random = new Random();
-          Thread.Sleep(random.Next(2000, 4000));
-          //ServicePointManager.Expect100Continue = true;
-          //ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-          //ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-          webClient.Encoding = Encoding.UTF8;
-          var responce = webClient.DownloadString(link);
-          var parser = new HtmlParser();
-          var document = parser.Parse(responce);
-
-          var collections = document.GetElementsByClassName(Apartaments);
-          //if (collections.Length > 0)
-          //  ParseSheet(typeRoom, collections);
-          //else
-          //  return false;
-        }
-      }
-      catch
-      {
-        return false;
-      }
-      return true;
     }
 
     private void ParseSheet(string typeRoom, IHtmlCollection<IElement> collection, District district)
@@ -439,7 +338,7 @@ namespace ParseSitesForApartments.Sites
           regex = new Regex(@"(\d\-)");
           flat.CountRoom = regex.Match(title).Value.Replace("-", " км. кв.");
         }
-        
+
         //Get URL
         var elems = collection[j].GetElementsByClassName("col-xs-7 nopadding");
         if (elems.Length > 0)
@@ -455,8 +354,16 @@ namespace ParseSitesForApartments.Sites
 
         regex = new Regex(@"(\d+)");
         var ms = regex.Matches(priceDiv[0].TextContent);
-        var price = int.Parse($"{ms[0].Value}{ms[1].Value}{ms[2].Value}");
-        flat.Price = price;
+        if (ms.Count == 3)
+        {
+          var price = int.Parse($"{ms[0].Value}{ms[1].Value}{ms[2].Value}");
+          flat.Price = price;
+        }
+        else if (ms.Count == 2)
+        {
+          var price = int.Parse($"{ms[0].Value}{ms[1].Value}");
+          flat.Price = price;
+        }
 
         regex = new Regex(@"(\d+)");
         ms = regex.Matches(collection[j].GetElementsByClassName("floor overflow")[0].TextContent);
@@ -791,8 +698,8 @@ namespace ParseSitesForApartments.Sites
           {
             street = street.Replace(number, "").Trim();
             regex = new Regex(@"(корпус\s+\d+)");
-            structure = regex.Match(number).Value.Replace("корпус","");
-            number = number.Replace($"корпус{structure}", "").Replace("д","").Trim();
+            structure = regex.Match(number).Value.Replace("корпус", "");
+            number = number.Replace($"корпус{structure}", "").Replace("д", "").Trim();
           }
         }
 
