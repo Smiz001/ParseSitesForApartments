@@ -788,7 +788,7 @@ namespace ParseSitesForApartments.Sites
 
         if (building.MetroObj == null)
         {
-          var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper() == metro.ToUpper());
+          var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper().Contains(metro.ToUpper()));
           if (metroObjEnum.Count() > 0)
           {
             building.MetroObj = metroObjEnum.First();
