@@ -1,5 +1,8 @@
 ﻿using AngleSharp.Dom;
 using AngleSharp.Parser.Html;
+using ParseSitesForApartments.Export;
+using ParseSitesForApartments.Export.Creators;
+using ParseSitesForApartments.UnionWithBase;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -22,6 +25,11 @@ namespace ParseSitesForApartments.Sites
     private static object locker = new object();
     private string filename = @"d:\ParserInfo\Appartament\AvitoProdam.csv";
 
+    private CoreExport export;
+    public delegate void Append(object sender, AppendFlatEventArgs e);
+    public event Append OnAppend;
+    private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
+
     #endregion
 
     #region Properties
@@ -37,7 +45,156 @@ namespace ParseSitesForApartments.Sites
     public override string NameSite => "Avito";
 
     #endregion
-    
+
+    private void CreateExport()
+    {
+      CoreCreator creator = new CsvExportCreator();
+      export = creator.FactoryCreate(Filename);
+      OnAppend += export.AddFlatInList;
+
+      if (export is CsvExport)
+      {
+        if (!File.Exists(Filename))
+        {
+          using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
+          {
+            //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
+            sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
+          }
+        }
+      }
+    }
+
+    private void ChangeDistrictAndPage(object typeRoom)
+    {
+      HtmlParser parser = new HtmlParser();
+      using (var webClient = new WebClient())
+      {
+        webClient.Encoding = Encoding.UTF8;
+        ServicePointManager.Expect100Continue = true;
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+        string url = "";
+        for (int i = minPage; i < maxPage; i++)
+        {
+          switch (typeRoom)
+          {
+            case "Студия":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii/vtorichka?p={i}";
+              break;
+            case "1 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye/vtorichka?p={i}";
+              break;
+            case "2 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye/vtorichka?p={i}";
+              break;
+            case "3 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye/vtorichka?p={i}";
+              break;
+            case "4 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye/vtorichka?p={i}";
+              break;
+            case "5 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye/vtorichka?p={i}";
+              break;
+            case "6 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye/vtorichka?p={i}";
+              break;
+            case "7 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye/vtorichka?p={i}";
+              break;
+            case "8 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye/vtorichka?p={i}";
+              break;
+            case "9 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye/vtorichka?p={i}";
+              break;
+            case "9 км. кв. +":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/mnogokomnatnye/vtorichka?s_trg=4";
+              break;
+            case "Студия Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii/novostroyka?p={i}";
+              break;
+            case "1 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye/novostroyka?p={i}";
+              break;
+            case "2 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye/novostroyka?p={i}";
+              break;
+            case "3 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye/novostroyka?p={i}";
+              break;
+            case "4 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye/novostroyka?p={i}";
+              break;
+            case "5 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye/novostroyka?p={i}";
+              break;
+            case "6 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye/novostroyka?p={i}";
+              break;
+            case "7 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye/novostroyka?p={i}";
+              break;
+            case "8 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye/novostroyka?p={i}";
+              break;
+            case "9 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye/novostroyka?p={i}";
+              break;
+          }
+          if (!ExecuteParse(url, webClient, parser, (string)typeRoom))
+            break;
+        }
+      }
+      MessageBox.Show($"Закончили - {typeRoom}");
+    }
+
+    private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom)
+    {
+      var random = new Random();
+      Thread.Sleep(random.Next(2000, 4000));
+      try
+      {
+        Log.Debug("-----------URL-----------");
+        Log.Debug(url);
+        var responce = webClient.DownloadString(url);
+        var document = parser.Parse(responce);
+
+        var collections = document.GetElementsByClassName("description item_table-description");
+        if (collections.Length > 0)
+          ParsingSheet(typeRoom, collections);
+        return true;
+      }
+      catch (Exception e)
+      {
+        Log.Error(e.Message);
+        //TODO Если страница долго не отвечает то пропускаем ее
+        Thread.Sleep(1000);
+        return true;
+      }
+    }
 
     public void ParsingStudio()
     {
@@ -147,7 +304,7 @@ namespace ParseSitesForApartments.Sites
         for (int i = minPage; i < maxPage; i++)
         {
           Thread.Sleep(random.Next(5000, 10000));
-          string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/mnogokomnatnye?p={i}";
+          string prodam = $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/mnogokomnatnye/vtorichka?s_trg=4";
 
           webClient.Encoding = System.Text.Encoding.UTF8;
           var responce = webClient.DownloadString(prodam);
