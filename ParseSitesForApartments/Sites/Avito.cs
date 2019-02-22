@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using ParseSitesForApartments.Enum;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -50,7 +51,6 @@ namespace ParseSitesForApartments.Sites
     private Thread sevenNewThread;
     private Thread eightNewThread;
     private Thread nineNewThread;
-    private Thread moreNineNewThread;
 
     #endregion
 
@@ -239,21 +239,52 @@ namespace ParseSitesForApartments.Sites
         fourThread.Start("4 км. кв.");
         fiveThread = new Thread(ChangeDistrictAndPage);
         fiveThread.Start("5 км. кв.");
+        sixThread = new Thread(ChangeDistrictAndPage);
+        sixThread.Start("6 км. кв.");
+        sevenThread = new Thread(ChangeDistrictAndPage);
+        sevenThread.Start("7 км. кв.");
+        eightThread = new Thread(ChangeDistrictAndPage);
+        eightThread.Start("8 км. кв.");
+        nineThread = new Thread(ChangeDistrictAndPage);
+        nineThread.Start("9 км. кв.");
+        moreNineThread = new Thread(ChangeDistrictAndPage);
+        moreNineThread.Start("9 км. кв. +");
+
+        studiiNewThread = new Thread(ChangeDistrictAndPage);
+        studiiNewThread.Start("Студия Н");
+        oneNewThread = new Thread(ChangeDistrictAndPage);
+        oneNewThread.Start("1 км. кв. Н");
+        twoNewThread = new Thread(ChangeDistrictAndPage);
+        twoNewThread.Start("2 км. кв. Н");
+        threeNewThread = new Thread(ChangeDistrictAndPage);
+        threeNewThread.Start("3 км. кв. Н");
+        fourNewThread = new Thread(ChangeDistrictAndPage);
+        fourNewThread.Start("4 км. кв. Н");
+        fiveNewThread = new Thread(ChangeDistrictAndPage);
+        fiveNewThread.Start("5 км. кв. Н");
+        sixNewThread = new Thread(ChangeDistrictAndPage);
+        sixNewThread.Start("6 км. кв. Н");
+        sevenNewThread = new Thread(ChangeDistrictAndPage);
+        sevenNewThread.Start("7 км. кв. Н");
+        eightNewThread = new Thread(ChangeDistrictAndPage);
+        eightNewThread.Start("8 км. кв. Н");
+        nineNewThread = new Thread(ChangeDistrictAndPage);
+        nineNewThread.Start("9 км. кв. Н");
       }
       else
       {
-        studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
-        studiiRentThread.Start("Студия");
-        oneRentThread = new Thread(ChangeDistrictAndPageForRent);
-        oneRentThread.Start("1 км. кв.");
-        twoRentThread = new Thread(ChangeDistrictAndPageForRent);
-        twoRentThread.Start("2 км. кв.");
-        threeRentThread = new Thread(ChangeDistrictAndPageForRent);
-        threeRentThread.Start("3 км. кв.");
-        fourRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fourRentThread.Start("4 км. кв.");
-        fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fiveRentThread.Start("5 км. кв.");
+        //studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //studiiRentThread.Start("Студия");
+        //oneRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //oneRentThread.Start("1 км. кв.");
+        //twoRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //twoRentThread.Start("2 км. кв.");
+        //threeRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //threeRentThread.Start("3 км. кв.");
+        //fourRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //fourRentThread.Start("4 км. кв.");
+        //fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //fiveRentThread.Start("5 км. кв.");
       }
     }
 
@@ -267,8 +298,8 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        studiiRentThread = new Thread(ChangeDistrictAndPage);
-        studiiRentThread.Start("Студия");
+        //studiiRentThread = new Thread(ChangeDistrictAndPage);
+        //studiiRentThread.Start("Студия");
       }
     }
 
@@ -282,8 +313,8 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        oneRentThread = new Thread(ChangeDistrictAndPageForRent);
-        oneRentThread.Start("1 км. кв.");
+        //oneRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //oneRentThread.Start("1 км. кв.");
       }
     }
 
@@ -297,8 +328,8 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        twoRentThread = new Thread(ChangeDistrictAndPageForRent);
-        twoRentThread.Start("2 км. кв.");
+        //twoRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //twoRentThread.Start("2 км. кв.");
       }
     }
 
@@ -312,8 +343,8 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        threeRentThread = new Thread(ChangeDistrictAndPageForRent);
-        threeRentThread.Start("3 км. кв.");
+        //threeRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //threeRentThread.Start("3 км. кв.");
       }
     }
 
@@ -327,8 +358,8 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        fourRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fourRentThread.Start("4 км. кв.");
+        //fourRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //fourRentThread.Start("4 км. кв.");
       }
     }
 
@@ -342,8 +373,8 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fiveRentThread.Start("5 км. кв.");
+        //fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
+        //fiveRentThread.Start("5 км. кв.");
       }
     }
 
@@ -692,98 +723,98 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
-    public override void ParsingAll()
-    {
-      using (var sw = new StreamWriter(Filename, true, System.Text.Encoding.UTF8))
-      {
-        sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
-      }
-      var studiiThread = new Thread(ParsingStudio);
-      studiiThread.Start();
-      Thread.Sleep(55000);
-      var oneThread = new Thread(ParsingOneRoom);
-      oneThread.Start();
-      Thread.Sleep(55000);
-      var twoThread = new Thread(ParsingTwoRoom);
-      twoThread.Start();
-      Thread.Sleep(55000);
-      var threeThread = new Thread(ParsingThreeRoom);
-      threeThread.Start();
-      Thread.Sleep(55000);
-      var fourThread = new Thread(ParsingFourRoom);
-      fourThread.Start();
-      Thread.Sleep(55000);
-      var fiveThread = new Thread(ParsingFiveRoom);
-      fiveThread.Start();
-      Thread.Sleep(55000);
-      var sixThread = new Thread(ParsingSixRoom);
-      sixThread.Start();
-      Thread.Sleep(55000);
-      var sevenThread = new Thread(ParsingSevenRoom);
-      sevenThread.Start();
-      Thread.Sleep(55000);
-      var eightThread = new Thread(ParsingEightRoom);
-      eightThread.Start();
-      Thread.Sleep(55000);
-      var nineThread = new Thread(ParsingNineRoom);
-      nineThread.Start();
-      Thread.Sleep(55000);
+    //public override void ParsingAll()
+    //{
+    //  using (var sw = new StreamWriter(Filename, true, System.Text.Encoding.UTF8))
+    //  {
+    //    sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние");
+    //  }
+    //  var studiiThread = new Thread(ParsingStudio);
+    //  studiiThread.Start();
+    //  Thread.Sleep(55000);
+    //  var oneThread = new Thread(ParsingOneRoom);
+    //  oneThread.Start();
+    //  Thread.Sleep(55000);
+    //  var twoThread = new Thread(ParsingTwoRoom);
+    //  twoThread.Start();
+    //  Thread.Sleep(55000);
+    //  var threeThread = new Thread(ParsingThreeRoom);
+    //  threeThread.Start();
+    //  Thread.Sleep(55000);
+    //  var fourThread = new Thread(ParsingFourRoom);
+    //  fourThread.Start();
+    //  Thread.Sleep(55000);
+    //  var fiveThread = new Thread(ParsingFiveRoom);
+    //  fiveThread.Start();
+    //  Thread.Sleep(55000);
+    //  var sixThread = new Thread(ParsingSixRoom);
+    //  sixThread.Start();
+    //  Thread.Sleep(55000);
+    //  var sevenThread = new Thread(ParsingSevenRoom);
+    //  sevenThread.Start();
+    //  Thread.Sleep(55000);
+    //  var eightThread = new Thread(ParsingEightRoom);
+    //  eightThread.Start();
+    //  Thread.Sleep(55000);
+    //  var nineThread = new Thread(ParsingNineRoom);
+    //  nineThread.Start();
+    //  Thread.Sleep(55000);
 
-      var studiiThreadNew = new Thread(ParsingStudioNew);
-      studiiThreadNew.Start();
-      Thread.Sleep(55000);
-      var oneThreadNew = new Thread(ParsingOneRoomNew);
-      oneThreadNew.Start();
-      Thread.Sleep(55000);
-      var twoThreadNew = new Thread(ParsingTwoRoomNew);
-      twoThreadNew.Start();
-      Thread.Sleep(55000);
-      var threeThreadNew = new Thread(ParsingThreeRoomNew);
-      threeThreadNew.Start();
-      Thread.Sleep(55000);
-      var fourThreadNew = new Thread(ParsingFourRoomNew);
-      fourThreadNew.Start();
-      Thread.Sleep(55000);
-      var fiveThreadNew = new Thread(ParsingFiveRoomNew);
-      fiveThreadNew.Start();
-      Thread.Sleep(55000);
-      var sixThreadNew = new Thread(ParsingSixRoomNew);
-      sixThreadNew.Start();
-      Thread.Sleep(55000);
-      var sevenThreadNew = new Thread(ParsingSevenRoomNew);
-      sevenThreadNew.Start();
+    //  var studiiThreadNew = new Thread(ParsingStudioNew);
+    //  studiiThreadNew.Start();
+    //  Thread.Sleep(55000);
+    //  var oneThreadNew = new Thread(ParsingOneRoomNew);
+    //  oneThreadNew.Start();
+    //  Thread.Sleep(55000);
+    //  var twoThreadNew = new Thread(ParsingTwoRoomNew);
+    //  twoThreadNew.Start();
+    //  Thread.Sleep(55000);
+    //  var threeThreadNew = new Thread(ParsingThreeRoomNew);
+    //  threeThreadNew.Start();
+    //  Thread.Sleep(55000);
+    //  var fourThreadNew = new Thread(ParsingFourRoomNew);
+    //  fourThreadNew.Start();
+    //  Thread.Sleep(55000);
+    //  var fiveThreadNew = new Thread(ParsingFiveRoomNew);
+    //  fiveThreadNew.Start();
+    //  Thread.Sleep(55000);
+    //  var sixThreadNew = new Thread(ParsingSixRoomNew);
+    //  sixThreadNew.Start();
+    //  Thread.Sleep(55000);
+    //  var sevenThreadNew = new Thread(ParsingSevenRoomNew);
+    //  sevenThreadNew.Start();
 
-    }
+    //}
 
-    public override void ParsingStudii()
-    {
-      throw new NotImplementedException();
-    }
+    //public override void ParsingStudii()
+    //{
+    //  throw new NotImplementedException();
+    //}
 
-    public override void ParsingOne()
-    {
-      throw new NotImplementedException();
-    }
+    //public override void ParsingOne()
+    //{
+    //  throw new NotImplementedException();
+    //}
 
-    public override void ParsingTwo()
-    {
-      throw new NotImplementedException();
-    }
+    //public override void ParsingTwo()
+    //{
+    //  throw new NotImplementedException();
+    //}
 
-    public override void ParsingThree()
-    {
-      throw new NotImplementedException();
-    }
+    //public override void ParsingThree()
+    //{
+    //  throw new NotImplementedException();
+    //}
 
-    public override void ParsingFour()
-    {
-      throw new NotImplementedException();
-    }
+    //public override void ParsingFour()
+    //{
+    //  throw new NotImplementedException();
+    //}
 
-    public override void ParsingMoreFour()
-    {
-      throw new NotImplementedException();
-    }
+    //public override void ParsingMoreFour()
+    //{
+    //  throw new NotImplementedException();
+    //}
 
     private bool LinkProcessingProdam(string link, string typeRoom)
     {
@@ -1387,6 +1418,11 @@ namespace ParseSitesForApartments.Sites
         }
         Monitor.Exit(locker);
       }
+    }
+
+    public override void ParsingSdamAll()
+    {
+      throw new NotImplementedException();
     }
   }
 }
