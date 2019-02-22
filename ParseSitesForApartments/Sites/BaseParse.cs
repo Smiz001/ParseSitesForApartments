@@ -1,11 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
-using System.Text;
 using log4net;
 using ParseSitesForApartments.Enum;
-using ParseSitesForApartments.Export;
-using ParseSitesForApartments.Export.Creators;
 
 namespace ParseSitesForApartments.Sites
 {
