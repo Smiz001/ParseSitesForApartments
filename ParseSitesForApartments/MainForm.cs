@@ -145,6 +145,9 @@ namespace ParseSitesForApartments
         case 3:
           fileName = $"БКН - ";
           break;
+        case 4:
+          fileName = $"Авито - ";
+          break;
       }
       switch (cbTypeRoom.SelectedIndex)
       {
@@ -204,6 +207,9 @@ namespace ParseSitesForApartments
           break;
         case 3:
           parser = new BKN(listDistricts, listMetros);
+          break;
+        case 4:
+          parser = new Avito(listDistricts, listMetros);
           break;
       }
       parser.Filename = tbSelectedPath.Text;

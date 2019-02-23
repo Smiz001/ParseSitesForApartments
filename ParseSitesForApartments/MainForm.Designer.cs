@@ -86,7 +86,8 @@
             "Все сайты",
             "ELMS",
             "BN",
-            "BKN"});
+            "BKN",
+            "Avito"});
       this.cbChooseParse.Location = new System.Drawing.Point(12, 67);
       this.cbChooseParse.Name = "cbChooseParse";
       this.cbChooseParse.Size = new System.Drawing.Size(121, 21);
