@@ -400,7 +400,7 @@ namespace ParseSitesForApartments.Sites
         flat.Url = $"https://www.avito.ru{collection[k].GetElementsByClassName("item-description-title-link")[0].GetAttribute("href")}";
 
         var aboutBuild = collection[k].GetElementsByClassName("item-description-title-link")[0].TextContent;
-        var regex = new Regex(@"(\d+\s+м²)");
+        var regex = new Regex(@"(\d+\.\d+\s+м²)|(\d+\s+м²)");
         flat.Square = regex.Match(aboutBuild).Value.Replace(".", ",");
         regex = new Regex(@"(\d+\/\d+)");
         var floor = regex.Match(aboutBuild).Value;
@@ -410,7 +410,19 @@ namespace ParseSitesForApartments.Sites
         var adress = collection[k].GetElementsByClassName("address");
         if (adress.Length > 0)
         {
-          street = adress[0].TextContent.Trim();
+          var adr = adress[0];
+          street = adr.TextContent.Trim();
+          var isHaveMetro = adr.GetElementsByClassName("i-metro");
+          if (isHaveMetro.Length > 0)
+          {
+            var split = street.Split(',');
+            if (split.Length > 0)
+            {
+              metro = street.Split(',')[0];
+              regex = new Regex(@"(\d+\.\d+\s+км)|(\d+\s+км)|(\d+\s+м)");
+              metro = metro.Replace(regex.Match(metro).Value, "");
+            }
+          }
 
           var distance = collection[k].GetElementsByClassName("c-2");
           if (distance.Length > 0)
@@ -431,6 +443,7 @@ namespace ParseSitesForApartments.Sites
           #endregion
           var ar = street.Split(',');
 
+          street = street.Replace("Девяткино , Ленинградская область, Всеволожский район, посёлок  ", "");
           ProcessingBuilding(ref street, ref number, ref structure, ar);
         }
 
@@ -517,7 +530,7 @@ namespace ParseSitesForApartments.Sites
 
         if (building.MetroObj == null)
         {
-          var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper().Contains(metro.ToUpper()));
+          var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper() == metro.Trim().ToUpper());
           if (metroObjEnum.Count() > 0)
           {
             building.MetroObj = metroObjEnum.First();
