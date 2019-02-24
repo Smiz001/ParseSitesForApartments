@@ -507,7 +507,7 @@ namespace ParseSitesForApartments.Sites
               else if (mt == "Восстания пл.")
                 mt = "Площадь Восстания";
               else if (mt == "Ленина пл.")
-                mt = "Площадь Ленина  ";
+                mt = "Площадь Ленина";
               else if (mt == "Сенная пл.")
                 mt = "Сенная площадь";
               var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper().Contains(mt.ToUpper()));
@@ -529,13 +529,6 @@ namespace ParseSitesForApartments.Sites
 
           flat.Building = building;
 
-          //regex = new Regex(@"(\d+\s+\d+\s+метров)|(\d+\s+метров)");
-          //var distance = collection[i].GetElementsByClassName("ellipsis em");
-          //if (distance.Length > 0)
-          //{
-          //  flat.Building.Distance = regex.Match(distance[0].TextContent.Replace("\n", "").Trim()).Value;
-          //}
-
           var pr = collection[i].GetElementsByClassName("price");
           if (pr.Length > 0)
           {
@@ -546,51 +539,23 @@ namespace ParseSitesForApartments.Sites
               flat.Price = price;
             }
           }
-          //flat.Building.Metro = flat.Building.Metro.Replace(" и-т", "");
-
 
           if (!string.IsNullOrWhiteSpace(flat.Building.Number))
           {
-            Monitor.Enter(locker);
-            if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+            if (!string.IsNullOrWhiteSpace(flat.Square))
             {
-              unionInfo.UnionInfoProdam(flat);
+              if (!string.IsNullOrWhiteSpace(flat.Building.Street))
+              {
+                Monitor.Enter(locker);
+                if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+                {
+                  unionInfo.UnionInfoProdam(flat);
+                }
+                OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+                Monitor.Exit(locker);
+              }
             }
-            OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-            Monitor.Exit(locker);
           }
-
-          //regex = new Regex(@"(\d+)");
-          //var val = regex.Match(flat.Building.Liter).Value;
-          //if (string.IsNullOrWhiteSpace(val))
-          //{
-          //  Monitor.Enter(locker);
-          //  bool flag = false;
-          //  foreach (var bl in listBuild)
-          //  {
-          //    if (flat.Building.Equals(bl))
-          //    {
-          //      flag = true;
-          //      break;
-          //    }
-          //  }
-          //  if (!flag)
-          //  {
-          //    if (!string.IsNullOrWhiteSpace(flat.Building.Number))
-          //    {
-          //      if (flat.Building.Liter != "-" && !flat.Building.Liter.Contains("/"))
-          //      {
-          //        listBuild.Add(flat);
-          //        using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
-          //        {
-          //          sw.BaseStream.Position = sw.BaseStream.Length;
-          //          sw.WriteLine($@"{district};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
-          //        }
-          //      }
-          //    }
-          //  }
-          //  Monitor.Exit(locker);
-          //}
         }
         //}
         //catch (Exception ex)
@@ -616,12 +581,6 @@ namespace ParseSitesForApartments.Sites
         string structure = string.Empty;
         string liter = string.Empty;
 
-        //string street = "";
-        //string number = "";
-        //string building = "";
-        //string liter = "";
-        //string metro = "";
-        //string distance = "";
 
         #region Адрес
 

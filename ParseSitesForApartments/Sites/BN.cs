@@ -746,13 +746,16 @@ namespace ParseSitesForApartments.Sites
         {
           if (!string.IsNullOrWhiteSpace(flat.Square))
           {
-            Monitor.Enter(locker);
-            if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+            if (!string.IsNullOrWhiteSpace(flat.Building.Street))
             {
-              unionInfo.UnionInfoProdam(flat);
+              Monitor.Enter(locker);
+              if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+              {
+                unionInfo.UnionInfoProdam(flat);
+              }
+              OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+              Monitor.Exit(locker);
             }
-            OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-            Monitor.Exit(locker);
           }
         }
       }

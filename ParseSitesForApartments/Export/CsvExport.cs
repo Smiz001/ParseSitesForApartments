@@ -5,10 +5,10 @@ using System.Threading;
 
 namespace ParseSitesForApartments.Export
 {
-  public class CsvExport:CoreExport
+  public class CsvExport : CoreExport
   {
 
-    public CsvExport(string filename):base(filename)
+    public CsvExport(string filename) : base(filename)
     {
     }
 
@@ -23,11 +23,8 @@ namespace ParseSitesForApartments.Export
       {
         foreach (var flat in listFlats)
         {
-          if (!string.IsNullOrEmpty(flat.Building.Number) || !string.IsNullOrEmpty(flat.Building.Street))
-          {
-            sw.BaseStream.Position = sw.BaseStream.Length;
-            sw.WriteLine($@"{flat.Building.District?.Name};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{ flat.Floor};{flat.Building.CountFloor};{flat.Price};{flat.Building.MetroObj?.Name};{flat.Building.DateBuild};{flat.Building.DateReconstruct};{flat.Building.DateRepair};{flat.Building.BuildingSquare};{flat.Building.LivingSquare};{flat.Building.NoLivingSqaure};{flat.Building.MansardaSquare};{flat.Building.CountInternal};{flat.Building.Otoplenie};{flat.Building.Gvs};{flat.Building.Es};{flat.Building.Gs};{flat.Building.TypeApartaments};{flat.Building.CountApartaments};{flat.Building.DateTep.ToShortDateString()};{flat.Building.TypeRepair};{flat.Building.CountLift};{flat.Building.DistanceOnFoot};{flat.Building.TimeOnFootToMetro};{flat.Building.DistanceOnCar};{flat.Building.TimeOnCarToMetro};{flat.Url}");
-          }
+          sw.BaseStream.Position = sw.BaseStream.Length;
+          sw.WriteLine($@"{flat.Building.District?.Name};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{ flat.Floor};{flat.Building.CountFloor};{flat.Price};{flat.Building.MetroObj?.Name};{flat.Building.DateBuild};{flat.Building.DateReconstruct};{flat.Building.DateRepair};{flat.Building.BuildingSquare};{flat.Building.LivingSquare};{flat.Building.NoLivingSqaure};{flat.Building.MansardaSquare};{flat.Building.CountInternal};{flat.Building.Otoplenie};{flat.Building.Gvs};{flat.Building.Es};{flat.Building.Gs};{flat.Building.TypeApartaments};{flat.Building.CountApartaments};{flat.Building.DateTep.ToShortDateString()};{flat.Building.TypeRepair};{flat.Building.CountLift};{flat.Building.DistanceOnFoot};{flat.Building.TimeOnFootToMetro};{flat.Building.DistanceOnCar};{flat.Building.TimeOnCarToMetro};{flat.Url}");
         }
         listFlats.Clear();
       }
@@ -36,7 +33,7 @@ namespace ParseSitesForApartments.Export
     public override void AddFlatInList(object sender, AppendFlatEventArgs arg)
     {
       base.AddFlatInList(sender, arg);
-      if(listFlats.Count==10)
+      if (listFlats.Count == 10)
       {
         Execute();
       }
