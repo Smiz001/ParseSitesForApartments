@@ -794,7 +794,6 @@ namespace ParseSitesForApartments.Sites
             building.MetroObj = metroObjEnum.First();
           }
         }
-
         flat.Building = building;
 
 

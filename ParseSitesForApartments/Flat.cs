@@ -12,6 +12,11 @@ namespace ParseSitesForApartments
     public Building Building { get; set; }
     public string Url { get; set; }= string.Empty;
 
+    public override string ToString()
+    {
+      return $@"{Building.Street}, {Building.Number}, Count room - {CountRoom}, Price = {Price}";
+    }
+
     public override bool Equals(object obj)
     {
       var flat = obj as Flat;
