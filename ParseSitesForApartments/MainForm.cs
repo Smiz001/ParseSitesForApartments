@@ -73,10 +73,35 @@ namespace ParseSitesForApartments
     
     private List<Metro> metroStantions = new List<Metro>() { new Metro { Name = "Автово" }, new Metro { Name = "Адмиралтейская" }, new Metro { Name = "Академическая" }, new Metro { Name = "Балтийская" }, new Metro { Name = "Беговая" }, new Metro { Name = "Бухарестская" }, new Metro { Name = "Василеостровская" }, new Metro { Name = "Владимирская" }, new Metro { Name = "Волковская" }, new Metro { Name = "Выборгская" }, new Metro { Name = "Горьковская" }, new Metro { Name = "Гостиный двор" }, new Metro { Name = "Гражданский проспект" }, new Metro { Name = "Девяткино" }, new Metro { Name = "Достоевская" }, new Metro { Name = "Елизаровская" }, new Metro { Name = "Звёздная" }, new Metro { Name = "Звенигородская" }, new Metro { Name = "Кировский завод" }, new Metro { Name = "Комендантский проспект" }, new Metro { Name = "Крестовский остров" }, new Metro { Name = "Купчино" }, new Metro { Name = "Ладожская" }, new Metro { Name = "Ленинский проспект" }, new Metro { Name = "Лесная" }, new Metro { Name = "Лиговский проспект" }, new Metro { Name = "Ломоносовская" }, new Metro { Name = "Маяковская" }, new Metro { Name = "Международная" }, new Metro { Name = "Московская" }, new Metro { Name = "Московские ворота" }, new Metro { Name = "Нарвская" }, new Metro { Name = "Невский проспект" }, new Metro { Name = "Новокрестовская" }, new Metro { Name = "Новочеркасская" }, new Metro { Name = "Обводный канал" }, new Metro { Name = "Обухово" }, new Metro { Name = "Озерки" }, new Metro { Name = "Парк Победы" }, new Metro { Name = "Парнас" }, new Metro { Name = "Петроградская" }, new Metro { Name = "Пионерская" }, new Metro { Name = "Площадь Александра Невского 1" }, new Metro { Name = "Площадь Восстания" }, new Metro { Name = "Площадь Ленина" }, new Metro { Name = "Площадь Мужества" }, new Metro { Name = "Политехническая" }, new Metro { Name = "Приморская" }, new Metro { Name = "Пролетарская" }, new Metro { Name = "Проспект Большевиков" }, new Metro { Name = "Проспект Ветеранов" }, new Metro { Name = "Проспект Просвещения" }, new Metro { Name = "Пушкинская" }, new Metro { Name = "Рыбацкое" }, new Metro { Name = "Садовая" }, new Metro { Name = "Сенная площадь" }, new Metro { Name = "Спасская" }, new Metro { Name = "Спортивная" }, new Metro { Name = "Старая Деревня" }, new Metro { Name = "Технологический институт 1" }, new Metro { Name = "Удельная" }, new Metro { Name = "Улица Дыбенко" }, new Metro { Name = "Фрунзенская" }, new Metro { Name = "Чёрная речка" }, new Metro { Name = "Чернышевская" }, new Metro { Name = "Чкаловская" }, new Metro { Name = "Электросила" } };
 
+    private string fileName;
+    private void ReadConfig()
+    {
+      var st = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+      var fileCatalog = st + @"\ParseFlat";
+      Directory.CreateDirectory(fileCatalog);
+      fileName = fileCatalog + @"\parseflat.config";
+
+      if (File.Exists(fileName))
+      {
+        ImportConfigDataBase inmportConfigDataBase = new ImportConfigDataBase();
+        inmportConfigDataBase.Import();
+      }
+    }
+
     private void MainForm_Load(object sender, EventArgs e)
     {
+      ReadConfig();
       var conform = new ConnectionForm();
-      conform.ShowDialog();
+      if (conform.ShowDialog() == DialogResult.Cancel)
+      {
+        this.Close();
+      }
+      else
+      {
+        var exportSetting = new ExportConfigDataBase();
+        exportSetting.Export(fileName);
+      }
+      
 
       cbChooseParse.SelectedIndex = 0;
       cbTypeRoom.SelectedIndex = 0;
@@ -86,10 +111,10 @@ namespace ParseSitesForApartments
       sfdParseFile.FilterIndex = 1;
 
       var connection = ConnetionToSqlServer.Default();
-      connection.DataBase = "ParseBulding";
-      connection.Server = "localhost";
-      connection.WindowsAuthentication = true;
-      connection.Connect();
+      //connection.DataBase = "ParseBulding";
+      //connection.Server = "localhost";
+      //connection.WindowsAuthentication = true;
+      //connection.Connect();
 
       string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
       var reader = connection.ExecuteReader(select);

@@ -43,5 +43,15 @@ namespace ParseSitesForApartments.UI
       }
       connection.Connect();
     }
+
+    private void ConnectionForm_Load(object sender, EventArgs e)
+    {
+      var connection = ConnetionToSqlServer.Default();
+      tbPassword.Text = connection.Password;
+      tbServerName.Text = connection.Server;
+      tbUser.Text = connection.UserName;
+      tbDataBase.Text = connection.DataBase;
+      cbSqlAut.Checked = !connection.WindowsAuthentication;
+    }
   }
 }

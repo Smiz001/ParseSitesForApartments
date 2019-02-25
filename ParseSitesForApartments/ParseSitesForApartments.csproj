@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="District.cs" />
     <Compile Include="Enum\TypeParseFlat.cs" />
+    <Compile Include="ExportConfigDataBase.cs" />
     <Compile Include="Export\AppendFlatEventArgs.cs" />
     <Compile Include="Export\CoreExport.cs" />
     <Compile Include="Export\Creators\CoreCreator.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Export\ExcelExport.cs" />
     <Compile Include="Flat.cs" />
     <Compile Include="Building.cs" />
+    <Compile Include="ImportConfigDataBase.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
