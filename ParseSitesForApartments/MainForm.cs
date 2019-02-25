@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using DataBase.Connections;
 using ParseSitesForApartments.Enum;
+using ParseSitesForApartments.UI;
 
 namespace ParseSitesForApartments
 {
@@ -74,6 +75,9 @@ namespace ParseSitesForApartments
 
     private void MainForm_Load(object sender, EventArgs e)
     {
+      var conform = new ConnectionForm();
+      conform.ShowDialog();
+
       cbChooseParse.SelectedIndex = 0;
       cbTypeRoom.SelectedIndex = 0;
       cbTypeSell.SelectedIndex = 0;

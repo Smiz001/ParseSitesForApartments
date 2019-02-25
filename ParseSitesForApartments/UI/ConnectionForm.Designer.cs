@@ -32,11 +32,11 @@
       this.label2 = new System.Windows.Forms.Label();
       this.label3 = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
-      this.textBox1 = new System.Windows.Forms.TextBox();
-      this.textBox2 = new System.Windows.Forms.TextBox();
-      this.textBox3 = new System.Windows.Forms.TextBox();
-      this.textBox4 = new System.Windows.Forms.TextBox();
-      this.checkBox1 = new System.Windows.Forms.CheckBox();
+      this.tbServerName = new System.Windows.Forms.TextBox();
+      this.tbDataBase = new System.Windows.Forms.TextBox();
+      this.tbUser = new System.Windows.Forms.TextBox();
+      this.tbPassword = new System.Windows.Forms.TextBox();
+      this.cbSqlAut = new System.Windows.Forms.CheckBox();
       this.button1 = new System.Windows.Forms.Button();
       this.button2 = new System.Windows.Forms.Button();
       this.SuspendLayout();
@@ -77,65 +77,72 @@
       this.label4.TabIndex = 3;
       this.label4.Text = "Пароль:";
       // 
-      // textBox1
+      // tbServerName
       // 
-      this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tbServerName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBox1.Location = new System.Drawing.Point(119, 10);
-      this.textBox1.Name = "textBox1";
-      this.textBox1.Size = new System.Drawing.Size(174, 20);
-      this.textBox1.TabIndex = 4;
+      this.tbServerName.Location = new System.Drawing.Point(119, 10);
+      this.tbServerName.Name = "tbServerName";
+      this.tbServerName.Size = new System.Drawing.Size(174, 20);
+      this.tbServerName.TabIndex = 4;
       // 
-      // textBox2
+      // tbDataBase
       // 
-      this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tbDataBase.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBox2.Location = new System.Drawing.Point(119, 35);
-      this.textBox2.Name = "textBox2";
-      this.textBox2.Size = new System.Drawing.Size(174, 20);
-      this.textBox2.TabIndex = 5;
+      this.tbDataBase.Location = new System.Drawing.Point(119, 35);
+      this.tbDataBase.Name = "tbDataBase";
+      this.tbDataBase.Size = new System.Drawing.Size(174, 20);
+      this.tbDataBase.TabIndex = 5;
       // 
-      // textBox3
+      // tbUser
       // 
-      this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tbUser.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBox3.Location = new System.Drawing.Point(116, 85);
-      this.textBox3.Name = "textBox3";
-      this.textBox3.Size = new System.Drawing.Size(174, 20);
-      this.textBox3.TabIndex = 6;
+      this.tbUser.Enabled = false;
+      this.tbUser.Location = new System.Drawing.Point(116, 85);
+      this.tbUser.Name = "tbUser";
+      this.tbUser.Size = new System.Drawing.Size(174, 20);
+      this.tbUser.TabIndex = 6;
       // 
-      // textBox4
+      // tbPassword
       // 
-      this.textBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+      this.tbPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-      this.textBox4.Location = new System.Drawing.Point(116, 110);
-      this.textBox4.Name = "textBox4";
-      this.textBox4.Size = new System.Drawing.Size(174, 20);
-      this.textBox4.TabIndex = 7;
+      this.tbPassword.Enabled = false;
+      this.tbPassword.Location = new System.Drawing.Point(116, 110);
+      this.tbPassword.Name = "tbPassword";
+      this.tbPassword.Size = new System.Drawing.Size(174, 20);
+      this.tbPassword.TabIndex = 7;
+      this.tbPassword.UseSystemPasswordChar = true;
       // 
-      // checkBox1
+      // cbSqlAut
       // 
-      this.checkBox1.AutoSize = true;
-      this.checkBox1.Location = new System.Drawing.Point(10, 60);
-      this.checkBox1.Name = "checkBox1";
-      this.checkBox1.Size = new System.Drawing.Size(150, 17);
-      this.checkBox1.TabIndex = 8;
-      this.checkBox1.Text = "SQL Server Авторизация";
-      this.checkBox1.UseVisualStyleBackColor = true;
+      this.cbSqlAut.AutoSize = true;
+      this.cbSqlAut.Location = new System.Drawing.Point(10, 60);
+      this.cbSqlAut.Name = "cbSqlAut";
+      this.cbSqlAut.Size = new System.Drawing.Size(150, 17);
+      this.cbSqlAut.TabIndex = 8;
+      this.cbSqlAut.Text = "SQL Server Авторизация";
+      this.cbSqlAut.UseVisualStyleBackColor = true;
+      this.cbSqlAut.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
       // 
       // button1
       // 
       this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
       this.button1.Location = new System.Drawing.Point(134, 155);
       this.button1.Name = "button1";
       this.button1.Size = new System.Drawing.Size(75, 23);
       this.button1.TabIndex = 9;
       this.button1.Text = "OK";
       this.button1.UseVisualStyleBackColor = true;
+      this.button1.Click += new System.EventHandler(this.button1_Click);
       // 
       // button2
       // 
       this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
       this.button2.Location = new System.Drawing.Point(215, 155);
       this.button2.Name = "button2";
       this.button2.Size = new System.Drawing.Size(75, 23);
@@ -150,16 +157,17 @@
       this.ClientSize = new System.Drawing.Size(308, 190);
       this.Controls.Add(this.button2);
       this.Controls.Add(this.button1);
-      this.Controls.Add(this.checkBox1);
-      this.Controls.Add(this.textBox4);
-      this.Controls.Add(this.textBox3);
-      this.Controls.Add(this.textBox2);
-      this.Controls.Add(this.textBox1);
+      this.Controls.Add(this.cbSqlAut);
+      this.Controls.Add(this.tbPassword);
+      this.Controls.Add(this.tbUser);
+      this.Controls.Add(this.tbDataBase);
+      this.Controls.Add(this.tbServerName);
       this.Controls.Add(this.label4);
       this.Controls.Add(this.label3);
       this.Controls.Add(this.label2);
       this.Controls.Add(this.label1);
       this.Name = "ConnectionForm";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Подключение к базе";
       this.ResumeLayout(false);
       this.PerformLayout();
@@ -172,11 +180,11 @@
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Label label3;
     private System.Windows.Forms.Label label4;
-    private System.Windows.Forms.TextBox textBox1;
-    private System.Windows.Forms.TextBox textBox2;
-    private System.Windows.Forms.TextBox textBox3;
-    private System.Windows.Forms.TextBox textBox4;
-    private System.Windows.Forms.CheckBox checkBox1;
+    private System.Windows.Forms.TextBox tbServerName;
+    private System.Windows.Forms.TextBox tbDataBase;
+    private System.Windows.Forms.TextBox tbUser;
+    private System.Windows.Forms.TextBox tbPassword;
+    private System.Windows.Forms.CheckBox cbSqlAut;
     private System.Windows.Forms.Button button1;
     private System.Windows.Forms.Button button2;
   }
