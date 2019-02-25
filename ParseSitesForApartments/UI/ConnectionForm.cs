@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ParseSitesForApartments
+namespace ParseSitesForApartments.UI
 {
-  public partial class Form1 : Form
+  public partial class ConnectionForm : Form
   {
-    public Form1()
+    public ConnectionForm()
     {
       InitializeComponent();
     }

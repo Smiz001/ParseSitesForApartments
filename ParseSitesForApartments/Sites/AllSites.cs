@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -16,9 +14,11 @@ namespace ParseSitesForApartments.Sites
     private BKN bkn;
     private BN bn;
     private ELMS elms;
+    private Avito avito;
     private Thread elmsThread;
     private Thread bnThread;
     private Thread bknThread;
+    private Thread avitoThread;
 
     #endregion
 
@@ -29,10 +29,12 @@ namespace ParseSitesForApartments.Sites
       bkn = new BKN(listDistricts, listMetros);
       bn = new BN(listDistricts, listMetros);
       elms = new ELMS(listDistricts, listMetros);
+      avito = new Avito(listDistricts, listMetros);
 
       bkn.Filename = filename;
       bn.Filename = filename;
       elms.Filename = filename;
+      avito.Filename = filename;
     }
 
     #endregion
@@ -48,6 +50,7 @@ namespace ParseSitesForApartments.Sites
         bkn.Filename = filename;
         bn.Filename = filename;
         elms.Filename = filename;
+        avito.Filename = filename;
       }
     }
 
@@ -137,6 +140,11 @@ namespace ParseSitesForApartments.Sites
       elmsThread = new Thread(elms.ParsingAll);
       elmsThread.Start();
       WaitUntilWorkThread(elmsThread);
+      avito.TypeParseFlat = this.TypeParseFlat;
+      avito.Filename = $@"{path}Avito.csv";
+      avitoThread = new Thread(avito.ParsingAll);
+      avitoThread.Start();
+      WaitUntilWorkThread(avitoThread);
 
       UnionFiles();
     }
