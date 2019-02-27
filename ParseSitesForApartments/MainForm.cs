@@ -102,7 +102,6 @@ namespace ParseSitesForApartments
         exportSetting.Export(fileName);
       }
       
-
       cbChooseParse.SelectedIndex = 0;
       cbTypeRoom.SelectedIndex = 0;
       cbTypeSell.SelectedIndex = 0;
@@ -111,10 +110,6 @@ namespace ParseSitesForApartments
       sfdParseFile.FilterIndex = 1;
 
       var connection = ConnetionToSqlServer.Default();
-      //connection.DataBase = "ParseBulding";
-      //connection.Server = "localhost";
-      //connection.WindowsAuthentication = true;
-      //connection.Connect();
 
       string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
       var reader = connection.ExecuteReader(select);

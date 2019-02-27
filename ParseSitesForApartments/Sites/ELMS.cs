@@ -18,7 +18,6 @@ namespace ParseSitesForApartments.Sites
 {
   public class ELMS : BaseParse
   {
-    private List<int> listDistrict = new List<int>() { 38, 12, 43, 13, 4, 20, 6, 14, 7, 15, 8, 39, 9 };
 
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" }, { 14, "Приморский" }, { 15, "Фрунзенский" }, { 39, "Центральный" }, };
 
@@ -27,7 +26,6 @@ namespace ParseSitesForApartments.Sites
     private List<Flat> listBuild = new List<Flat>();
     static object locker = new object();
     private static object lockerDistrict = new object();
-    private const int MaxPage = 20;
 
     private int minPage = 1;
     private int maxPage = 20;
@@ -91,7 +89,6 @@ namespace ParseSitesForApartments.Sites
         {
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
           {
-            //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
             sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
           }
         }
