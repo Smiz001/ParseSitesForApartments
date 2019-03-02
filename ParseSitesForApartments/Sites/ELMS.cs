@@ -222,7 +222,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm();
+        progress = new ProgressForm("ELMS Все квартиры");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -296,7 +296,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm();
+        progress = new ProgressForm("ELMS Студии");
         var threadbackground = new Thread(
           new ThreadStart(() =>
           {
@@ -336,7 +336,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm();
+        progress = new ProgressForm("ELMS 1 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -375,7 +375,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm();
+        progress = new ProgressForm("ELMS 2 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -414,7 +414,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm();
+        progress = new ProgressForm("ELMS 3 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -453,7 +453,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm();
+        progress = new ProgressForm("ELMS 4 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -492,7 +492,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm();
+        progress = new ProgressForm("ELMS 5+ км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {

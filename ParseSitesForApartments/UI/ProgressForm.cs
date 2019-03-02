@@ -5,9 +5,10 @@ namespace ParseSitesForApartments.UI
 {
   public partial class ProgressForm : Form
   {
-    public ProgressForm()
+    public ProgressForm(string title)
     {
       InitializeComponent();
+      Text += $" {title}";
     }
     
     public void UpdateProgress(int val)

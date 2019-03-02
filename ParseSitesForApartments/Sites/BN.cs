@@ -123,7 +123,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm();
+        progress = new ProgressForm("БН Все квартиры");
         var threadbackground = new Thread(
           new ThreadStart(() =>
           {
@@ -187,7 +187,7 @@ namespace ParseSitesForApartments.Sites
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
         CreateExport();
-        progress = new ProgressForm();
+        progress = new ProgressForm("БН Студии");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -228,7 +228,7 @@ namespace ParseSitesForApartments.Sites
       {
         CreateExport();
 
-        progress = new ProgressForm();
+        progress = new ProgressForm("БН 1 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -268,7 +268,7 @@ namespace ParseSitesForApartments.Sites
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
         CreateExport();
-        progress = new ProgressForm();
+        progress = new ProgressForm("БН 2 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -308,7 +308,7 @@ namespace ParseSitesForApartments.Sites
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
         CreateExport();
-        progress = new ProgressForm();
+        progress = new ProgressForm("БН 3 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -348,7 +348,7 @@ namespace ParseSitesForApartments.Sites
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
         CreateExport();
-        progress = new ProgressForm();
+        progress = new ProgressForm("БН 4 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
