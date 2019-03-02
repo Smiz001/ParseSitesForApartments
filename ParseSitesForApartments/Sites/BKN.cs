@@ -1034,6 +1034,8 @@ namespace ParseSitesForApartments.Sites
                 unionInfo.UnionInfoProdam(flat);
               }
               OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+              progress.UpdateProgress(count);
+              count++;
               Monitor.Exit(locker);
             }
           }

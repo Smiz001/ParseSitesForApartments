@@ -81,6 +81,7 @@
       this.Controls.Add(this.pbDownloadInfo);
       this.MaximizeBox = false;
       this.Name = "ProgressForm";
+      this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Результат обработки";
       this.ResumeLayout(false);
       this.PerformLayout();

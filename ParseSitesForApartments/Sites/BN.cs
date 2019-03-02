@@ -120,9 +120,9 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingAll()
     {
+      CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        CreateExport();
         progress = new ProgressForm();
         var threadbackground = new Thread(
           new ThreadStart(() =>
@@ -166,15 +166,9 @@ namespace ParseSitesForApartments.Sites
           ));
         threadbackground.Start();
         progress.Show();
-
-        //Thread.Sleep(10000);
-        //var threadCheck = new Thread(CheckCloseThread);
-        //threadCheck.Start();
-        //CheckCloseThread();
       }
       else
       {
-        CreateExportSdam();
         studiiSdamThread = new Thread(ChangeDistrictAndPageForSdam);
         studiiSdamThread.Start("Студия");
         oneSdamThread = new Thread(ChangeDistrictAndPageForSdam);
