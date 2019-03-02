@@ -263,7 +263,7 @@ namespace ParseSitesForApartments.Sites
                 studiiThread.Start("Студия");
 
                 Thread.Sleep(10000);
-                CheckCloseThread(-1);
+                CheckCloseThread(0);
                 export.Execute();
 
                 MessageBox.Show("Загрузка завершена");
@@ -300,7 +300,7 @@ namespace ParseSitesForApartments.Sites
                 oneThread.Start("1 км. кв.");
 
                 Thread.Sleep(10000);
-                CheckCloseThread(-1);
+                CheckCloseThread(1);
                 export.Execute();
 
                 MessageBox.Show("Загрузка завершена");
@@ -337,7 +337,7 @@ namespace ParseSitesForApartments.Sites
                 twoThread.Start("2 км. кв.");
 
                 Thread.Sleep(10000);
-                CheckCloseThread(-1);
+                CheckCloseThread(2);
                 export.Execute();
 
                 MessageBox.Show("Загрузка завершена");
@@ -374,7 +374,7 @@ namespace ParseSitesForApartments.Sites
                 threeThread.Start("3 км. кв.");
 
                 Thread.Sleep(10000);
-                CheckCloseThread(-1);
+                CheckCloseThread(3);
                 export.Execute();
 
                 MessageBox.Show("Загрузка завершена");
@@ -411,7 +411,7 @@ namespace ParseSitesForApartments.Sites
                 fourThread.Start("4 км. кв.");
 
                 Thread.Sleep(10000);
-                CheckCloseThread(-1);
+                CheckCloseThread(4);
                 export.Execute();
 
                 MessageBox.Show("Загрузка завершена");
@@ -448,7 +448,7 @@ namespace ParseSitesForApartments.Sites
                 fiveThread.Start("5 км. кв.");
 
                 Thread.Sleep(10000);
-                CheckCloseThread(-1);
+                CheckCloseThread(5);
                 export.Execute();
 
                 MessageBox.Show("Загрузка завершена");
