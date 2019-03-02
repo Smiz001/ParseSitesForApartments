@@ -73,10 +73,10 @@
     <Compile Include="Metro.cs" />
     <Compile Include="ParsClasses\ParseStreet.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="ProgressForm.cs">
+    <Compile Include="UI\ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProgressForm.Designer.cs">
+    <Compile Include="UI\ProgressForm.Designer.cs">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -98,7 +98,7 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProgressForm.resx">
+    <EmbeddedResource Include="UI\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

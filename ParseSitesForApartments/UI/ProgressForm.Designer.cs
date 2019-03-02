@@ -1,4 +1,4 @@
-﻿namespace ParseSitesForApartments
+﻿namespace ParseSitesForApartments.UI
 {
   partial class ProgressForm
   {

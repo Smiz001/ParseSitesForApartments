@@ -13,6 +13,7 @@ using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.ParsClasses;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.Export.Creators;
+using ParseSitesForApartments.UI;
 using ParseSitesForApartments.UnionWithBase;
 
 namespace ParseSitesForApartments.Sites
@@ -47,6 +48,8 @@ namespace ParseSitesForApartments.Sites
     private Thread twoSdamThread;
     private Thread threeSdamThread;
     private Thread fourSdamThread;
+    private ProgressForm progress;
+    private int count = 1;
 
     #endregion
 
@@ -120,32 +123,54 @@ namespace ParseSitesForApartments.Sites
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
         CreateExport();
-        studiiThread = new Thread(ChangeDistrictAndPage);
-        studiiThread.Start("Студия Н");
-        oneThread = new Thread(ChangeDistrictAndPage);
-        oneThread.Start("1 км. кв. Н");
-        twoThread = new Thread(ChangeDistrictAndPage);
-        twoThread.Start("2 км. кв. Н");
-        threeThread = new Thread(ChangeDistrictAndPage);
-        threeThread.Start("3 км. кв. Н");
-        fourThread = new Thread(ChangeDistrictAndPage);
-        fourThread.Start("4 км. кв. Н");
 
-        studiiThreadOld = new Thread(ChangeDistrictAndPage);
-        studiiThreadOld.Start("Студия");
-        oneThreadOld = new Thread(ChangeDistrictAndPage);
-        oneThreadOld.Start("1 км. кв.");
-        twoThreadOld = new Thread(ChangeDistrictAndPage);
-        twoThreadOld.Start("2 км. кв.");
-        threeThreadOld = new Thread(ChangeDistrictAndPage);
-        threeThreadOld.Start("3 км. кв.");
-        fourThreadOld = new Thread(ChangeDistrictAndPage);
-        fourThreadOld.Start("4 км. кв.");
+        progress = new ProgressForm();
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              studiiThread = new Thread(ChangeDistrictAndPage);
+              studiiThread.Start("Студия Н");
+              oneThread = new Thread(ChangeDistrictAndPage);
+              oneThread.Start("1 км. кв. Н");
+              twoThread = new Thread(ChangeDistrictAndPage);
+              twoThread.Start("2 км. кв. Н");
+              threeThread = new Thread(ChangeDistrictAndPage);
+              threeThread.Start("3 км. кв. Н");
+              fourThread = new Thread(ChangeDistrictAndPage);
+              fourThread.Start("4 км. кв. Н");
+
+              studiiThreadOld = new Thread(ChangeDistrictAndPage);
+              studiiThreadOld.Start("Студия");
+              oneThreadOld = new Thread(ChangeDistrictAndPage);
+              oneThreadOld.Start("1 км. кв.");
+              twoThreadOld = new Thread(ChangeDistrictAndPage);
+              twoThreadOld.Start("2 км. кв.");
+              threeThreadOld = new Thread(ChangeDistrictAndPage);
+              threeThreadOld.Start("3 км. кв.");
+              fourThreadOld = new Thread(ChangeDistrictAndPage);
+              fourThreadOld.Start("4 км. кв.");
+
+              Thread.Sleep(10000);
+              CheckCloseThread();
+
+              MessageBox.Show("Загрузка завершена");
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
 
         //Thread.Sleep(10000);
         //var threadCheck = new Thread(CheckCloseThread);
         //threadCheck.Start();
-        CheckCloseThread();
+        //CheckCloseThread();
       }
       else
       {
@@ -754,6 +779,8 @@ namespace ParseSitesForApartments.Sites
                 unionInfo.UnionInfoProdam(flat);
               }
               OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+              progress.UpdateProgress(count);
+              count++;
               Monitor.Exit(locker);
             }
           }
@@ -1119,7 +1146,5 @@ namespace ParseSitesForApartments.Sites
         Monitor.Exit(locker);
       }
     }
-
-    int count = 0;
   }
 }

@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using DataBase.Connections;
+using log4net;
 using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.UI;
 
@@ -15,6 +17,7 @@ namespace ParseSitesForApartments
   {
     private List<District> listDistricts = new List<District>();
     private List<Metro> listMetros = new List<Metro>();
+    protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
     public MainForm()
     {
@@ -109,6 +112,7 @@ namespace ParseSitesForApartments
       sfdParseFile.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
       sfdParseFile.FilterIndex = 1;
 
+      Log.Debug("Get Connection");
       var connection = ConnetionToSqlServer.Default();
 
       string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";

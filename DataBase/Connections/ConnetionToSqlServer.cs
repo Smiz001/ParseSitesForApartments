@@ -295,6 +295,8 @@ namespace DataBase.Connections
     {
       try
       {
+        Log.Debug("Call ExecuteReader");
+        Log.Debug(select);
         SqlCommand command = GetCommand(select);
         return command.ExecuteReader();
       }
