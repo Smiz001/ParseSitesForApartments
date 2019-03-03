@@ -73,6 +73,8 @@
     <Compile Include="Metro.cs" />
     <Compile Include="ParsClasses\ParseStreet.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Proxy\FreeProxy.cs" />
+    <Compile Include="Proxy\ProxyInfo.cs" />
     <Compile Include="UI\ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>

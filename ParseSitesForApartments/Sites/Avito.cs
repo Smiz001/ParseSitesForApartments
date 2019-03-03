@@ -5,7 +5,6 @@ using ParseSitesForApartments.Export.Creators;
 using ParseSitesForApartments.UnionWithBase;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,6 +15,7 @@ using System.Windows.Forms;
 using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.ParsClasses;
 using ParseSitesForApartments.UI;
+using ParseSitesForApartments.Proxy;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -75,7 +75,7 @@ namespace ParseSitesForApartments.Sites
 
     #endregion
 
-    public Avito(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
+    public Avito(List<District> listDistricts, List<Metro> listMetros, List<ProxyInfo> listProxy) : base(listDistricts, listMetros, listProxy)
     {
     }
 
@@ -100,9 +100,19 @@ namespace ParseSitesForApartments.Sites
 
     private void ChangeDistrictAndPage(object typeRoom)
     {
+     WebProxy proxy = new WebProxy();
+      CredentialCache cc = new CredentialCache();
+      NetworkCredential nc = new NetworkCredential();
+
+      nc.UserName = "BGXDdU";
+      nc.Password = "vy4ubS";
+      cc.Add("https://185.233.202.204", 9975, "Basic", nc);
+      proxy.Credentials = cc;
+
       HtmlParser parser = new HtmlParser();
       using (var webClient = new WebClient())
       {
+        webClient.Proxy = proxy;
         webClient.Encoding = Encoding.UTF8;
         ServicePointManager.Expect100Continue = true;
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

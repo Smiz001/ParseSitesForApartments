@@ -9,6 +9,7 @@ using System.Xml;
 using DataBase.Connections;
 using log4net;
 using ParseSitesForApartments.Enum;
+using ParseSitesForApartments.Proxy;
 using ParseSitesForApartments.UI;
 
 namespace ParseSitesForApartments
@@ -18,63 +19,26 @@ namespace ParseSitesForApartments
     private List<District> listDistricts = new List<District>();
     private List<Metro> listMetros = new List<Metro>();
     protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+    private List<ProxyInfo> listProxy =new List<ProxyInfo>();
 
     public MainForm()
     {
       InitializeComponent();
-    }
-
-    private void GetCoordBuilding(string inputFile, string outputFile)
-    {
-      if(!string.IsNullOrEmpty(inputFile))
+      listProxy.Add(new ProxyInfo
       {
-        if (File.Exists(inputFile))
-        {
-          using (var sr = new StreamReader(inputFile, Encoding.UTF8))
-          {
-            using (var sw = new StreamWriter(outputFile, true, Encoding.UTF8))
-            {
-              var yandex = new Yandex();
-              string line;
-              sr.ReadLine();
-              while ((line = sr.ReadLine()) != null)
-              {
-                var arr = line.Split(';');
-                var doc1 = yandex.SearchObjectByAddress($@"Санкт-Петербург {arr[1]}, {arr[2]}к{arr[3]} лит.{arr[4]}");
-                using (var sw1 = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
-                {
-                  sw1.WriteLine(doc1);
-                }
-
-                XmlDocument doc = new XmlDocument();
-                doc.Load(@"D:\Coord.xml");
-                var root = doc.DocumentElement;
-                var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
-                if (GeoObjectCollection.ChildNodes.Count > 1)
-                {
-                  var featureMember = GeoObjectCollection.ChildNodes[1];
-                  if (featureMember.ChildNodes.Count > 0)
-                  {
-                    var GeoObject = featureMember.ChildNodes[0];
-                    if (GeoObject.ChildNodes.Count > 4)
-                    {
-                      var Point = GeoObject.ChildNodes[4];
-                      var coor = Point.InnerText.Split(' ');
-                      float x = float.Parse(coor[1].Replace(".", ","));
-                      float y = float.Parse(coor[0].Replace(".", ","));
-                      sw.WriteLine($@"{arr[0]};{arr[1]};{arr[2]};{arr[3]};{arr[4]};{x};{y}");
-                    }
-                  }
-                }
-                File.Delete(@"D:\Coord.xml");
-              }
-            }
-          }
-        }
-      }
+        Address = "185.233.202.204",
+        Port = 9975,
+        User = "BGXDdU",
+        Password = "vy4ubS"
+      });
+      listProxy.Add(new ProxyInfo
+      {
+        Address = "185.233.201.211",
+        Port = 9312,
+        User = "BGXDdU",
+        Password = "vy4ubS"
+      });
     }
-    
-    private List<Metro> metroStantions = new List<Metro>() { new Metro { Name = "Автово" }, new Metro { Name = "Адмиралтейская" }, new Metro { Name = "Академическая" }, new Metro { Name = "Балтийская" }, new Metro { Name = "Беговая" }, new Metro { Name = "Бухарестская" }, new Metro { Name = "Василеостровская" }, new Metro { Name = "Владимирская" }, new Metro { Name = "Волковская" }, new Metro { Name = "Выборгская" }, new Metro { Name = "Горьковская" }, new Metro { Name = "Гостиный двор" }, new Metro { Name = "Гражданский проспект" }, new Metro { Name = "Девяткино" }, new Metro { Name = "Достоевская" }, new Metro { Name = "Елизаровская" }, new Metro { Name = "Звёздная" }, new Metro { Name = "Звенигородская" }, new Metro { Name = "Кировский завод" }, new Metro { Name = "Комендантский проспект" }, new Metro { Name = "Крестовский остров" }, new Metro { Name = "Купчино" }, new Metro { Name = "Ладожская" }, new Metro { Name = "Ленинский проспект" }, new Metro { Name = "Лесная" }, new Metro { Name = "Лиговский проспект" }, new Metro { Name = "Ломоносовская" }, new Metro { Name = "Маяковская" }, new Metro { Name = "Международная" }, new Metro { Name = "Московская" }, new Metro { Name = "Московские ворота" }, new Metro { Name = "Нарвская" }, new Metro { Name = "Невский проспект" }, new Metro { Name = "Новокрестовская" }, new Metro { Name = "Новочеркасская" }, new Metro { Name = "Обводный канал" }, new Metro { Name = "Обухово" }, new Metro { Name = "Озерки" }, new Metro { Name = "Парк Победы" }, new Metro { Name = "Парнас" }, new Metro { Name = "Петроградская" }, new Metro { Name = "Пионерская" }, new Metro { Name = "Площадь Александра Невского 1" }, new Metro { Name = "Площадь Восстания" }, new Metro { Name = "Площадь Ленина" }, new Metro { Name = "Площадь Мужества" }, new Metro { Name = "Политехническая" }, new Metro { Name = "Приморская" }, new Metro { Name = "Пролетарская" }, new Metro { Name = "Проспект Большевиков" }, new Metro { Name = "Проспект Ветеранов" }, new Metro { Name = "Проспект Просвещения" }, new Metro { Name = "Пушкинская" }, new Metro { Name = "Рыбацкое" }, new Metro { Name = "Садовая" }, new Metro { Name = "Сенная площадь" }, new Metro { Name = "Спасская" }, new Metro { Name = "Спортивная" }, new Metro { Name = "Старая Деревня" }, new Metro { Name = "Технологический институт 1" }, new Metro { Name = "Удельная" }, new Metro { Name = "Улица Дыбенко" }, new Metro { Name = "Фрунзенская" }, new Metro { Name = "Чёрная речка" }, new Metro { Name = "Чернышевская" }, new Metro { Name = "Чкаловская" }, new Metro { Name = "Электросила" } };
 
     private string fileName;
     private void ReadConfig()
@@ -225,19 +189,19 @@ namespace ParseSitesForApartments
       switch (cbChooseParse.SelectedIndex)
       {
         case 0:
-          parser = new AllSites(listDistricts, listMetros);
+          parser = new AllSites(listDistricts, listMetros, listProxy);
           break;
         case 1:
-          parser = new ELMS(listDistricts, listMetros);
+          parser = new ELMS(listDistricts, listMetros, listProxy);
           break;
         case 2:
-          parser = new BN(listDistricts, listMetros);
+          parser = new BN(listDistricts, listMetros, listProxy);
           break;
         case 3:
-          parser = new BKN(listDistricts, listMetros);
+          parser = new BKN(listDistricts, listMetros, listProxy);
           break;
         case 4:
-          parser = new Avito(listDistricts, listMetros);
+          parser = new Avito(listDistricts, listMetros, listProxy);
           break;
       }
       parser.Filename = tbSelectedPath.Text;

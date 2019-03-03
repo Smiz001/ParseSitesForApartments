@@ -2,6 +2,7 @@
 using System.Reflection;
 using log4net;
 using ParseSitesForApartments.Enum;
+using ParseSitesForApartments.Proxy;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -11,15 +12,17 @@ namespace ParseSitesForApartments.Sites
     //public delegate void Append(object sender, AppendFlatEventArgs e);
     //public event Append OnAppend;
 
-    public BaseParse(List<District> listDistricts, List<Metro> listMetros)
+    public BaseParse(List<District> listDistricts, List<Metro> listMetros, List<ProxyInfo> listProxy)
     {
       ListDistricts = new List<District>(listDistricts);
       ListMetros = new List<Metro>(listMetros);
+      ListProxy = new List<ProxyInfo>(listProxy);
     }
 
     protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
     protected List<District> ListDistricts { get; private set; }
     protected List<Metro> ListMetros { get; private set; }
+    protected List<ProxyInfo> ListProxy { get; private set; }
     public abstract string Filename{get; set; }
     public abstract string FilenameSdam { get; }
     public abstract string FilenameWithinfo { get; }

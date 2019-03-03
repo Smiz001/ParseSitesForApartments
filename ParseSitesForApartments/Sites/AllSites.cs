@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
+using ParseSitesForApartments.Proxy;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -24,12 +25,12 @@ namespace ParseSitesForApartments.Sites
 
     #region Constructor
 
-    public AllSites(List<District> listDistricts, List<Metro> listMetros) : base(listDistricts, listMetros)
+    public AllSites(List<District> listDistricts, List<Metro> listMetros, List<ProxyInfo> listProxy) : base(listDistricts, listMetros, listProxy)
     {
-      bkn = new BKN(listDistricts, listMetros);
-      bn = new BN(listDistricts, listMetros);
-      elms = new ELMS(listDistricts, listMetros);
-      avito = new Avito(listDistricts, listMetros);
+      bkn = new BKN(listDistricts, listMetros, listProxy);
+      bn = new BN(listDistricts, listMetros, listProxy);
+      elms = new ELMS(listDistricts, listMetros, listProxy);
+      avito = new Avito(listDistricts, listMetros, listProxy);
 
       bkn.Filename = filename;
       bn.Filename = filename;

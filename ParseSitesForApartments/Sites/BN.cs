@@ -13,6 +13,7 @@ using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.ParsClasses;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.Export.Creators;
+using ParseSitesForApartments.Proxy;
 using ParseSitesForApartments.UI;
 using ParseSitesForApartments.UnionWithBase;
 
@@ -55,7 +56,7 @@ namespace ParseSitesForApartments.Sites
 
     #region Constructor
 
-    public BN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
+    public BN(List<District> listDistricts, List<Metro> listMetros, List<ProxyInfo> listProxy) : base(listDistricts, listMetros, listProxy)
     {
       //CoreCreator creator = new ExcelExportCreator();
       //export = creator.FactoryCreate(Filename);

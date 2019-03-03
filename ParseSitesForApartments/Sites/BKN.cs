@@ -13,6 +13,7 @@ using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.ParsClasses;
 using ParseSitesForApartments.Export.Creators;
+using ParseSitesForApartments.Proxy;
 using ParseSitesForApartments.UI;
 using ParseSitesForApartments.UnionWithBase;
 
@@ -54,7 +55,7 @@ namespace ParseSitesForApartments.Sites
 
     #region Constructor
 
-    public BKN(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
+    public BKN(List<District> listDistricts, List<Metro> listMetros, List<ProxyInfo> listProxy) : base(listDistricts, listMetros, listProxy)
     {
       //CoreCreator creator = new CsvExportCreator();
       //export = creator.FactoryCreate(Filename);

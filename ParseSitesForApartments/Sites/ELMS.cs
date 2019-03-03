@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.Export.Creators;
+using ParseSitesForApartments.Proxy;
 using ParseSitesForApartments.UI;
 using ParseSitesForApartments.UnionWithBase;
 
@@ -73,7 +74,7 @@ namespace ParseSitesForApartments.Sites
     private ProgressForm progress;
     private int count = 1;
 
-    public ELMS(List<District> listDistricts, List<Metro> lisMetro) : base(listDistricts, lisMetro)
+    public ELMS(List<District> listDistricts, List<Metro> listMetros, List<ProxyInfo> listProxy) : base(listDistricts, listMetros, listProxy)
     {
       //CoreCreator creator = new CsvExportCreator();
       //export = creator.FactoryCreate(Filename);
