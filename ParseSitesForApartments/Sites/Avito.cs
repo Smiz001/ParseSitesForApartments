@@ -100,19 +100,27 @@ namespace ParseSitesForApartments.Sites
 
     private void ChangeDistrictAndPage(object typeRoom)
     {
-     WebProxy proxy = new WebProxy();
-      CredentialCache cc = new CredentialCache();
-      NetworkCredential nc = new NetworkCredential();
+      var random = new Random();
+      var proxyInfo = ListProxy[random.Next(0, 1)];
+      Log.Debug($"Use proxy - {proxyInfo}");
 
-      nc.UserName = "BGXDdU";
-      nc.Password = "vy4ubS";
-      cc.Add("https://185.233.202.204", 9975, "Basic", nc);
-      proxy.Credentials = cc;
+      //var proxy = WebRequest.GetSystemWebProxy();
+      //CredentialCache cc = new CredentialCache();
+      //NetworkCredential nc = new NetworkCredential();
+
+      //nc.UserName = proxyInfo.User;
+      //nc.Password = proxyInfo.Password;
+      //cc.Add($"https://{proxyInfo.Address}", proxyInfo.Port, "Basic", nc);
+      //proxy.Credentials = cc;
+      WebProxy myProxy = new WebProxy();
+      Uri newUri = new Uri($"http://{proxyInfo.Address}:{proxyInfo.Port}");
+      myProxy.Address = newUri;
+      myProxy.Credentials = new NetworkCredential(proxyInfo.User, proxyInfo.Password);
 
       HtmlParser parser = new HtmlParser();
       using (var webClient = new WebClient())
       {
-        webClient.Proxy = proxy;
+        webClient.Proxy = myProxy;
         webClient.Encoding = Encoding.UTF8;
         ServicePointManager.Expect100Continue = true;
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -217,7 +225,7 @@ namespace ParseSitesForApartments.Sites
     private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom)
     {
       var random = new Random();
-      Thread.Sleep(random.Next(2000, 4000));
+      Thread.Sleep(random.Next(8000, 9000));
       try
       {
         Log.Debug("-----------URL-----------");
@@ -244,7 +252,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("БН Все квартиры");
+        progress = new ProgressForm("Авито Все квартиры");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -517,7 +525,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("БН Все квартиры");
+        progress = new ProgressForm("Авито Студии");
         var threadbackground = new Thread(
           new ThreadStart(() =>
           {
@@ -556,7 +564,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("БН Все квартиры");
+        progress = new ProgressForm("Авито 1 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -595,7 +603,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("БН Все квартиры");
+        progress = new ProgressForm("Авито 2 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -634,7 +642,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("БН Все квартиры");
+        progress = new ProgressForm("Авито 3 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -673,7 +681,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("БН Все квартиры");
+        progress = new ProgressForm("Авито 4 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -712,7 +720,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("БН Все квартиры");
+        progress = new ProgressForm("Авито 5+ км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {

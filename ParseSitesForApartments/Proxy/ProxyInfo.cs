@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ParseSitesForApartments.Proxy
+﻿namespace ParseSitesForApartments.Proxy
 {
   public class ProxyInfo
   {
@@ -12,5 +6,10 @@ namespace ParseSitesForApartments.Proxy
     public int Port { get; set; }
     public string User { get; set; }
     public string Password { get; set; }
+
+    public override string ToString()
+    {
+      return $"{Address}:{Port}";
+    }
   }
 }
