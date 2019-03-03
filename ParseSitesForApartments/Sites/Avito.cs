@@ -15,6 +15,7 @@ using System.Threading;
 using System.Windows.Forms;
 using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.ParsClasses;
+using ParseSitesForApartments.UI;
 
 namespace ParseSitesForApartments.Sites
 {
@@ -55,6 +56,8 @@ namespace ParseSitesForApartments.Sites
     private Thread sevenNewThread;
     private Thread eightNewThread;
     private Thread nineNewThread;
+    private ProgressForm progress;
+    private int count = 1;
 
     #endregion
 
@@ -231,49 +234,71 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        studiiThread = new Thread(ChangeDistrictAndPage);
-        studiiThread.Start("Студия");
-        oneThread = new Thread(ChangeDistrictAndPage);
-        oneThread.Start("1 км. кв.");
-        twoThread = new Thread(ChangeDistrictAndPage);
-        twoThread.Start("2 км. кв.");
-        threeThread = new Thread(ChangeDistrictAndPage);
-        threeThread.Start("3 км. кв.");
-        fourThread = new Thread(ChangeDistrictAndPage);
-        fourThread.Start("4 км. кв.");
-        fiveThread = new Thread(ChangeDistrictAndPage);
-        fiveThread.Start("5 км. кв.");
-        sixThread = new Thread(ChangeDistrictAndPage);
-        sixThread.Start("6 км. кв.");
-        sevenThread = new Thread(ChangeDistrictAndPage);
-        sevenThread.Start("7 км. кв.");
-        eightThread = new Thread(ChangeDistrictAndPage);
-        eightThread.Start("8 км. кв.");
-        nineThread = new Thread(ChangeDistrictAndPage);
-        nineThread.Start("9 км. кв.");
-        moreNineThread = new Thread(ChangeDistrictAndPage);
-        moreNineThread.Start("9 км. кв. +");
+        progress = new ProgressForm("БН Все квартиры");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+            {
+              try
+              {
+                studiiThread = new Thread(ChangeDistrictAndPage);
+                studiiThread.Start("Студия");
+                oneThread = new Thread(ChangeDistrictAndPage);
+                oneThread.Start("1 км. кв.");
+                twoThread = new Thread(ChangeDistrictAndPage);
+                twoThread.Start("2 км. кв.");
+                threeThread = new Thread(ChangeDistrictAndPage);
+                threeThread.Start("3 км. кв.");
+                fourThread = new Thread(ChangeDistrictAndPage);
+                fourThread.Start("4 км. кв.");
+                fiveThread = new Thread(ChangeDistrictAndPage);
+                fiveThread.Start("5 км. кв.");
+                sixThread = new Thread(ChangeDistrictAndPage);
+                sixThread.Start("6 км. кв.");
+                sevenThread = new Thread(ChangeDistrictAndPage);
+                sevenThread.Start("7 км. кв.");
+                eightThread = new Thread(ChangeDistrictAndPage);
+                eightThread.Start("8 км. кв.");
+                nineThread = new Thread(ChangeDistrictAndPage);
+                nineThread.Start("9 км. кв.");
+                moreNineThread = new Thread(ChangeDistrictAndPage);
+                moreNineThread.Start("9 км. кв. +");
 
-        studiiNewThread = new Thread(ChangeDistrictAndPage);
-        studiiNewThread.Start("Студия Н");
-        oneNewThread = new Thread(ChangeDistrictAndPage);
-        oneNewThread.Start("1 км. кв. Н");
-        twoNewThread = new Thread(ChangeDistrictAndPage);
-        twoNewThread.Start("2 км. кв. Н");
-        threeNewThread = new Thread(ChangeDistrictAndPage);
-        threeNewThread.Start("3 км. кв. Н");
-        fourNewThread = new Thread(ChangeDistrictAndPage);
-        fourNewThread.Start("4 км. кв. Н");
-        fiveNewThread = new Thread(ChangeDistrictAndPage);
-        fiveNewThread.Start("5 км. кв. Н");
-        sixNewThread = new Thread(ChangeDistrictAndPage);
-        sixNewThread.Start("6 км. кв. Н");
-        sevenNewThread = new Thread(ChangeDistrictAndPage);
-        sevenNewThread.Start("7 км. кв. Н");
-        eightNewThread = new Thread(ChangeDistrictAndPage);
-        eightNewThread.Start("8 км. кв. Н");
-        nineNewThread = new Thread(ChangeDistrictAndPage);
-        nineNewThread.Start("9 км. кв. Н");
+                studiiNewThread = new Thread(ChangeDistrictAndPage);
+                studiiNewThread.Start("Студия Н");
+                oneNewThread = new Thread(ChangeDistrictAndPage);
+                oneNewThread.Start("1 км. кв. Н");
+                twoNewThread = new Thread(ChangeDistrictAndPage);
+                twoNewThread.Start("2 км. кв. Н");
+                threeNewThread = new Thread(ChangeDistrictAndPage);
+                threeNewThread.Start("3 км. кв. Н");
+                fourNewThread = new Thread(ChangeDistrictAndPage);
+                fourNewThread.Start("4 км. кв. Н");
+                fiveNewThread = new Thread(ChangeDistrictAndPage);
+                fiveNewThread.Start("5 км. кв. Н");
+                sixNewThread = new Thread(ChangeDistrictAndPage);
+                sixNewThread.Start("6 км. кв. Н");
+                sevenNewThread = new Thread(ChangeDistrictAndPage);
+                sevenNewThread.Start("7 км. кв. Н");
+                eightNewThread = new Thread(ChangeDistrictAndPage);
+                eightNewThread.Start("8 км. кв. Н");
+                nineNewThread = new Thread(ChangeDistrictAndPage);
+                nineNewThread.Start("9 км. кв. Н");
+
+                Thread.Sleep(10000);
+                CheckCloseThread(-1);
+                export.Execute();
+
+                MessageBox.Show("Загрузка завершена");
+                progress.BeginInvoke(new Action(() => progress.Close()));
+              }
+              catch (Exception ex)
+              {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
+            }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
       else
       {
@@ -292,15 +317,222 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
+    private void CheckCloseThread(int countRoom)
+    {
+      if (countRoom == -1)
+      {
+        while (true)
+        {
+          if (!studiiThread.IsAlive)
+          {
+            if (!oneThread.IsAlive)
+            {
+              if (!twoThread.IsAlive)
+              {
+                if (!threeThread.IsAlive)
+                {
+                  if (!fourThread.IsAlive)
+                  {
+                    if (!fiveThread.IsAlive)
+                    {
+                      if (!sixThread.IsAlive)
+                      {
+                        if (!sevenThread.IsAlive)
+                        {
+                          if (!eightThread.IsAlive)
+                          {
+                            if (!nineThread.IsAlive)
+                            {
+                              if (!moreNineThread.IsAlive)
+                              {
+                                if (!studiiThread.IsAlive)
+                                {
+                                  if (!oneNewThread.IsAlive)
+                                  {
+                                    if (!twoNewThread.IsAlive)
+                                    {
+                                      if (!threeNewThread.IsAlive)
+                                      {
+                                        if (!fourNewThread.IsAlive)
+                                        {
+                                          if (!fiveNewThread.IsAlive)
+                                          {
+                                            if (!sixNewThread.IsAlive)
+                                            {
+                                              if (!sevenNewThread.IsAlive)
+                                              {
+                                                if (!eightNewThread.IsAlive)
+                                                {
+                                                  if (!nineNewThread.IsAlive)
+                                                  {
+                                                    break;
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      if (countRoom == 0)
+      {
+        while (true)
+        {
+          if (!studiiThread.IsAlive)
+          {
+            if (!studiiNewThread.IsAlive)
+            {
+              break;
+            }
+          }
+        }
+      }
+
+      if (countRoom == 1)
+      {
+        while (true)
+        {
+          if (!oneThread.IsAlive)
+          {
+            if (!oneNewThread.IsAlive)
+            {
+              break;
+            }
+          }
+        }
+      }
+
+      if (countRoom == 2)
+      {
+        while (true)
+        {
+          if (!twoThread.IsAlive)
+          {
+            if (!twoNewThread.IsAlive)
+            {
+              break;
+            }
+          }
+        }
+      }
+
+      if (countRoom == 3)
+      {
+        while (true)
+        {
+          if (!threeThread.IsAlive)
+          {
+            if (!threeNewThread.IsAlive)
+            {
+              break;
+            }
+          }
+        }
+      }
+
+      if (countRoom == 4)
+      {
+        while (true)
+        {
+          if (!fourThread.IsAlive)
+          {
+            if (!fourNewThread.IsAlive)
+            {
+              break;
+            }
+          }
+        }
+      }
+
+      if (countRoom == 5)
+      {
+        while (true)
+        {
+          if (!fiveThread.IsAlive)
+          {
+            if (!sixThread.IsAlive)
+            {
+              if (!sevenThread.IsAlive)
+              {
+                if (!eightThread.IsAlive)
+                {
+                  if (!nineThread.IsAlive)
+                  {
+                    if (!moreNineThread.IsAlive)
+                    {
+                      if (!fiveNewThread.IsAlive)
+                      {
+                        if (!sixNewThread.IsAlive)
+                        {
+                          if (!sevenNewThread.IsAlive)
+                          {
+                            if (!eightNewThread.IsAlive)
+                            {
+                              if (!nineNewThread.IsAlive)
+                              {
+                                break;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
     public override void ParsingStudii()
     {
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        studiiThread = new Thread(ChangeDistrictAndPage);
-        studiiThread.Start("Студия");
-        studiiNewThread = new Thread(ChangeDistrictAndPage);
-        studiiNewThread.Start("Студия Н");
+        progress = new ProgressForm("БН Все квартиры");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              studiiThread = new Thread(ChangeDistrictAndPage);
+              studiiThread.Start("Студия");
+              studiiNewThread = new Thread(ChangeDistrictAndPage);
+              studiiNewThread.Start("Студия Н");
+
+              Thread.Sleep(10000);
+              CheckCloseThread(0);
+              export.Execute();
+
+              MessageBox.Show("Загрузка завершена");
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
       else
       {
@@ -314,10 +546,32 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        oneThread = new Thread(ChangeDistrictAndPage);
-        oneThread.Start("1 км. кв.");
-        oneNewThread = new Thread(ChangeDistrictAndPage);
-        oneNewThread.Start("1 км. кв. Н");
+        progress = new ProgressForm("БН Все квартиры");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+            {
+              try
+              {
+                oneThread = new Thread(ChangeDistrictAndPage);
+                oneThread.Start("1 км. кв.");
+                oneNewThread = new Thread(ChangeDistrictAndPage);
+                oneNewThread.Start("1 км. кв. Н");
+
+                Thread.Sleep(10000);
+                CheckCloseThread(1);
+                export.Execute();
+
+                MessageBox.Show("Загрузка завершена");
+                progress.BeginInvoke(new Action(() => progress.Close()));
+              }
+              catch (Exception ex)
+              {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
+            }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
       else
       {
@@ -331,10 +585,32 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        twoThread = new Thread(ChangeDistrictAndPage);
-        twoThread.Start("2 км. кв.");
-        twoNewThread = new Thread(ChangeDistrictAndPage);
-        twoNewThread.Start("2 км. кв. Н");
+        progress = new ProgressForm("БН Все квартиры");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+            {
+              try
+              {
+                twoThread = new Thread(ChangeDistrictAndPage);
+                twoThread.Start("2 км. кв.");
+                twoNewThread = new Thread(ChangeDistrictAndPage);
+                twoNewThread.Start("2 км. кв. Н");
+
+                Thread.Sleep(10000);
+                CheckCloseThread(2);
+                export.Execute();
+
+                MessageBox.Show("Загрузка завершена");
+                progress.BeginInvoke(new Action(() => progress.Close()));
+              }
+              catch (Exception ex)
+              {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
+            }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
       else
       {
@@ -348,10 +624,32 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        threeThread = new Thread(ChangeDistrictAndPage);
-        threeThread.Start("3 км. кв.");
-        threeNewThread = new Thread(ChangeDistrictAndPage);
-        threeNewThread.Start("3 км. кв. Н");
+        progress = new ProgressForm("БН Все квартиры");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+            {
+              try
+              {
+                threeThread = new Thread(ChangeDistrictAndPage);
+                threeThread.Start("3 км. кв.");
+                threeNewThread = new Thread(ChangeDistrictAndPage);
+                threeNewThread.Start("3 км. кв. Н");
+
+                Thread.Sleep(10000);
+                CheckCloseThread(3);
+                export.Execute();
+
+                MessageBox.Show("Загрузка завершена");
+                progress.BeginInvoke(new Action(() => progress.Close()));
+              }
+              catch (Exception ex)
+              {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
+            }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
       else
       {
@@ -365,10 +663,32 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        fourThread = new Thread(ChangeDistrictAndPage);
-        fourThread.Start("4 км. кв.");
-        fourNewThread = new Thread(ChangeDistrictAndPage);
-        fourNewThread.Start("4 км. кв. Н");
+        progress = new ProgressForm("БН Все квартиры");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+            {
+              try
+              {
+                fourThread = new Thread(ChangeDistrictAndPage);
+                fourThread.Start("4 км. кв.");
+                fourNewThread = new Thread(ChangeDistrictAndPage);
+                fourNewThread.Start("4 км. кв. Н");
+
+                Thread.Sleep(10000);
+                CheckCloseThread(4);
+                export.Execute();
+
+                MessageBox.Show("Загрузка завершена");
+                progress.BeginInvoke(new Action(() => progress.Close()));
+              }
+              catch (Exception ex)
+              {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
+            }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
       else
       {
@@ -382,29 +702,51 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        fiveThread = new Thread(ChangeDistrictAndPage);
-        fiveThread.Start("5 км. кв.");
-        sixThread = new Thread(ChangeDistrictAndPage);
-        sixThread.Start("6 км. кв.");
-        sevenThread = new Thread(ChangeDistrictAndPage);
-        sevenThread.Start("7 км. кв.");
-        eightThread = new Thread(ChangeDistrictAndPage);
-        eightThread.Start("8 км. кв.");
-        nineThread = new Thread(ChangeDistrictAndPage);
-        nineThread.Start("9 км. кв.");
-        moreNineThread = new Thread(ChangeDistrictAndPage);
-        moreNineThread.Start("9 км. кв. +");
+        progress = new ProgressForm("БН Все квартиры");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+            {
+              try
+              {
+                fiveThread = new Thread(ChangeDistrictAndPage);
+                fiveThread.Start("5 км. кв.");
+                sixThread = new Thread(ChangeDistrictAndPage);
+                sixThread.Start("6 км. кв.");
+                sevenThread = new Thread(ChangeDistrictAndPage);
+                sevenThread.Start("7 км. кв.");
+                eightThread = new Thread(ChangeDistrictAndPage);
+                eightThread.Start("8 км. кв.");
+                nineThread = new Thread(ChangeDistrictAndPage);
+                nineThread.Start("9 км. кв.");
+                moreNineThread = new Thread(ChangeDistrictAndPage);
+                moreNineThread.Start("9 км. кв. +");
 
-        fiveNewThread = new Thread(ChangeDistrictAndPage);
-        fiveNewThread.Start("5 км. кв. Н");
-        sixNewThread = new Thread(ChangeDistrictAndPage);
-        sixNewThread.Start("6 км. кв. Н");
-        sevenNewThread = new Thread(ChangeDistrictAndPage);
-        sevenNewThread.Start("7 км. кв. Н");
-        eightNewThread = new Thread(ChangeDistrictAndPage);
-        eightNewThread.Start("8 км. кв. Н");
-        nineNewThread = new Thread(ChangeDistrictAndPage);
-        nineNewThread.Start("9 км. кв. Н");
+                fiveNewThread = new Thread(ChangeDistrictAndPage);
+                fiveNewThread.Start("5 км. кв. Н");
+                sixNewThread = new Thread(ChangeDistrictAndPage);
+                sixNewThread.Start("6 км. кв. Н");
+                sevenNewThread = new Thread(ChangeDistrictAndPage);
+                sevenNewThread.Start("7 км. кв. Н");
+                eightNewThread = new Thread(ChangeDistrictAndPage);
+                eightNewThread.Start("8 км. кв. Н");
+                nineNewThread = new Thread(ChangeDistrictAndPage);
+                nineNewThread.Start("9 км. кв. Н");
+
+                Thread.Sleep(10000);
+                CheckCloseThread(5);
+                export.Execute();
+
+                MessageBox.Show("Загрузка завершена");
+                progress.BeginInvoke(new Action(() => progress.Close()));
+              }
+              catch (Exception ex)
+              {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+              }
+            }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
       else
       {
@@ -434,7 +776,7 @@ namespace ParseSitesForApartments.Sites
 
         var aboutBuild = collection[k].GetElementsByClassName("item-description-title-link")[0].TextContent;
         var regex = new Regex(@"(\d+\.\d+\s+м²)|(\d+\s+м²)");
-        flat.Square = regex.Match(aboutBuild).Value.Replace(".", ",");
+        flat.Square = regex.Match(aboutBuild).Value.Replace(".", ",").Replace("м²", "").Trim();
         regex = new Regex(@"(\d+\/\d+)");
         var floor = regex.Match(aboutBuild).Value;
         regex = new Regex(@"(\/\d+)");
@@ -592,6 +934,8 @@ namespace ParseSitesForApartments.Sites
                 //  unionInfo.UnionInfoProdam(flat);
                 //}
                 OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+                progress.UpdateProgress(count);
+                count++;
                 Monitor.Exit(locker);
               }
             }

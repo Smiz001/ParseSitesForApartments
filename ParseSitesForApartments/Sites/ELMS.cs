@@ -653,7 +653,7 @@ namespace ParseSitesForApartments.Sites
 
           var square = collection[i].GetElementsByClassName("space-all");
           if (square.Length > 0)
-            flat.Square = square[0].TextContent.Replace(".", ",");
+            flat.Square = square[0].TextContent.Replace(".", ",").Trim();
 
           string street = string.Empty;
           string number = string.Empty;
@@ -873,7 +873,7 @@ namespace ParseSitesForApartments.Sites
               var divImage = collection[i].GetElementsByClassName("w-image")[0];
               var square = collection[i].GetElementsByClassName("space-all");
               if (square.Length > 0)
-                flat.Square = square[0].TextContent;
+                flat.Square = square[0].TextContent.Replace(".",",").Trim();
             }
 
             regex = new Regex(@"(\d+)");
@@ -895,7 +895,7 @@ namespace ParseSitesForApartments.Sites
                 flat.Floor = floor[0].TextContent.Trim();
               var sq = rows[j].GetElementsByClassName("w-kv-area");
               if (sq.Length > 0)
-                flat.Square = sq[0].TextContent.Trim();
+                flat.Square = sq[0].TextContent.Replace(".",",").Trim();
               var price = rows[j].GetElementsByClassName("w-kv-price");
               if (price.Length > 0)
               {
@@ -1083,7 +1083,7 @@ namespace ParseSitesForApartments.Sites
 
             var square = collection[i].GetElementsByClassName("space-all");
             if (square.Length > 0)
-              flat.Square = square[0].TextContent;
+              flat.Square = square[0].TextContent.Replace(".",",").Trim();
 
             if (collection[i].GetElementsByClassName("address-geo").Length > 0)
             {
