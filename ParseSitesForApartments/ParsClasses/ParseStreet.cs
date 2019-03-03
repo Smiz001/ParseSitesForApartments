@@ -386,6 +386,10 @@ namespace ParseSitesForApartments.ParsClasses
       {
         return "Средняя Подьяческая";
       }
+      else if (str.Contains("Авиаторов Балтики"))
+      {
+        return "Авиаторов Балтики";
+      }
       else
         return street;
     }

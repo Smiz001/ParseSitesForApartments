@@ -892,11 +892,10 @@ namespace ParseSitesForApartments.Sites
         }
 
         street = parseStreet.ExecuteWithoutDistrict(street);
-        //if (flat.Building.Distance.Contains("день") || flat.Building.Distance.Contains("дня") ||
-        //    flat.Building.Distance.Contains("минут") || flat.Building.Distance.Contains("час") ||
-        //    flat.Building.Distance.Contains("дней") || flat.Building.Distance.Contains("недел"))
-        //  flat.Building.Distance = string.Empty;
 
+        number = number.Trim();
+        street = street.Trim();
+        structure = structure.Trim();
         Building building = null;
         Monitor.Enter(lockerDistrict);
         if (buildings.Count != 0)

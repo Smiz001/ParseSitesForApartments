@@ -702,6 +702,9 @@ namespace ParseSitesForApartments.Sites
           }
           street = street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
+          number = number.Trim();
+          street = street.Trim();
+          structure = structure.Trim();
           Building building = null;
           Monitor.Enter(lockerDistrict);
           if (district.Buildings.Count != 0)

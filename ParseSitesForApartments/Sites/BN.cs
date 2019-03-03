@@ -882,7 +882,9 @@ namespace ParseSitesForApartments.Sites
         street = parseStreet.Execute(street, district);
 
         #endregion
-
+        number = number.Trim();
+        street = street.Trim();
+        structure = structure.Trim();
         Building building = null;
         Monitor.Enter(lockerDistrict);
         if (district.Buildings.Count != 0)
