@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.Export;
 using ParseSitesForApartments.Export.Creators;
+using ParseSitesForApartments.ParsClasses;
 using ParseSitesForApartments.Proxy;
 using ParseSitesForApartments.UI;
 using ParseSitesForApartments.UnionWithBase;
@@ -601,6 +602,7 @@ namespace ParseSitesForApartments.Sites
     private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, District district)
     {
       var random = new Random();
+      var parseStreet = new ParseStreet();
       Thread.Sleep(random.Next(2000, 4000));
       try
       {
@@ -628,8 +630,13 @@ namespace ParseSitesForApartments.Sites
 
     private void ParseSheet(IHtmlCollection<IElement> collection, string typeRoom, District district)
     {
+      var parseStreet = new ParseStreet();
       for (int i = 0; i < collection.Length; i++)
       {
+        string street = string.Empty;
+        string number = string.Empty;
+        string structure = string.Empty;
+        string liter = string.Empty;
         var flat = new Flat
         {
           CountRoom = typeRoom
@@ -656,10 +663,6 @@ namespace ParseSitesForApartments.Sites
           if (square.Length > 0)
             flat.Square = square[0].TextContent.Replace(".", ",").Trim();
 
-          string street = string.Empty;
-          string number = string.Empty;
-          string structure = string.Empty;
-          string liter = string.Empty;
 
           if (collection[i].GetElementsByClassName("address-geo").Length > 0)
           {
@@ -682,11 +685,34 @@ namespace ParseSitesForApartments.Sites
           {
             number = number.Replace(structure, "");
             structure = structure.Replace("к", "");
+            //Удаление корпуса при условии что номер корпуса >7
+            int valStr;
+            if (int.TryParse(structure, out valStr))
+            {
+              if (valStr > 7)
+              {
+                number = $@"{number}/{structure}";
+                structure = "";
+              }
+            }
           }
           regex = new Regex(@"(\D)");
-          liter = regex.Match(number).Value;
+          var mc = regex.Matches(number);
+          if (mc.Count == 1)
+          {
+            liter = mc[0].Value;
+          }
+          else if(mc.Count == 2)
+          {
+            liter = mc[2].Value;
+          }
           if (!string.IsNullOrEmpty(liter))
-            number = number.Replace(liter, "");
+          {
+            if (liter != "-" && liter != "/")
+              number = number.Replace(liter, "");
+            else
+              liter = "";
+          }
 
           if (street.Contains("(Горелово)"))
           {
@@ -700,17 +726,19 @@ namespace ParseSitesForApartments.Sites
           {
             street = street.Replace("Парголово", "");
           }
-          street = street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
+          //street = street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
           number = number.Trim();
           street = street.Trim();
           structure = structure.Trim();
+          street = parseStreet.Execute(street, district);
+
           Building building = null;
           Monitor.Enter(lockerDistrict);
           if (district.Buildings.Count != 0)
           {
             var bldsEnum =
-              district.Buildings.Where(x => x.Street == street && x.Number == number && x.Structure == structure);
+              district.Buildings.Where(x => x.Street == street && x.Number == number && x.Structure == structure &&x.Liter == liter);
             if (bldsEnum.Count() > 0)
               building = bldsEnum.First();
           }
@@ -721,11 +749,13 @@ namespace ParseSitesForApartments.Sites
               Street = street,
               Number = number,
               Structure = structure,
+              Liter = liter,
               District = district,
             };
             district.Buildings.Add(building);
           }
           Monitor.Exit(lockerDistrict);
+          flat.Building = building;
 
           if (building.MetroObj == null)
           {
@@ -760,8 +790,6 @@ namespace ParseSitesForApartments.Sites
               flat.Floor = ms[0].Value;
           }
 
-          flat.Building = building;
-
           var pr = collection[i].GetElementsByClassName("price");
           if (pr.Length > 0)
           {
@@ -772,18 +800,19 @@ namespace ParseSitesForApartments.Sites
               flat.Price = price;
             }
           }
+          
 
-          if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+          if (!string.IsNullOrWhiteSpace(flat.Building.Street))
           {
-            if (!string.IsNullOrWhiteSpace(flat.Square))
+            if (!string.IsNullOrWhiteSpace(flat.Building.Number))
             {
-              if (!string.IsNullOrWhiteSpace(flat.Building.Street))
+              if (!string.IsNullOrWhiteSpace(flat.Square))
               {
                 Monitor.Enter(locker);
-                if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-                {
-                  unionInfo.UnionInfoProdam(flat);
-                }
+                //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+                //{
+                //  unionInfo.UnionInfoProdam(flat);
+                //}
                 OnAppend(this, new AppendFlatEventArgs { Flat = flat });
                 progress.UpdateProgress(count);
                 count++;
@@ -802,6 +831,7 @@ namespace ParseSitesForApartments.Sites
 
     private void ParseSheetNov(IHtmlCollection<IElement> collection, string typeRoom, District district)
     {
+      var parseStreet = new ParseStreet();
       for (int i = 0; i < collection.Length; i++)
       {
         var flat = new Flat
@@ -931,7 +961,12 @@ namespace ParseSitesForApartments.Sites
         {
           street = street.Replace("Парголово", "");
         }
-        street = street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
+
+        number = number.Trim();
+        street = street.Trim();
+        structure = structure.Trim();
+        street = parseStreet.Execute(street, district);
+        //street = street.Replace("ул.", "").Replace("ал.", "").Replace("бул.", "").Replace("ш.", "").Replace("пр.", "").Replace("пер.", "").Replace("пр-д", "").Replace(" б", "").Trim();
 
         Building building = null;
         Monitor.Enter(lockerDistrict);
@@ -982,15 +1017,23 @@ namespace ParseSitesForApartments.Sites
         //flat.Building.Metro = flat.Building.Metro.Replace(" и-т", "");
 
 
-        if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+        if (!string.IsNullOrWhiteSpace(flat.Building.Street))
         {
-          Monitor.Enter(locker);
-          if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+          if (!string.IsNullOrWhiteSpace(flat.Building.Number))
           {
-            unionInfo.UnionInfoProdam(flat);
+            if (!string.IsNullOrWhiteSpace(flat.Square))
+            {
+              Monitor.Enter(locker);
+              //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+              //{
+              //  unionInfo.UnionInfoProdam(flat);
+              //}
+              OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+              progress.UpdateProgress(count);
+              count++;
+              Monitor.Exit(locker);
+            }
           }
-          OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-          Monitor.Exit(locker);
         }
       }
     }

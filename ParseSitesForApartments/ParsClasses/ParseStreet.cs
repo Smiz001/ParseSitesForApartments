@@ -16,7 +16,7 @@ namespace ParseSitesForApartments.ParsClasses
         string streetNum = regex.Match(street).Value;
         if (!string.IsNullOrEmpty(streetNum))
         {
-          return $"{streetNum}-я Красноармейская";
+          return $"{streetNum}-я Красноармейская ул.";
         }
         else
           return "Красноармейская";
@@ -192,6 +192,16 @@ namespace ParseSitesForApartments.ParsClasses
       else if (str.Contains("Подьяческая"))
       {
         return "Средняя Подьяческая";
+      }
+      else if (str.Contains("линия") && district.Name == "﻿Василеостровский")
+      {
+        regex = new Regex(@"(\d+)");
+        string streetNum = regex.Match(street).Value;
+        if (!string.IsNullOrEmpty(streetNum))
+        {
+          return $"{streetNum}-я линия В.О.";
+        }
+        return street;
       }
       else
         return street;
