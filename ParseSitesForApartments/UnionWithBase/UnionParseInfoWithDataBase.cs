@@ -49,384 +49,179 @@ namespace ParseSitesForApartments.UnionWithBase
             //{
             //  connection.Open();
 
-              sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
-              string line = "";
-              sr.ReadLine();
-              string select = "";
-              while ((line = sr.ReadLine()) != null)
+            sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Кол-во встроенных нежилых помещений;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
+            string line = "";
+            sr.ReadLine();
+            string select = "";
+            while ((line = sr.ReadLine()) != null)
+            {
+              IDataReader reader = null;
+              try
               {
-                IDataReader reader =null;
-                try
+                string district = string.Empty;
+                string street = string.Empty;
+                string number = string.Empty;
+                string building = string.Empty;
+                string letter = string.Empty;
+                string typeRoom = string.Empty;
+                string square = string.Empty;
+                string floor = string.Empty;
+                string countFloor = string.Empty;
+                string price = string.Empty;
+                string metro = string.Empty;
+                string distance = string.Empty;
+                string dateBuild = string.Empty;
+                string dateRecon = string.Empty;
+                string dateRepair = string.Empty;
+                string buildingSquare = string.Empty;
+                string livingSquare = string.Empty;
+                string noLivingSqaure = string.Empty;
+                string residents = string.Empty;
+                string mansardaSquare = string.Empty;
+                string otoplenie = string.Empty;
+                string gvs = string.Empty;
+                string es = string.Empty;
+                string gs = string.Empty;
+                string typeApartaments = string.Empty;
+                string countApartaments = string.Empty;
+                string countInternal = string.Empty;
+                DateTime dateTep = DateTime.Now;
+                string typeRepair = string.Empty;
+                string countLift = string.Empty;
+                float x = 0;
+                float y = 0;
+                string metroInBase = string.Empty;
+                string distanceOnFoot = string.Empty;
+                string distanceOnCar = string.Empty;
+                float xmetro = 0;
+                float ymetro = 0;
+                Guid IdBuilding = Guid.Empty;
+                Guid? metroId = Guid.Empty;
+                string disFoot = string.Empty;
+                string timeFoot = string.Empty;
+                string disCar = string.Empty;
+                string timeCar = string.Empty;
+
+                var arr = line.Split(';');
+                district = arr[0];
+                street = arr[1].Replace("«", "").Replace("«", "»");
+                number = arr[2].Replace("«", "").Replace("«", "»");
+                building = arr[3];
+                letter = arr[4];
+                typeRoom = arr[5];
+                square = arr[6];
+                price = arr[7];
+                floor = arr[8];
+                metro = arr[9];
+                distance = arr[10];
+
+                if (string.IsNullOrWhiteSpace(letter))
                 {
-                  string district = string.Empty;
-                  string street = string.Empty;
-                  string number = string.Empty;
-                  string building = string.Empty;
-                  string letter = string.Empty;
-                  string typeRoom = string.Empty;
-                  string square = string.Empty;
-                  string floor = string.Empty;
-                  string countFloor = string.Empty;
-                  string price = string.Empty;
-                  string metro = string.Empty;
-                  string distance = string.Empty;
-                  string dateBuild = string.Empty;
-                  string dateRecon = string.Empty;
-                  string dateRepair = string.Empty;
-                  string buildingSquare = string.Empty;
-                  string livingSquare = string.Empty;
-                  string noLivingSqaure = string.Empty;
-                  string residents = string.Empty;
-                  string mansardaSquare = string.Empty;
-                  string otoplenie = string.Empty;
-                  string gvs = string.Empty;
-                  string es = string.Empty;
-                  string gs = string.Empty;
-                  string typeApartaments = string.Empty;
-                  string countApartaments = string.Empty;
-                  string countInternal = string.Empty;
-                  DateTime dateTep = DateTime.Now;
-                  string typeRepair = string.Empty;
-                  string countLift = string.Empty;
-                  float x = 0;
-                  float y = 0;
-                  string metroInBase = string.Empty;
-                  string distanceOnFoot = string.Empty;
-                  string distanceOnCar = string.Empty;
-                  float xmetro = 0;
-                  float ymetro = 0;
-                  Guid IdBuilding = Guid.Empty;
-                  Guid? metroId = Guid.Empty;
-                  string disFoot = string.Empty;
-                  string timeFoot = string.Empty;
-                  string disCar = string.Empty;
-                  string timeCar = string.Empty;
-
-                  var arr = line.Split(';');
-                  district = arr[0];
-                  street = arr[1].Replace("«","").Replace("«", "»");
-                  number = arr[2].Replace("«", "").Replace("«", "»");
-                  building = arr[3];
-                  letter = arr[4];
-                  typeRoom = arr[5];
-                  square = arr[6];
-                  price = arr[7];
-                  floor = arr[8];
-                  metro = arr[9];
-                  distance = arr[10];
-
-                  if (string.IsNullOrWhiteSpace(letter))
+                  if (string.IsNullOrWhiteSpace(building))
                   {
-                    if (string.IsNullOrWhiteSpace(building))
-                    {
-                      select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{street}', '{number}'";
-                    }
-                    else
-                    {
-                      select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{street}', '{number}', '{building}'";
-                    }
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{street}', '{number}'";
                   }
                   else
                   {
-                    if (string.IsNullOrWhiteSpace(building))
-                    {
-                      select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{street}', '{number}', '{letter}'";
-                    }
-                    else
-                    {
-                      select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{street}', '{number}', '{building}', '{letter}'";
-                    }
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{street}', '{number}', '{building}'";
                   }
-                  Log.Debug("----------------------------");
-                  Log.Debug(select);
-
-                  //var command = new SqlCommand(select, connection);
-                  reader = connection.ExecuteReader(select);
-                  while (reader.Read())
+                }
+                else
+                {
+                  if (string.IsNullOrWhiteSpace(building))
                   {
-                    if (string.IsNullOrEmpty(district))
-                      district = reader.GetString(0);
-
-                    dateBuild = reader.GetString(1);
-                    dateRecon = reader.GetString(3);
-                    dateRepair = reader.GetString(4).Replace("  ", "");
-                    buildingSquare = reader.GetDouble(5).ToString(CultureInfo.CurrentCulture);
-                    livingSquare = reader.GetDouble(6).ToString(CultureInfo.CurrentCulture);
-                    noLivingSqaure = reader.GetDouble(7).ToString(CultureInfo.CurrentCulture);
-                    countFloor = reader.GetInt32(9).ToString();
-                    residents = reader.GetInt32(10).ToString();
-                    mansardaSquare = reader.GetDouble(11).ToString(CultureInfo.CurrentCulture);
-                    otoplenie = reader.GetBoolean(12).ToString();
-                    gvs = reader.GetBoolean(13).ToString();
-                    es = reader.GetBoolean(14).ToString();
-                    gs = reader.GetBoolean(15).ToString();
-                    typeApartaments = reader.GetString(16).Replace("  ", "");
-                    countApartaments = reader.GetString(17).Replace("  ", "");
-                    countInternal = reader.GetInt32(18).ToString();
-                    dateTep = reader.GetDateTime(19);
-                    typeRepair = reader.GetString(21);
-                    countLift = reader.GetInt32(22).ToString();
-
-                    x = (float)reader.GetDouble(24);
-                    y = (float)reader.GetDouble(25);
-
-                    distanceOnFoot = reader.GetString(26);
-                    distanceOnCar = reader.GetString(27);
-                    metroInBase = reader.GetString(28);
-                    xmetro = (float)reader.GetDouble(29);
-                    ymetro = (float)reader.GetDouble(30);
-                    IdBuilding = reader.GetGuid(31);
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{street}', '{number}', '{letter}'";
                   }
-                  reader.Close();
-
-                  if (!string.IsNullOrEmpty(dateBuild))
+                  else
                   {
-                    if (!string.IsNullOrEmpty(metro))
+                    select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{street}', '{number}', '{building}', '{letter}'";
+                  }
+                }
+                Log.Debug("----------------------------");
+                Log.Debug(select);
+
+                //var command = new SqlCommand(select, connection);
+                reader = connection.ExecuteReader(select);
+                while (reader.Read())
+                {
+                  if (string.IsNullOrEmpty(district))
+                    district = reader.GetString(0);
+
+                  dateBuild = reader.GetString(1);
+                  dateRecon = reader.GetString(3);
+                  dateRepair = reader.GetString(4).Replace("  ", "");
+                  buildingSquare = reader.GetDouble(5).ToString(CultureInfo.CurrentCulture);
+                  livingSquare = reader.GetDouble(6).ToString(CultureInfo.CurrentCulture);
+                  noLivingSqaure = reader.GetDouble(7).ToString(CultureInfo.CurrentCulture);
+                  countFloor = reader.GetInt32(9).ToString();
+                  residents = reader.GetInt32(10).ToString();
+                  mansardaSquare = reader.GetDouble(11).ToString(CultureInfo.CurrentCulture);
+                  otoplenie = reader.GetBoolean(12).ToString();
+                  gvs = reader.GetBoolean(13).ToString();
+                  es = reader.GetBoolean(14).ToString();
+                  gs = reader.GetBoolean(15).ToString();
+                  typeApartaments = reader.GetString(16).Replace("  ", "");
+                  countApartaments = reader.GetString(17).Replace("  ", "");
+                  countInternal = reader.GetInt32(18).ToString();
+                  dateTep = reader.GetDateTime(19);
+                  typeRepair = reader.GetString(21);
+                  countLift = reader.GetInt32(22).ToString();
+
+                  x = (float)reader.GetDouble(24);
+                  y = (float)reader.GetDouble(25);
+
+                  distanceOnFoot = reader.GetString(26);
+                  distanceOnCar = reader.GetString(27);
+                  metroInBase = reader.GetString(28);
+                  xmetro = (float)reader.GetDouble(29);
+                  ymetro = (float)reader.GetDouble(30);
+                  IdBuilding = reader.GetGuid(31);
+                }
+                reader.Close();
+
+                if (!string.IsNullOrEmpty(dateBuild))
+                {
+                  if (!string.IsNullOrEmpty(metro))
+                  {
+                    if (string.IsNullOrEmpty(metroInBase))
                     {
-                      if (string.IsNullOrEmpty(metroInBase))
-                      {
-                        select = $@"SELECT [XCoor]
+                      select = $@"SELECT [XCoor]
     ,[YCoor]
 	  ,Id
   FROM [ParseBulding].[dbo].[Metro]
   WHERE NAME like '%{metro}%'";
-                        
-                        Log.Debug("----------------------------");
-                        Log.Debug(select);
-                        //command = new SqlCommand(select, connection);
-                        reader = connection.ExecuteReader(select);
-                        while (reader.Read())
-                        {
-                          xmetro = (float)reader.GetDouble(0);
-                          ymetro = (float)reader.GetDouble(1);
-                          metroId = reader.GetGuid(2);
-                        }
-                        reader.Close();
-                        
-                        string update = $@"update [ParseBulding].[dbo].MainInfoAboutBulding
+
+                      Log.Debug("----------------------------");
+                      Log.Debug(select);
+                      //command = new SqlCommand(select, connection);
+                      reader = connection.ExecuteReader(select);
+                      while (reader.Read())
+                      {
+                        xmetro = (float)reader.GetDouble(0);
+                        ymetro = (float)reader.GetDouble(1);
+                        metroId = reader.GetGuid(2);
+                      }
+                      reader.Close();
+
+                      string update = $@"update [ParseBulding].[dbo].MainInfoAboutBulding
 set Metro = '{metroId}'
 where ID='{IdBuilding}'";
 
-                        Log.Debug("----------------------------Обновления метро----------------------------");
-                        Log.Debug(update);
+                      Log.Debug("----------------------------Обновления метро----------------------------");
+                      Log.Debug(update);
 
-                        //command = new SqlCommand(update, connection);
-                        //command.ExecuteNonQuery();
-                        connection.ExecuteNonQuery(update);
-                        
-                        if(xmetro >1 && ymetro > 1)
-                        {
-                          string url = $@"https://2gis.ru/spb/routeSearch/rsType/pedestrian/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.352666%2C59.920495%2Fzoom%2F17%2FrouteTab";
+                      //command = new SqlCommand(update, connection);
+                      //command.ExecuteNonQuery();
+                      connection.ExecuteNonQuery(update);
 
-                          string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
-
-                          Log.Debug("----------------------------URL----------------------------");
-                          Log.Debug(url);
-                          using (var webClient = new WebClient())
-                          {
-                            var random = new Random();
-                            Thread.Sleep(random.Next(2000, 4000));
-
-                            ServicePointManager.Expect100Continue = true;
-                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-                            webClient.Encoding = Encoding.UTF8;
-                            var responce = webClient.DownloadString(url);
-                            var parser = new HtmlParser();
-                            var document = parser.Parse(responce);
-
-                            var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
-                            if(timeDoc.Length > 0)
-                            {
-                              var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
-                              if(disDoc.Length > 0)
-                              {
-                                timeFoot = timeDoc[0].TextContent;
-                                disFoot = disDoc[0].TextContent;
-
-                                if(disFoot.Contains("км"))
-                                {
-                                  var regex = new Regex(@"(\d+,\d+)");
-                                  var km = regex.Match(disFoot).Value;
-                                  km = km.Replace(".", "").Replace(",", "") + "00";
-                                  if (km == "00")
-                                  {
-                                    regex = new Regex(@"(\d+)");
-                                    km = regex.Match(disFoot).Value;
-                                    km = km.Replace(".", "").Replace(",", "") + "000";
-                                  }
-
-                                  disFoot = km + " м";
-                                }
-                                update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
-set DistanceAndTimeOnFoot = '{disFoot},{timeFoot}'
-where ID='{IdBuilding}'";
-
-                                Log.Debug("----------------------------");
-                                Log.Debug(update);
-                                //command = new SqlCommand(update, connection);
-                                //command.ExecuteNonQuery();
-                                connection.ExecuteNonQuery(update);
-                              }
-                            }
-                            responce = webClient.DownloadString(urlCar);
-                            document = parser.Parse(responce);
-                            timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
-                            if(timeDoc.Length>0)
-                            {
-                              var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
-                              if(disDoc.Length>0)
-                              {
-                                if(timeDoc.Length == 2)
-                                {
-                                  timeCar = timeDoc[1].TextContent;
-                                  disCar = disDoc[1].TextContent;
-                                }
-                                else
-                                {
-                                  timeCar = timeDoc[0].TextContent;
-                                  disCar = disDoc[0].TextContent;
-                                }
-                                if (disCar.Contains("км"))
-                                {
-                                  var regex = new Regex(@"(\d+,\d+)");
-                                  var km = regex.Match(disCar).Value;
-                                  km = km.Replace(".", "").Replace(",", "") + "00";
-                                  if (km == "00")
-                                  {
-                                    regex = new Regex(@"(\d+)");
-                                    km = regex.Match(disCar).Value;
-                                    km = km.Replace(".", "").Replace(",", "") + "000";
-                                  }
-                                  disCar = km + " м";
-                                }
-                                update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
-set DistanceAndTimeOnCar = '{disCar},{timeCar}'
-where ID='{IdBuilding}'";
-
-                                Log.Debug("----------------------------");
-                                Log.Debug(update);
-                                //command = new SqlCommand(update, connection);
-                                //command.ExecuteNonQuery();
-                                connection.ExecuteNonQuery(update);
-                              }
-                            }
-                          }
-                        }
-                      }
-                      else
+                      if (xmetro > 1 && ymetro > 1)
                       {
-                        if (string.IsNullOrEmpty(distanceOnCar))
-                        {
-                          //Если пустое расстояние
-                          string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
+                        string url = $@"https://2gis.ru/spb/routeSearch/rsType/pedestrian/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.352666%2C59.920495%2Fzoom%2F17%2FrouteTab";
 
-                          using (var webClient = new WebClient())
-                          {
-                            var random = new Random();
-                            Thread.Sleep(random.Next(2000, 4000));
+                        string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
 
-                            ServicePointManager.Expect100Continue = true;
-                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-                            webClient.Encoding = Encoding.UTF8;
-                            var responce = webClient.DownloadString(urlCar);
-                            var parser = new HtmlParser();
-                            var document = parser.Parse(responce);
-
-                            var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
-                            if (timeDoc.Length > 0)
-                            {
-                              var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
-                              if (disDoc.Length > 0)
-                              {
-                                timeCar = timeDoc[0].TextContent;
-                                disCar = disDoc[0].TextContent;
-
-                                if (timeDoc.Length == 2)
-                                {
-                                  timeCar = timeDoc[1].TextContent;
-                                  disCar = disDoc[1].TextContent;
-                                }
-                                else
-                                {
-                                  timeCar = timeDoc[0].TextContent;
-                                  disCar = disDoc[0].TextContent;
-                                }
-                                if (disCar.Contains("км"))
-                                {
-                                  var regex = new Regex(@"(\d+,\d+)");
-                                  var km = regex.Match(disCar).Value;
-                                  km = km.Replace(".", "").Replace(",", "") + "00";
-                                  if (km == "00")
-                                  {
-                                    regex = new Regex(@"(\d+)");
-                                    km = regex.Match(disCar).Value;
-                                    km = km.Replace(".", "").Replace(",", "") + "000";
-                                  }
-                                  disCar = km + " м";
-                                }
-                                string update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
-set DistanceAndTimeOnCar = '{disCar},{timeCar}'
-where ID='{IdBuilding}'";
-
-                                Log.Debug("----------------------------");
-                                Log.Debug(update);
-                                //command = new SqlCommand(update, connection);
-                                //command.ExecuteNonQuery();
-                                connection.ExecuteNonQuery(update);
-                              }
-                            }
-                          }
-                        }
-                        arr = distanceOnFoot.Split(',');
-                        if(arr.Length > 1)
-                        {
-                          disFoot = arr[0];
-                          timeFoot = arr[1];
-                        }
-                        arr = distanceOnCar.Split(',');
-                        if(arr.Length > 1)
-                        {
-                          disCar = arr[0];
-                          timeCar = arr[1];
-                        }
-                      }
-                    }
-                  }
-                  if(!string.IsNullOrEmpty(distanceOnCar) && string.IsNullOrEmpty(disCar))
-                  {
-                    var arrr = distanceOnCar.Split(',');
-                    disCar = arrr[0];
-                    timeCar = arrr[1];
-                  }
-                  if(metroId == Guid.Empty)
-                  {
-                    metroId = null;
-                  }
-
-
-                  //Поиск координат у домов которые не нашлись в базе и нахождения у них расстояния до метро
-                  if(string.IsNullOrWhiteSpace(dateBuild))
-                  {
-                    Metro metroObj =null;
-                    if(xmetro < 1 || ymetro < 1)
-                    {
-                      metroObj = GetCoorMetroFromBase(metro, connection);
-                    }
-                    if (metroObj != null)
-                    {
-                      var address = $@"Санкт-Петербург {street}, {number}к{building} лит.{letter}";
-                      Log.Debug(address);
-                      var coords = GetCoorForBuildig(address);
-                      if (coords != null)
-                      {
-                        string url = $@"https://2gis.ru/spb/routeSearch/rsType/pedestrian/from/{coords[1].ToString().Replace(",", ".")}%2C{coords[0].ToString().Replace(",", ".")}%7C{coords[0].ToString().Replace(",", ".")}%20{coords[1].ToString().Replace(",", ".")}%7Cgeo/to/{metroObj.YCoor.ToString().Replace(",", ".")}%2C{metroObj.XCoor.ToString().Replace(",", ".")}%7C{metroObj.XCoor.ToString().Replace(",", ".")}%20{metroObj.YCoor.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.352666%2C59.920495%2Fzoom%2F17%2FrouteTab";
-
-                        string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{coords[1].ToString().Replace(",", ".")}%2C{coords[0].ToString().Replace(",", ".")}%7C{coords[0].ToString().Replace(",", ".")}%20{coords[1].ToString().Replace(",", ".")}%7Cgeo/to/{metroObj.YCoor.ToString().Replace(",", ".")}%2C{metroObj.XCoor.ToString().Replace(",", ".")}%7C{metroObj.XCoor.ToString().Replace(",", ".")}%20{metroObj.YCoor.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
-
+                        Log.Debug("----------------------------URL----------------------------");
+                        Log.Debug(url);
                         using (var webClient = new WebClient())
                         {
                           var random = new Random();
@@ -437,7 +232,6 @@ where ID='{IdBuilding}'";
                           ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
                           webClient.Encoding = Encoding.UTF8;
-                          Log.Debug(url);
                           var responce = webClient.DownloadString(url);
                           var parser = new HtmlParser();
                           var document = parser.Parse(responce);
@@ -465,6 +259,15 @@ where ID='{IdBuilding}'";
 
                                 disFoot = km + " м";
                               }
+                              update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+set DistanceAndTimeOnFoot = '{disFoot},{timeFoot}'
+where ID='{IdBuilding}'";
+
+                              Log.Debug("----------------------------");
+                              Log.Debug(update);
+                              //command = new SqlCommand(update, connection);
+                              //command.ExecuteNonQuery();
+                              connection.ExecuteNonQuery(update);
                             }
                           }
                           responce = webClient.DownloadString(urlCar);
@@ -498,48 +301,245 @@ where ID='{IdBuilding}'";
                                 }
                                 disCar = km + " м";
                               }
+                              update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+set DistanceAndTimeOnCar = '{disCar},{timeCar}'
+where ID='{IdBuilding}'";
+
+                              Log.Debug("----------------------------");
+                              Log.Debug(update);
+                              //command = new SqlCommand(update, connection);
+                              //command.ExecuteNonQuery();
+                              connection.ExecuteNonQuery(update);
                             }
                           }
                         }
+                      }
+                    }
+                    else
+                    {
+                      if (string.IsNullOrEmpty(distanceOnCar))
+                      {
+                        //Если пустое расстояние
+                        string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{y.ToString().Replace(",", ".")}%2C{x.ToString().Replace(",", ".")}%7C{x.ToString().Replace(",", ".")}%20{y.ToString().Replace(",", ".")}%7Cgeo/to/{ymetro.ToString().Replace(",", ".")}%2C{xmetro.ToString().Replace(",", ".")}%7C{xmetro.ToString().Replace(",", ".")}%20{ymetro.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
 
-                        string insert = $@"insert into [ParseBulding].[dbo].[MainInfoAboutBulding] (Id, Street, Number, Bulding, Letter, DistrictId, DateBulding, SeriesID,[CountCommApartament],[DateReconstruct],[DateRepair],[BuldingArea],[LivingArea],[NoLivingArea],[Stairs],[Storeys] ,[Residents],[MansardArea] ,[HeatingCentral],[HotWaterCentral],[ElectroCentral],[GascCntral],[FlatType],[FlatNum],[InternalNum],[TepCreateDate],[ManagCompanyId],[Failure],[RepairJob],[LiftCount],[BasementArea],[Xcoor],[Ycoor],[Metro],[DistanceAndTimeOnFoot],[DistanceAndTimeOnCar])
-values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D-9300-96D6A7364F68','','856E5C0B-F9C0-4F06-AD81-2405BF8357A6',0,'','',0,0,0,0,0,0,0,0,0,0,0,'','',null,null,'CE2CC208-8F15-44C5-94CC-29F5A971C196',0,'',0,0,{coords[0].ToString().Replace(",",".")},{coords[1].ToString().Replace(",", ".")},'{metroObj.Id}','{disFoot}, {timeFoot}','{disCar}, {timeCar}')";
-                        Log.Debug(insert);
-                        //command = new SqlCommand(insert, connection);
-                        //command.ExecuteNonQuery();
-                        connection.ExecuteNonQuery(insert);
+                        using (var webClient = new WebClient())
+                        {
+                          var random = new Random();
+                          Thread.Sleep(random.Next(2000, 4000));
+
+                          ServicePointManager.Expect100Continue = true;
+                          ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                          ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+                          webClient.Encoding = Encoding.UTF8;
+                          var responce = webClient.DownloadString(urlCar);
+                          var parser = new HtmlParser();
+                          var document = parser.Parse(responce);
+
+                          var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+                          if (timeDoc.Length > 0)
+                          {
+                            var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                            if (disDoc.Length > 0)
+                            {
+                              timeCar = timeDoc[0].TextContent;
+                              disCar = disDoc[0].TextContent;
+
+                              if (timeDoc.Length == 2)
+                              {
+                                timeCar = timeDoc[1].TextContent;
+                                disCar = disDoc[1].TextContent;
+                              }
+                              else
+                              {
+                                timeCar = timeDoc[0].TextContent;
+                                disCar = disDoc[0].TextContent;
+                              }
+                              if (disCar.Contains("км"))
+                              {
+                                var regex = new Regex(@"(\d+,\d+)");
+                                var km = regex.Match(disCar).Value;
+                                km = km.Replace(".", "").Replace(",", "") + "00";
+                                if (km == "00")
+                                {
+                                  regex = new Regex(@"(\d+)");
+                                  km = regex.Match(disCar).Value;
+                                  km = km.Replace(".", "").Replace(",", "") + "000";
+                                }
+                                disCar = km + " м";
+                              }
+                              string update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+set DistanceAndTimeOnCar = '{disCar},{timeCar}'
+where ID='{IdBuilding}'";
+
+                              Log.Debug("----------------------------");
+                              Log.Debug(update);
+                              //command = new SqlCommand(update, connection);
+                              //command.ExecuteNonQuery();
+                              connection.ExecuteNonQuery(update);
+                            }
+                          }
+                        }
+                      }
+                      arr = distanceOnFoot.Split(',');
+                      if (arr.Length > 1)
+                      {
+                        disFoot = arr[0];
+                        timeFoot = arr[1];
+                      }
+                      arr = distanceOnCar.Split(',');
+                      if (arr.Length > 1)
+                      {
+                        disCar = arr[0];
+                        timeCar = arr[1];
                       }
                     }
                   }
-                  
-
-                  string dateTime = string.Empty;
-                  if (dateTep != DateTime.Now)
-                    dateTime = dateTep.ToShortDateString();
-
-                  sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoot};{disCar};{timeCar};{baseSite.NameSite}");
                 }
-                catch (SqlException ex)
+                if (!string.IsNullOrEmpty(distanceOnCar) && string.IsNullOrEmpty(disCar))
                 {
-                  Log.Error("----------------------------");
-                  Log.Error(ex.Message);
-                  if (reader != null)
+                  var arrr = distanceOnCar.Split(',');
+                  disCar = arrr[0];
+                  timeCar = arrr[1];
+                }
+                if (metroId == Guid.Empty)
+                {
+                  metroId = null;
+                }
+
+
+                //Поиск координат у домов которые не нашлись в базе и нахождения у них расстояния до метро
+                if (string.IsNullOrWhiteSpace(dateBuild))
+                {
+                  Metro metroObj = null;
+                  if (xmetro < 1 || ymetro < 1)
                   {
-                    if (!reader.IsClosed)
-                      reader.Close();
+                    metroObj = GetCoorMetroFromBase(metro, connection);
+                  }
+                  if (metroObj != null)
+                  {
+                    var address = $@"Санкт-Петербург {street}, {number}к{building} лит.{letter}";
+                    Log.Debug(address);
+                    var coords = GetCoorForBuildig(address);
+                    if (coords != null)
+                    {
+                      string url = $@"https://2gis.ru/spb/routeSearch/rsType/pedestrian/from/{coords[1].ToString().Replace(",", ".")}%2C{coords[0].ToString().Replace(",", ".")}%7C{coords[0].ToString().Replace(",", ".")}%20{coords[1].ToString().Replace(",", ".")}%7Cgeo/to/{metroObj.YCoor.ToString().Replace(",", ".")}%2C{metroObj.XCoor.ToString().Replace(",", ".")}%7C{metroObj.XCoor.ToString().Replace(",", ".")}%20{metroObj.YCoor.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.352666%2C59.920495%2Fzoom%2F17%2FrouteTab";
+
+                      string urlCar = $@"https://2gis.ru/spb/routeSearch/rsType/car/from/{coords[1].ToString().Replace(",", ".")}%2C{coords[0].ToString().Replace(",", ".")}%7C{coords[0].ToString().Replace(",", ".")}%20{coords[1].ToString().Replace(",", ".")}%7Cgeo/to/{metroObj.YCoor.ToString().Replace(",", ".")}%2C{metroObj.XCoor.ToString().Replace(",", ".")}%7C{metroObj.XCoor.ToString().Replace(",", ".")}%20{metroObj.YCoor.ToString().Replace(",", ".")}%7Cgeo?queryState=center%2F30.235319%2C59.854278%2Fzoom%2F14%2FrouteTab";
+
+                      using (var webClient = new WebClient())
+                      {
+                        var random = new Random();
+                        Thread.Sleep(random.Next(2000, 4000));
+
+                        ServicePointManager.Expect100Continue = true;
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+                        webClient.Encoding = Encoding.UTF8;
+                        Log.Debug(url);
+                        var responce = webClient.DownloadString(url);
+                        var parser = new HtmlParser();
+                        var document = parser.Parse(responce);
+
+                        var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+                        if (timeDoc.Length > 0)
+                        {
+                          var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                          if (disDoc.Length > 0)
+                          {
+                            timeFoot = timeDoc[0].TextContent;
+                            disFoot = disDoc[0].TextContent;
+
+                            if (disFoot.Contains("км"))
+                            {
+                              var regex = new Regex(@"(\d+,\d+)");
+                              var km = regex.Match(disFoot).Value;
+                              km = km.Replace(".", "").Replace(",", "") + "00";
+                              if (km == "00")
+                              {
+                                regex = new Regex(@"(\d+)");
+                                km = regex.Match(disFoot).Value;
+                                km = km.Replace(".", "").Replace(",", "") + "000";
+                              }
+
+                              disFoot = km + " м";
+                            }
+                          }
+                        }
+                        responce = webClient.DownloadString(urlCar);
+                        document = parser.Parse(responce);
+                        timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
+                        if (timeDoc.Length > 0)
+                        {
+                          var disDoc = document.GetElementsByClassName("autoResults__routeHeaderContentLength");
+                          if (disDoc.Length > 0)
+                          {
+                            if (timeDoc.Length == 2)
+                            {
+                              timeCar = timeDoc[1].TextContent;
+                              disCar = disDoc[1].TextContent;
+                            }
+                            else
+                            {
+                              timeCar = timeDoc[0].TextContent;
+                              disCar = disDoc[0].TextContent;
+                            }
+                            if (disCar.Contains("км"))
+                            {
+                              var regex = new Regex(@"(\d+,\d+)");
+                              var km = regex.Match(disCar).Value;
+                              km = km.Replace(".", "").Replace(",", "") + "00";
+                              if (km == "00")
+                              {
+                                regex = new Regex(@"(\d+)");
+                                km = regex.Match(disCar).Value;
+                                km = km.Replace(".", "").Replace(",", "") + "000";
+                              }
+                              disCar = km + " м";
+                            }
+                          }
+                        }
+                      }
+
+                      string insert = $@"insert into [ParseBulding].[dbo].[MainInfoAboutBulding] (Id, Street, Number, Bulding, Letter, DistrictId, DateBulding, SeriesID,[CountCommApartament],[DateReconstruct],[DateRepair],[BuldingArea],[LivingArea],[NoLivingArea],[Stairs],[Storeys] ,[Residents],[MansardArea] ,[HeatingCentral],[HotWaterCentral],[ElectroCentral],[GascCntral],[FlatType],[FlatNum],[InternalNum],[TepCreateDate],[ManagCompanyId],[Failure],[RepairJob],[LiftCount],[BasementArea],[Xcoor],[Ycoor],[Metro],[DistanceAndTimeOnFoot],[DistanceAndTimeOnCar])
+values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D-9300-96D6A7364F68','','856E5C0B-F9C0-4F06-AD81-2405BF8357A6',0,'','',0,0,0,0,0,0,0,0,0,0,0,'','',null,null,'CE2CC208-8F15-44C5-94CC-29F5A971C196',0,'',0,0,{coords[0].ToString().Replace(",", ".")},{coords[1].ToString().Replace(",", ".")},'{metroObj.Id}','{disFoot}, {timeFoot}','{disCar}, {timeCar}')";
+                      Log.Debug(insert);
+                      //command = new SqlCommand(insert, connection);
+                      //command.ExecuteNonQuery();
+                      connection.ExecuteNonQuery(insert);
+                    }
                   }
                 }
-                catch (Exception ex)
+
+
+                string dateTime = string.Empty;
+                if (dateTep != DateTime.Now)
+                  dateTime = dateTep.ToShortDateString();
+
+                sw.WriteLine($@"{district};{street};{number};{building};{letter};{typeRoom};{square};{floor};{countFloor};{price};{metro};{dateBuild};{dateRecon};{dateRepair};{buildingSquare};{livingSquare};{noLivingSqaure};{mansardaSquare};{residents};{otoplenie};{gvs};{es};{gs};{typeApartaments};{countApartaments};{countInternal};{dateTime};{typeRepair};{countLift};{disFoot};{timeFoot};{disCar};{timeCar};{baseSite.NameSite}");
+              }
+              catch (SqlException ex)
+              {
+                Log.Error("----------------------------");
+                Log.Error(ex.Message);
+                if (reader != null)
                 {
-                  Log.Error("----------------------------");
-                  Log.Error(ex.Message);
-                  if (reader != null)
-                  {
-                    if (!reader.IsClosed)
-                      reader.Close();
-                  }
+                  if (!reader.IsClosed)
+                    reader.Close();
                 }
               }
+              catch (Exception ex)
+              {
+                Log.Error("----------------------------");
+                Log.Error(ex.Message);
+                if (reader != null)
+                {
+                  if (!reader.IsClosed)
+                    reader.Close();
+                }
+              }
+            }
             //}
           }
         }
@@ -553,15 +553,16 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
 
     private float[] GetCoorForBuildig(string adress)
     {
+      float[] arr = null;
       var yandex = new Yandex();
       var doc1 = yandex.SearchObjectByAddress(adress);
-      using (var sw1 = new StreamWriter(@"D:\Coord.xml", false, System.Text.Encoding.UTF8))
+      using (var sw1 = new StreamWriter(@"Coord.xml", false, System.Text.Encoding.UTF8))
       {
         sw1.WriteLine(doc1);
       }
 
       XmlDocument doc = new XmlDocument();
-      doc.Load(@"D:\Coord.xml");
+      doc.Load(@"Coord.xml");
       var root = doc.DocumentElement;
       var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
       if (GeoObjectCollection.ChildNodes.Count > 1)
@@ -576,12 +577,13 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
             var coor = Point.InnerText.Split(' ');
             float x = float.Parse(coor[1].Replace(".", ","));
             float y = float.Parse(coor[0].Replace(".", ","));
-            return new float[]{x,y};
+            
+            arr = new float[] { x, y };
           }
         }
       }
-      File.Delete(@"D:\Coord.xml");
-      return null;
+      File.Delete(@"Coord.xml");
+      return arr;
     }
 
     private Metro GetCoorMetroFromBase(string metroName, ConnetionToSqlServer connection)
@@ -596,7 +598,7 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
       Log.Debug(select);
       //var command = new SqlCommand(select, connection);
       var reader = connection.ExecuteReader(select);
-      Metro metro= null;
+      Metro metro = null;
       while (reader.Read())
       {
         metro = new Metro();
@@ -1129,114 +1131,110 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
 
     public void UnionInfoProdam(Flat flat)
     {
-      if(flat!= null)
+      if (flat != null)
       {
-        if(string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+        string select = string.Empty;
+        if (string.IsNullOrWhiteSpace(flat.Building.Liter))
         {
-          string select = string.Empty;
-          if (string.IsNullOrWhiteSpace(flat.Building.Liter))
+          if (string.IsNullOrWhiteSpace(flat.Building.Structure))
           {
-            if (string.IsNullOrWhiteSpace(flat.Building.Structure))
-            {
-              select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{flat.Building.Street}', '{flat.Building.Number}'";
-            }
-            else
-            {
-              select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}'";
-            }
+            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{flat.Building.Street}', '{flat.Building.Number}'";
           }
           else
           {
-            if (string.IsNullOrWhiteSpace(flat.Building.Structure))
-            {
-              select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Liter}'";
-            }
-            else
-            {
-              select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}', '{flat.Building.Liter}'";
-            }
+            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbind '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}'";
           }
-          Log.Debug("----------------------------");
-          Log.Debug(select);
-
-          //connection
-          //var command = new SqlCommand(select, connection);
-          var reader = connection.ExecuteReader(select);
-          if (reader != null)
+        }
+        else
+        {
+          if (string.IsNullOrWhiteSpace(flat.Building.Structure))
           {
-            while (reader.Read())
-            {
-              //if (string.IsNullOrEmpty(district))
-              //  district = reader.GetString(0);
-              flat.Building.DateBuild = reader.GetString(1);
-              flat.Building.DateReconstruct = reader.GetString(3);
-              flat.Building.DateRepair = reader.GetString(4).Replace("  ", "");
-              flat.Building.BuildingSquare = reader.GetDouble(5);
-              flat.Building.LivingSquare = reader.GetDouble(6);
-              flat.Building.NoLivingSqaure = reader.GetDouble(7);
-              flat.Building.CountFloor = reader.GetInt32(9);
-              flat.Building.Residents = reader.GetInt32(10);
-              flat.Building.MansardaSquare = reader.GetDouble(11);
-              flat.Building.Otoplenie = reader.GetBoolean(12);
-              flat.Building.Gvs = reader.GetBoolean(13);
-              flat.Building.Es = reader.GetBoolean(14);
-              flat.Building.Gs = reader.GetBoolean(15);
-              flat.Building.TypeApartaments = reader.GetString(16).Replace("  ", "");
-              flat.Building.CountApartaments = reader.GetString(17).Replace("  ", "");
-              flat.Building.CountInternal = reader.GetInt32(18);
-              flat.Building.DateTep = reader.GetDateTime(19);
-              flat.Building.TypeRepair = reader.GetString(21);
-              flat.Building.CountLift = reader.GetInt32(22);
-
-              flat.Building.XCoor = (float)reader.GetDouble(24);
-              flat.Building.YCoor = (float)reader.GetDouble(25);
-
-              string disFoot = reader.GetString(26);
-              if (!string.IsNullOrWhiteSpace(disFoot))
-              {
-                var splitFoot = disFoot.Split(',');
-                if (splitFoot.Length == 2)
-                {
-                  flat.Building.DistanceOnFoot = splitFoot[0];
-                  flat.Building.TimeOnFootToMetro = splitFoot[1];
-                }
-                else
-                {
-                  //TODO запись строки с ошибками
-                  Log.Error(disFoot);
-                }
-              }
-              string disCar = reader.GetString(27);
-              if (!string.IsNullOrWhiteSpace(disCar))
-              {
-                var splitCar = disCar.Split(',');
-                if (splitCar.Length == 2)
-                {
-                  flat.Building.DistanceOnCar = splitCar[0];
-                  flat.Building.TimeOnCarToMetro = splitCar[1];
-                }
-                else
-                {
-                  //TODO запись строки с ошибками
-                  Log.Error(disCar);
-                }
-
-              }
-              flat.Building.Guid = reader.GetGuid(31);
-            }
-            reader.Close();
-
-            if (string.IsNullOrWhiteSpace(flat.Building.DistanceOnFoot))
-            {
-              SearchDistanceBetweenBuildingAndMetro(flat);
-            }
+            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Liter}'";
           }
+          else
+          {
+            select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumberAndBuilbindAndLetter '{flat.Building.Street}', '{flat.Building.Number}', '{flat.Building.Structure}', '{flat.Building.Liter}'";
+          }
+        }
+        Log.Debug("----------------------------");
+        Log.Debug(select);
+
+        //connection
+        //var command = new SqlCommand(select, connection);
+        var reader = connection.ExecuteReader(select);
+        if (reader != null)
+        {
+          while (reader.Read())
+          {
+            //if (string.IsNullOrEmpty(district))
+            //  district = reader.GetString(0);
+            flat.Building.DateBuild = reader.GetString(1);
+            flat.Building.DateReconstruct = reader.GetString(3);
+            flat.Building.DateRepair = reader.GetString(4).Replace("  ", "");
+            flat.Building.BuildingSquare = reader.GetDouble(5);
+            flat.Building.LivingSquare = reader.GetDouble(6);
+            flat.Building.NoLivingSqaure = reader.GetDouble(7);
+            flat.Building.CountFloor = reader.GetInt32(9);
+            flat.Building.Residents = reader.GetInt32(10);
+            flat.Building.MansardaSquare = reader.GetDouble(11);
+            flat.Building.Otoplenie = reader.GetBoolean(12);
+            flat.Building.Gvs = reader.GetBoolean(13);
+            flat.Building.Es = reader.GetBoolean(14);
+            flat.Building.Gs = reader.GetBoolean(15);
+            flat.Building.TypeApartaments = reader.GetString(16).Replace("  ", "");
+            flat.Building.CountApartaments = reader.GetString(17).Replace("  ", "");
+            flat.Building.CountInternal = reader.GetInt32(18);
+            flat.Building.DateTep = reader.GetDateTime(19);
+            flat.Building.TypeRepair = reader.GetString(21);
+            flat.Building.CountLift = reader.GetInt32(22);
+            flat.Building.XCoor = (float)reader.GetDouble(24);
+            flat.Building.YCoor = (float)reader.GetDouble(25);
+            string disFoot = reader.GetString(26);
+            if (!string.IsNullOrWhiteSpace(disFoot))
+            {
+              var splitFoot = disFoot.Split(',');
+              if (splitFoot.Length == 2)
+              {
+                flat.Building.DistanceOnFoot = splitFoot[0];
+                flat.Building.TimeOnFootToMetro = splitFoot[1];
+              }
+              else
+              {
+                //TODO запись строки с ошибками
+                Log.Error(disFoot);
+              }
+            }
+            string disCar = reader.GetString(27);
+            if (!string.IsNullOrWhiteSpace(disCar))
+            {
+              var splitCar = disCar.Split(',');
+              if (splitCar.Length == 2)
+              {
+                flat.Building.DistanceOnCar = splitCar[0];
+                flat.Building.TimeOnCarToMetro = splitCar[1];
+              }
+              else
+              {
+                //TODO запись строки с ошибками
+                Log.Error(disCar);
+              }
+
+            }
+            flat.Building.Guid = reader.GetGuid(31);
+          }
+          reader.Close();
+        }
+
+        if (string.IsNullOrWhiteSpace(flat.Building.DistanceOnFoot))
+        {
+          SearchDistanceBetweenBuildingAndMetro(flat);
         }
       }
     }
 
     private void SearchDistanceBetweenBuildingAndMetro(Flat flat)
     {
+      Log.Debug($"Call SearchDistanceBetweenBuildingAndMetro for {flat}");
       if (string.IsNullOrWhiteSpace(flat.Building.DistanceOnFoot))
       {
         var address = $@"Санкт-Петербург {flat.Building.Street}, {flat.Building.Number}к{flat.Building.Structure} лит.{flat.Building.Liter}";
@@ -1334,13 +1332,13 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
 
                   flat.Building.DistanceOnCar = disCar;
                   flat.Building.TimeOnCarToMetro = timeCar;
-                  
+
                   //TODO обновить данные в базе (Если дом есть, то обновить расстояние, если нет, то записать его в базу)
-                  var exist = $"EXEC dbo.ExistBuilding '{flat.Building.Guid}'";
-                  var isExist = (int)connection.ExecuteValue(exist);
+                  //var exist = $"EXEC dbo.ExistBuilding '{flat.Building.Guid}'";
+                  //var isExist = (int)connection.ExecuteValue(exist);
 
                   string query = string.Empty;
-                  if (isExist == 1)
+                  if (flat.Building.Guid != Guid.Empty)
                   {
                     query = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
 	  set DistanceAndTimeOnFoot = '{flat.Building.DistanceOnFoot},{flat.Building.TimeOnFootToMetro}',
@@ -1358,6 +1356,7 @@ values ('{flat.Building.Guid}','{flat.Building.Street}','{flat.Building.Number}'
             }
             catch (Exception e)
             {
+              Log.Error(e.Message);
             }
           }
         }

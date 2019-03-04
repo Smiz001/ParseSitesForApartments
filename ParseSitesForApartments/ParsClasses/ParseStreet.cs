@@ -169,13 +169,12 @@ namespace ParseSitesForApartments.ParsClasses
       {
         return "Невский пр.";
       }
-      else if (str.Contains("морская") && str.Contains("б") &&(district.Name == "﻿Центральный" || district.Name == "﻿Адмиралтейский"))
+      else if (str.Contains("морская") && (district.Name == "﻿Центральный" || district.Name == "﻿Адмиралтейский"))
       {
-        return "Б.Морская ул.";
-      }
-      else if (str.Contains("морская") && str.Contains("м") && (district.Name == "﻿Центральный" || district.Name == "﻿Адмиралтейский"))
-      {
-        return "М.Морская ул.";
+        if (str.Contains("б"))
+          return "Б.Морская ул.";
+        else
+          return "М.Морская ул.";
       }
       else if (str.Contains("морская") && district.Name == "﻿﻿Василеостровский")
       {

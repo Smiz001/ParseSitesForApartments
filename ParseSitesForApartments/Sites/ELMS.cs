@@ -809,10 +809,10 @@ namespace ParseSitesForApartments.Sites
               if (!string.IsNullOrWhiteSpace(flat.Square))
               {
                 Monitor.Enter(locker);
-                //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-                //{
-                //  unionInfo.UnionInfoProdam(flat);
-                //}
+                if (flat.Building.Guid == Guid.Empty)
+                {
+                  unionInfo.UnionInfoProdam(flat);
+                }
                 OnAppend(this, new AppendFlatEventArgs { Flat = flat });
                 progress.UpdateProgress(count);
                 count++;
