@@ -166,7 +166,7 @@ namespace ParseSitesForApartments.Sites
           }
           ));
         threadbackground.Start();
-        progress.Show();
+        progress.ShowDialog();
       }
       else
       {
@@ -956,10 +956,10 @@ namespace ParseSitesForApartments.Sites
             if (!string.IsNullOrWhiteSpace(flat.Building.Street))
             {
               Monitor.Enter(locker);
-              if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-              {
-                unionInfo.UnionInfoProdam(flat);
-              }
+              //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+              //{
+              //  unionInfo.UnionInfoProdam(flat);
+              //}
               OnAppend(this, new AppendFlatEventArgs { Flat = flat });
               progress.UpdateProgress(count);
               count++;
