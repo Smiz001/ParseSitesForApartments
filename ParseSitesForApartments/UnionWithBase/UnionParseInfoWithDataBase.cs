@@ -1347,6 +1347,7 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
                   }
                   else
                   {
+                    flat.Building.Guid = Guid.NewGuid();
                     query = $@"insert into dbo.MainInfoAboutBulding (Id, Street, Number, Bulding, Letter, DistrictId, DistanceAndTimeOnFoot, DistanceAndTimeOnCar)
 values ('{flat.Building.Guid}','{flat.Building.Street}','{flat.Building.Number}','{flat.Building.Structure}','{flat.Building.Liter}','{flat.Building.District.Id}','{flat.Building.DistanceOnFoot},{flat.Building.TimeOnFootToMetro}','{flat.Building.DistanceOnCar},{flat.Building.TimeOnCarToMetro}')";
                   }
