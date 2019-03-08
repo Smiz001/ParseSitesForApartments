@@ -24,10 +24,8 @@ namespace ParseSitesForApartments.Sites
 
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" }, { 14, "Приморский" }, { 15, "Фрунзенский" }, { 39, "Центральный" }, };
 
-    private Dictionary<string, string> districtForNew = new Dictionary<string, string>() { { "%C0%E4%EC%E8%F0%E0%EB%F2%E5%E9%F1%EA%E8%E9", "Адмиралтейский" }, { "%C2%E0%F1%E8%EB%E5%EE%F1%F2%F0%EE%E2%F1%EA%E8%E9", "Василеостровский" }, { "%C2%FB%E1%EE%F0%E3%F1%EA%E8%E9", "Выборгский" }, { "%CA%E0%EB%E8%ED%E8%ED%F1%EA%E8%E9", "Калининский" }, { "%CA%E8%F0%EE%E2%F1%EA%E8%E9", "Кировский" }, { "%CA%F0%E0%F1%ED%EE%E3%E2%E0%F0%E4%E5%E9%F1%EA%E8%E9", "Красногвардейский" }, { "%CA%F0%E0%F1%ED%EE%F1%E5%EB%FC%F1%EA%E8%E9", "Красносельский" }, { "%CC%EE%F1%EA%EE%E2%F1%EA%E8%E9", "Московский" }, { "%CD%E5%E2%F1%EA%E8%E9", "Невский" }, { "%CF%E5%F2%F0%EE%E3%F0%E0%E4%F1%EA%E8%E9", "Петроградский" }, { "%CF%F0%E8%EC%EE%F0%F1%EA%E8%E9", "Приморский" }, { "%D4%F0%F3%ED%E7%E5%ED%F1%EA%E8%E9", "Фрунзенский" }, { "%D6%E5%ED%F2%F0%E0%EB%FC%ED%FB%E9", "Центральный" }, };
-
     private List<Flat> listBuild = new List<Flat>();
-    static object locker = new object();
+    private static object locker = new object();
     private static object lockerDistrict = new object();
 
     private int minPage = 1;
@@ -809,10 +807,17 @@ namespace ParseSitesForApartments.Sites
               if (!string.IsNullOrWhiteSpace(flat.Square))
               {
                 Monitor.Enter(locker);
-                //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-                //{
-                //  unionInfo.UnionInfoProdam(flat);
-                //}
+                if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+                {
+                  try
+                  {
+                    unionInfo.UnionInfoProdam(flat);
+                  }
+                  catch (Exception e)
+                  {
+                    Log.Error(e.Message);
+                  }
+                }
                 OnAppend(this, new AppendFlatEventArgs { Flat = flat });
                 progress.UpdateProgress(count);
                 count++;
@@ -1024,10 +1029,10 @@ namespace ParseSitesForApartments.Sites
             if (!string.IsNullOrWhiteSpace(flat.Square))
             {
               Monitor.Enter(locker);
-              //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-              //{
-              //  unionInfo.UnionInfoProdam(flat);
-              //}
+              if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+              {
+                unionInfo.UnionInfoProdam(flat);
+              }
               OnAppend(this, new AppendFlatEventArgs { Flat = flat });
               progress.UpdateProgress(count);
               count++;
