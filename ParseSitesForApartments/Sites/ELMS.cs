@@ -24,7 +24,7 @@ namespace ParseSitesForApartments.Sites
 
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 38, "Адмиралтейский" }, { 43, "Василеостровский" }, { 4, "Выборгский" }, { 6, "Калининский" }, { 7, "Кировский" }, { 9, "Красногвардейский" }, { 8, "Красносельский" }, { 12, "Московский" }, { 13, "Невский" }, { 20, "Петроградский" }, { 14, "Приморский" }, { 15, "Фрунзенский" }, { 39, "Центральный" }, };
 
-    private List<Flat> listBuild = new List<Flat>();
+    private List<Flat> listFlat = new List<Flat>();
     private static object locker = new object();
     private static object lockerDistrict = new object();
 
@@ -317,7 +317,7 @@ namespace ParseSitesForApartments.Sites
                   break;
                 }
               }
-
+              listFlat.Clear();
               studiiThreadOld = new Thread(ChangeDistrictAndPage);
               studiiThreadOld.Start("Студия");
 
@@ -326,10 +326,7 @@ namespace ParseSitesForApartments.Sites
                   if (!studiiThreadOld.IsAlive)
                     break;
               }
-             
-
-              //Thread.Sleep(10000);
-               //CheckCloseThread(0);
+              listFlat.Clear();
               export.Execute();
 
               MessageBox.Show("Загрузка завершена");
@@ -896,18 +893,18 @@ namespace ParseSitesForApartments.Sites
           var metro = collection[i].GetElementsByClassName("metroline-2");
           if (metro.Length > 0)
           {
-            var mt = metro[0].TextContent.Replace("пр.", "").Replace("ул.", "").Replace("и-т", "");
-            if (mt == "А.Hевского пл.")
+            var mt = metro[0].TextContent.Replace("\n","").Trim().Replace("пр.", "").Replace("ул.", "").Replace("и-т", "");
+            if (mt.Contains("А.Hевского пл."))
               mt = "Площадь Александра Невского";
-            else if (mt == "Мужества пл.")
+            else if (mt.Contains("Мужества пл."))
               mt = "Площадь Мужества";
-            else if (mt == "Восстания пл.")
+            else if (mt.Contains("Восстания пл."))
               mt = "Площадь Восстания";
-            else if (mt == "Ленина пл.")
+            else if (mt.Contains("Ленина пл."))
               mt = "Площадь Ленина";
-            else if (mt == "Сенная пл.")
+            else if (mt.Contains("Сенная пл."))
               mt = "Сенная площадь";
-            var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper().Contains(mt.ToUpper()));
+            var metroObjEnum = ListMetros.Where(x => mt.ToUpper().Contains(x.Name.ToUpper()));
             if (metroObjEnum.Count() > 0)
             {
               building.MetroObj = metroObjEnum.First();
@@ -915,33 +912,41 @@ namespace ParseSitesForApartments.Sites
           }
         }
 
-      
-          if (!string.IsNullOrWhiteSpace(flat.Building.Street))
+
+        if (!string.IsNullOrWhiteSpace(flat.Building.Street))
+        {
+          if (!string.IsNullOrWhiteSpace(flat.Building.Number))
           {
-            if (!string.IsNullOrWhiteSpace(flat.Building.Number))
+            if (!string.IsNullOrWhiteSpace(flat.Square))
             {
-              if (!string.IsNullOrWhiteSpace(flat.Square))
+              //Monitor.Enter(locker);
+              if (flat.Building.Guid == Guid.Empty)
               {
-                //Monitor.Enter(locker);
-                if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
+                Log.Debug($"Call UnionInfoProdam for {typeRoom}");
+                unionInfo.UnionInfoProdam(flat);
+              }
+
+              bool contain = false;
+              foreach (var fl in listFlat)
+              {
+                if (flat.Equals(fl))
                 {
-                  try
-                  {
-                    Log.Debug($"Call UnionInfoProdam for {typeRoom}");
-                    unionInfo.UnionInfoProdam(flat);
-                  }
-                  catch (Exception e)
-                  {
-                    Log.Error(e.Message);
-                  }
+                  contain = true;
                 }
+              }
+              if (contain)
+                flat.CountRoom = flat.CountRoom + " Дубль";
+              else
+              {
                 OnAppend(this, new AppendFlatEventArgs { Flat = flat });
                 progress.UpdateProgress(count);
                 count++;
-               // Monitor.Exit(locker);
+                listFlat.Add(flat);
               }
+              // Monitor.Exit(locker);
             }
           }
+        }
       }
     }
 
@@ -1332,7 +1337,7 @@ namespace ParseSitesForApartments.Sites
 
             Monitor.Enter(locker);
             bool flag = false;
-            foreach (var bl in listBuild)
+            foreach (var bl in listFlat)
             {
               if (flat.Equals(bl))
               {
@@ -1344,7 +1349,7 @@ namespace ParseSitesForApartments.Sites
             {
               if (!string.IsNullOrEmpty(flat.Building.Number))
               {
-                listBuild.Add(flat);
+                listFlat.Add(flat);
 
                 using (var sw = new StreamWriter(new FileStream(FilenameSdam, FileMode.Open), Encoding.UTF8))
                 {

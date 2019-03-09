@@ -47,7 +47,6 @@ namespace ParseSitesForApartments
       hashCode = hashCode * -1521134295 + Price.GetHashCode();
       hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Square);
       hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Floor);
-      hashCode = hashCode * -1521134295 + EqualityComparer<Building>.Default.GetHashCode(Building);
       return hashCode;
     }
   }
