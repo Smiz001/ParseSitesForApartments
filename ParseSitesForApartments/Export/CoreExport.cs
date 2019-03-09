@@ -16,6 +16,7 @@ namespace ParseSitesForApartments.Export
       Filename = filename;
     }
     protected List<Flat> listFlats = new List<Flat>();
+    protected List<Flat> listFlatsWithBaseInfo = new List<Flat>();
     protected string Filename { get; set; }
 
 
@@ -31,6 +32,12 @@ namespace ParseSitesForApartments.Export
     {
       Log.Debug($"Add flat - {arg.Flat}");
       listFlats.Add(arg.Flat);
+    }
+
+    public virtual void AddFlatInListWithBaseInfo(object sender, AppendFlatEventArgs arg)
+    {
+      Log.Debug($"Add flat - {arg.Flat}");
+      listFlatsWithBaseInfo.Add(arg.Flat);
     }
   }
 }

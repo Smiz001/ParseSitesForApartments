@@ -56,6 +56,7 @@ namespace ParseSitesForApartments.Export
       }
       listFlats.Clear();
     }
+   
 
     public override void AddFlatInList(object sender, AppendFlatEventArgs arg)
     {
