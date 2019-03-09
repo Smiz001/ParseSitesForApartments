@@ -26,6 +26,7 @@ namespace ParseSitesForApartments.Export
     {
 
     }
+
     public virtual void AddFlatInList(object sender, AppendFlatEventArgs arg)
     {
       Log.Debug($"Add flat - {arg.Flat}");

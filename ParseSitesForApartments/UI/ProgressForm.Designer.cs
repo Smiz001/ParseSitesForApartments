@@ -61,9 +61,9 @@
       this.label1.AutoSize = true;
       this.label1.Location = new System.Drawing.Point(115, 30);
       this.label1.Name = "label1";
-      this.label1.Size = new System.Drawing.Size(121, 13);
+      this.label1.Size = new System.Drawing.Size(140, 13);
       this.label1.TabIndex = 2;
-      this.label1.Text = "Обработано квартир - ";
+      this.label1.Text = "Отфильтровано квартир - ";
       // 
       // lbCountFlat
       // 
