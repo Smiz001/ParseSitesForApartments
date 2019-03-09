@@ -20,5 +20,14 @@ namespace ParseSitesForApartments.UI
           }
       ));
     }
+    public void UpdateAllProgress(int val)
+    {
+      pbDownloadInfo.BeginInvoke(
+        new Action(() =>
+          {
+            lbAllCountFlat.Text = val.ToString();
+          }
+        ));
+    }
   }
 }
