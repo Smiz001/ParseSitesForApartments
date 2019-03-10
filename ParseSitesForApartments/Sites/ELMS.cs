@@ -31,6 +31,7 @@ namespace ParseSitesForApartments.Sites
 
     private List<Flat> listFlat = new List<Flat>();
     private static object locker = new object();
+    private static object lockerUnion = new object();
     private static object lockerDistrict = new object();
 
     private int minPage = 1;
@@ -274,14 +275,24 @@ namespace ParseSitesForApartments.Sites
                 studiiThreadOld.Start("Студия");
                 oneThreadOld = new Thread(ChangeDistrictAndPage);
                 oneThreadOld.Start("1 км. кв.");
+                oneThread = new Thread(ChangeDistrictAndPage);
+                oneThread.Start("1 км. кв. Н");
                 twoThreadOld = new Thread(ChangeDistrictAndPage);
                 twoThreadOld.Start("2 км. кв.");
+                twoThread = new Thread(ChangeDistrictAndPage);
+                twoThread.Start("2 км. кв. Н");
                 threeThreadOld = new Thread(ChangeDistrictAndPage);
                 threeThreadOld.Start("3 км. кв.");
+                threeThread = new Thread(ChangeDistrictAndPage);
+                threeThread.Start("3 км. кв. Н");
                 fourThreadOld = new Thread(ChangeDistrictAndPage);
                 fourThreadOld.Start("4 км. кв.");
+                fourThread = new Thread(ChangeDistrictAndPage);
+                fourThread.Start("4 км. кв. Н");
                 fiveThreadOld = new Thread(ChangeDistrictAndPage);
                 fiveThreadOld.Start("5 км. кв.");
+                fiveThread = new Thread(ChangeDistrictAndPage);
+                fiveThread.Start("5 км. кв. Н");
                 sixThreadOld = new Thread(ChangeDistrictAndPage);
                 sixThreadOld.Start("6 км. кв.");
 
@@ -295,48 +306,56 @@ namespace ParseSitesForApartments.Sites
                             if (!fourThreadOld.IsAlive)
                               if (!fiveThreadOld.IsAlive)
                                 if (!sixThreadOld.IsAlive)
-                                  break;
+                                  if(!oneThread.IsAlive)
+                                    if (!twoThread.IsAlive)
+                                      if (!threeThread.IsAlive)
+                                        if (!fourThread.IsAlive)
+                                          if (!fiveThread.IsAlive)
+                                              break;
                 }
 
                 studiiThread = new Thread(UnionFlats);
                 studiiThread.Start("Студия Н");
                 studiiThreadOld = new Thread(UnionFlats);
                 studiiThreadOld.Start("Студия");
-                while (true)
-                {
-                  if (!studiiThreadOld.IsAlive)
-                    if (!studiiThread.IsAlive)
-                      break;
-                }
                 oneThreadOld = new Thread(UnionFlats);
                 oneThreadOld.Start("1 км. кв.");
+                oneThread = new Thread(UnionFlats);
+                oneThread.Start("1 км. кв. Н");
                 twoThreadOld = new Thread(UnionFlats);
                 twoThreadOld.Start("2 км. кв.");
-                while (true)
-                {
-                      if (!oneThreadOld.IsAlive)
-                        if (!twoThreadOld.IsAlive)
-                                  break;
-                }
+                twoThread = new Thread(UnionFlats);
+                twoThread.Start("2 км. кв. Н");
                 threeThreadOld = new Thread(UnionFlats);
                 threeThreadOld.Start("3 км. кв.");
+                threeThread = new Thread(UnionFlats);
+                threeThread.Start("3 км. кв. Н");
                 fourThreadOld = new Thread(UnionFlats);
                 fourThreadOld.Start("4 км. кв.");
-                while (true)
-                {
-                          if (!threeThreadOld.IsAlive)
-                            if (!fourThreadOld.IsAlive)
-                                  break;
-                }
+                fourThread = new Thread(UnionFlats);
+                fourThread.Start("4 км. кв. Н");
                 fiveThreadOld = new Thread(UnionFlats);
                 fiveThreadOld.Start("5 км. кв.");
+                fiveThread = new Thread(UnionFlats);
+                fiveThread.Start("5 км. кв. Н");
                 sixThreadOld = new Thread(UnionFlats);
                 sixThreadOld.Start("6 км. кв.");
                 while (true)
                 {
-                  if (!fiveThreadOld.IsAlive)
-                    if (!sixThreadOld.IsAlive)
-                      break;
+                  if (!studiiThreadOld.IsAlive)
+                    if (!studiiThread.IsAlive)
+                      if (!oneThreadOld.IsAlive)
+                        if (!twoThreadOld.IsAlive)
+                          if (!threeThreadOld.IsAlive)
+                            if (!fourThreadOld.IsAlive)
+                              if (!fiveThreadOld.IsAlive)
+                                if (!sixThreadOld.IsAlive)
+                                  if (!oneThread.IsAlive)
+                                    if (!twoThread.IsAlive)
+                                      if (!threeThread.IsAlive)
+                                        if (!fourThread.IsAlive)
+                                          if (!fiveThread.IsAlive)
+                                            break;
                 }
 
                 MessageBox.Show("Загрузка завершена");
@@ -450,27 +469,38 @@ namespace ParseSitesForApartments.Sites
               {
                 oneThreadOld = new Thread(ChangeDistrictAndPage);
                 oneThreadOld.Start("1 км. кв.");
-
-                while (true)
-                {
-                  if (!oneThreadOld.IsAlive)
-                  {
-                    break;
-                  }
-                }
-
-                listFlat.Clear();
                 oneThread = new Thread(ChangeDistrictAndPage);
                 oneThread.Start("1 км. кв. Н");
 
                 while (true)
                 {
-                  if (!oneThread.IsAlive)
-                    break;
+                  if (!oneThreadOld.IsAlive)
+                  {
+                    if (!oneThread.IsAlive)
+                      break;
+                  }
                 }
-
                 listFlat.Clear();
-                export.Execute();
+                foreach (var dis in ListDistricts)
+                {
+                  dis.Buildings.Clear();
+                }
+                Log.Debug("Start Union 1");
+                oneThreadOld = new Thread(UnionFlats);
+                oneThreadOld.Start("1 км. кв.");
+                oneThread = new Thread(UnionFlats);
+                oneThread.Start("1 км. кв. Н");
+
+                while (true)
+                {
+                  if (!oneThreadOld.IsAlive)
+                  {
+                    if (!oneThread.IsAlive)
+                    {
+                      break;
+                    }
+                  }
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -504,28 +534,36 @@ namespace ParseSitesForApartments.Sites
               {
                 twoThreadOld = new Thread(ChangeDistrictAndPage);
                 twoThreadOld.Start("2 км. кв.");
-
-                while (true)
-                {
-                  if (!twoThreadOld.IsAlive)
-                  {
-                    break;
-                  }
-                }
-
-                listFlat.Clear();
-
                 twoThread = new Thread(ChangeDistrictAndPage);
                 twoThread.Start("2 км. кв. Н");
 
                 while (true)
                 {
-                  if (!twoThread.IsAlive)
-                    break;
+                  if (!twoThreadOld.IsAlive)
+                  {
+                    if (!twoThread.IsAlive)
+                      break;
+                  }
                 }
-
                 listFlat.Clear();
-                export.Execute();
+                foreach (var dis in ListDistricts)
+                {
+                  dis.Buildings.Clear();
+                }
+                Log.Debug("Start Union 2");
+                twoThreadOld = new Thread(UnionFlats);
+                twoThreadOld.Start("2 км. кв.");
+                twoThread = new Thread(UnionFlats);
+                twoThread.Start("2 км. кв. Н");
+
+                while (true)
+                {
+                  if (!twoThreadOld.IsAlive)
+                  {
+                    if (!twoThread.IsAlive)
+                      break;
+                  }
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -559,28 +597,36 @@ namespace ParseSitesForApartments.Sites
               {
                 threeThreadOld = new Thread(ChangeDistrictAndPage);
                 threeThreadOld.Start("3 км. кв.");
-
-                while (true)
-                {
-                  if (!twoThreadOld.IsAlive)
-                  {
-                    break;
-                  }
-                }
-
-                listFlat.Clear();
-
                 threeThread = new Thread(ChangeDistrictAndPage);
                 threeThread.Start("3 км. кв. Н");
 
                 while (true)
                 {
-                  if (!twoThread.IsAlive)
-                    break;
+                  if (!threeThreadOld.IsAlive)
+                  {
+                    if (!threeThread.IsAlive)
+                      break;
+                  }
                 }
-
                 listFlat.Clear();
-                export.Execute();
+                foreach (var dis in ListDistricts)
+                {
+                  dis.Buildings.Clear();
+                }
+                Log.Debug("Start Union 3");
+                threeThreadOld = new Thread(UnionFlats);
+                threeThreadOld.Start("3 км. кв.");
+                threeThread = new Thread(UnionFlats);
+                threeThread.Start("3 км. кв. Н");
+
+                while (true)
+                {
+                  if (!threeThreadOld.IsAlive)
+                  {
+                    if (!threeThread.IsAlive)
+                      break;
+                  }
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -614,28 +660,36 @@ namespace ParseSitesForApartments.Sites
               {
                 fourThreadOld = new Thread(ChangeDistrictAndPage);
                 fourThreadOld.Start("4 км. кв.");
-
-                while (true)
-                {
-                  if (!twoThreadOld.IsAlive)
-                  {
-                    break;
-                  }
-                }
-
-                listFlat.Clear();
-
                 fourThread = new Thread(ChangeDistrictAndPage);
                 fourThread.Start("4 км. кв. Н");
 
                 while (true)
                 {
-                  if (!twoThread.IsAlive)
-                    break;
+                  if (!fourThreadOld.IsAlive)
+                  {
+                    if (!fourThread.IsAlive)
+                      break;
+                  }
                 }
-
                 listFlat.Clear();
-                export.Execute();
+                foreach (var dis in ListDistricts)
+                {
+                  dis.Buildings.Clear();
+                }
+                Log.Debug("Start Union 4");
+                fourThreadOld = new Thread(UnionFlats);
+                fourThreadOld.Start("4 км. кв.");
+                fourThread = new Thread(UnionFlats);
+                fourThread.Start("4 км. кв. Н");
+
+                while (true)
+                {
+                  if (!fourThreadOld.IsAlive)
+                  {
+                    if (!fourThread.IsAlive)
+                      break;
+                  }
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -669,28 +723,36 @@ namespace ParseSitesForApartments.Sites
               {
                 fiveThreadOld = new Thread(ChangeDistrictAndPage);
                 fiveThreadOld.Start("5 км. кв.");
-
-                while (true)
-                {
-                  if (!twoThreadOld.IsAlive)
-                  {
-                    break;
-                  }
-                }
-
-                listFlat.Clear();
-
                 fiveThread = new Thread(ChangeDistrictAndPage);
                 fiveThread.Start("5 км. кв. Н");
 
                 while (true)
                 {
-                  if (!twoThread.IsAlive)
-                    break;
+                  if (!fiveThreadOld.IsAlive)
+                  {
+                    if (!fiveThread.IsAlive)
+                      break;
+                  }
                 }
-
                 listFlat.Clear();
-                export.Execute();
+                foreach (var dis in ListDistricts)
+                {
+                  dis.Buildings.Clear();
+                }
+                Log.Debug("Start Union 5");
+                fiveThreadOld = new Thread(UnionFlats);
+                fiveThreadOld.Start("5 км. кв.");
+                fiveThread = new Thread(UnionFlats);
+                fiveThread.Start("5 км. кв. Н");
+
+                while (true)
+                {
+                  if (!fiveThreadOld.IsAlive)
+                  {
+                    if (!fiveThread.IsAlive)
+                      break;
+                  }
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -1456,14 +1518,14 @@ namespace ParseSitesForApartments.Sites
 
           if (building.Guid == Guid.Empty)
           {
-            Monitor.Enter(locker);
+            Monitor.Enter(lockerUnion);
             try
             {
               union.UnionInfo(building);
             }
             finally
             {
-              Monitor.Exit(locker);
+              Monitor.Exit(lockerUnion);
             }
           }
           flat.Building = building;
