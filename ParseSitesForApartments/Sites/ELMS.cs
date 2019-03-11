@@ -1178,15 +1178,7 @@ namespace ParseSitesForApartments.Sites
           {
             if (!string.IsNullOrWhiteSpace(flat.Square))
             {
-
-              //if (flat.Building.Guid == Guid.Empty)
-              //{
-              //  Log.Debug($"Call UnionInfoProdam for {typeRoom}");
-              //  unionInfo.UnionInfoProdam(flat);
-              //}
-
               bool contain = false;
-
               Monitor.Enter(locker);
               foreach (var fl in listFlat)
               {
@@ -1195,7 +1187,6 @@ namespace ParseSitesForApartments.Sites
                   contain = true;
                 }
               }
-
               Monitor.Exit(locker);
 
               if (contain)
@@ -1204,7 +1195,6 @@ namespace ParseSitesForApartments.Sites
               {
                 //OnAppend(this, new AppendFlatEventArgs { Flat = flat });
                 export.AddFlatInList(this, new AppendFlatEventArgs { Flat = flat });
-
                 Monitor.Enter(locker);
                 progress.UpdateProgress(count);
                 count++;
