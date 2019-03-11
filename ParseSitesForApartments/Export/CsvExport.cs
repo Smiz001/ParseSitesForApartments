@@ -37,7 +37,7 @@ namespace ParseSitesForApartments.Export
     public override void AddFlatInListWithBaseInfo(object sender, AppendFlatEventArgs arg)
     {
       base.AddFlatInListWithBaseInfo(sender, arg);
-      if (listFlatsWithBaseInfo.Count == 10)
+      if (listFlatsWithBaseInfo.Count >= 10)
       {
         ExecuteWithBaseInfo();
       }
