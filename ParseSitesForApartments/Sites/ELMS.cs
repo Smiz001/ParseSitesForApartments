@@ -906,7 +906,7 @@ namespace ParseSitesForApartments.Sites
       var parseStreet = new ParseStreet();
       for (int i = 0; i < collection.Length; i++)
       {
-        Log.Debug(allcount);
+        //Log.Debug(allcount);
         progress.UpdateAllProgress(allcount);
         allcount++;
         string street = string.Empty;
