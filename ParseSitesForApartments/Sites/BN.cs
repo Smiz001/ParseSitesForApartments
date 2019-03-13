@@ -93,7 +93,6 @@ namespace ParseSitesForApartments.Sites
         {
           using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
           {
-            //sw.WriteLine($@"Район;Улица;Номер;Корпус;Литера;Кол-во комнат;Площадь;Цена;Этаж;Метро;Расстояние(км);URL");
             sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Этажей;Цена;Метро;Дата постройки;Дата реконструкции;Даты кап. ремонты;Общая пл. здания, м2;Жилая пл., м2;Пл. нежелых помещений м2;Мансарда м2;Кол-во проживающих;Центральное отопление;Центральное ГВС;Центральное ЭС;Центарльное ГС;Тип Квартир;Кол-во квартир;Дата ТЭП;Виды кап. ремонта;Общее кол-во лифтов;Расстояние пешком;Время пешком;Расстояние на машине;Время на машине;Откуда взято");
           }
         }
@@ -137,42 +136,42 @@ namespace ParseSitesForApartments.Sites
           {
             try
             {
-              //studiiThread = new Thread(ChangeDistrictAndPage);
-              //studiiThread.Start("Студия Н");
-              //oneThread = new Thread(ChangeDistrictAndPage);
-              //oneThread.Start("1 км. кв. Н");
-              //twoThread = new Thread(ChangeDistrictAndPage);
-              //twoThread.Start("2 км. кв. Н");
-              //threeThread = new Thread(ChangeDistrictAndPage);
-              //threeThread.Start("3 км. кв. Н");
-              //fourThread = new Thread(ChangeDistrictAndPage);
-              //fourThread.Start("4 км. кв. Н");
+              studiiThread = new Thread(ChangeDistrictAndPage);
+              studiiThread.Start("Студия Н");
+              oneThread = new Thread(ChangeDistrictAndPage);
+              oneThread.Start("1 км. кв. Н");
+              twoThread = new Thread(ChangeDistrictAndPage);
+              twoThread.Start("2 км. кв. Н");
+              threeThread = new Thread(ChangeDistrictAndPage);
+              threeThread.Start("3 км. кв. Н");
+              fourThread = new Thread(ChangeDistrictAndPage);
+              fourThread.Start("4 км. кв. Н");
 
-              //studiiThreadOld = new Thread(ChangeDistrictAndPage);
-              //studiiThreadOld.Start("Студия");
-              //oneThreadOld = new Thread(ChangeDistrictAndPage);
-              //oneThreadOld.Start("1 км. кв.");
-              //twoThreadOld = new Thread(ChangeDistrictAndPage);
-              //twoThreadOld.Start("2 км. кв.");
-              //threeThreadOld = new Thread(ChangeDistrictAndPage);
-              //threeThreadOld.Start("3 км. кв.");
-              //fourThreadOld = new Thread(ChangeDistrictAndPage);
-              //fourThreadOld.Start("4 км. кв.");
+              studiiThreadOld = new Thread(ChangeDistrictAndPage);
+              studiiThreadOld.Start("Студия");
+              oneThreadOld = new Thread(ChangeDistrictAndPage);
+              oneThreadOld.Start("1 км. кв.");
+              twoThreadOld = new Thread(ChangeDistrictAndPage);
+              twoThreadOld.Start("2 км. кв.");
+              threeThreadOld = new Thread(ChangeDistrictAndPage);
+              threeThreadOld.Start("3 км. кв.");
+              fourThreadOld = new Thread(ChangeDistrictAndPage);
+              fourThreadOld.Start("4 км. кв.");
 
-              //while (true)
-              //{
-              //  if (!studiiThreadOld.IsAlive)
-              //    if (!studiiThread.IsAlive)
-              //      if (!oneThreadOld.IsAlive)
-              //        if (!twoThreadOld.IsAlive)
-              //          if (!threeThreadOld.IsAlive)
-              //            if (!fourThreadOld.IsAlive)
-              //                  if (!oneThread.IsAlive)
-              //                    if (!twoThread.IsAlive)
-              //                      if (!threeThread.IsAlive)
-              //                        if (!fourThread.IsAlive)
-              //                            break;
-              //}
+              while (true)
+              {
+                if (!studiiThreadOld.IsAlive)
+                  if (!studiiThread.IsAlive)
+                    if (!oneThreadOld.IsAlive)
+                      if (!twoThreadOld.IsAlive)
+                        if (!threeThreadOld.IsAlive)
+                          if (!fourThreadOld.IsAlive)
+                            if (!oneThread.IsAlive)
+                              if (!twoThread.IsAlive)
+                                if (!threeThread.IsAlive)
+                                  if (!fourThread.IsAlive)
+                                    break;
+              }
 
 
               studiiThread = new Thread(UnionFlats);
