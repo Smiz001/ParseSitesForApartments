@@ -31,7 +31,6 @@ namespace ParseSitesForApartments.Sites
     private int minPage = 1;
     private int maxPage = 17;
     private Dictionary<int, string> district = new Dictionary<int, string>() { { 1, "Адмиралтейский" }, { 2, "Василеостровский" }, { 3, "Выборгский" }, { 5, "Калининский" }, { 4, "Кировский" }, { 16, "Колпинский" }, { 6, "Красногвардейский" }, { 7, "Красносельский" }, { 15, "Кронштадтский" }, { 17, "Курортный" }, { 8, "Московский" }, { 9, "Невский" }, { 10, "Петроградский" }, { 19, "Петродворцовый" }, { 11, "Приморский" }, { 20, "Пушкинский" }, { 12, "Фрунзенский" }, { 13, "Центральный" }, };
-    private string filename = @"d:\ParserInfo\Appartament\BNProdam.csv";
     private CoreExport export;
     public delegate void Append(object sender, AppendFlatEventArgs e);
     public event Append OnAppend;
@@ -64,20 +63,16 @@ namespace ParseSitesForApartments.Sites
     {
       //CoreCreator creator = new ExcelExportCreator();
       //export = creator.FactoryCreate(Filename);
-      CoreCreator creator = new CsvExportCreator();
-      export = creator.FactoryCreate(Filename);
-      OnAppend += export.AddFlatInList;
+      //CoreCreator creator = new CsvExportCreator();
+      //export = creator.FactoryCreate(Filename);
+      //OnAppend += export.AddFlatInList;
     }
 
     #endregion
 
     #region Properties
 
-    public override string Filename
-    {
-      get => filename;
-      set => filename = value;
-    }
+    public override string Filename { get; set; }
     //public override string Filename => @"d:\ParserInfo\Appartament\BNProdam.xlsx";
     public override string FilenameSdam => @"d:\ParserInfo\Appartament\BNSdam.csv";
     public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\BNProdamWithInfo.csv";
@@ -142,42 +137,42 @@ namespace ParseSitesForApartments.Sites
           {
             try
             {
-              studiiThread = new Thread(ChangeDistrictAndPage);
-              studiiThread.Start("Студия Н");
-              oneThread = new Thread(ChangeDistrictAndPage);
-              oneThread.Start("1 км. кв. Н");
-              twoThread = new Thread(ChangeDistrictAndPage);
-              twoThread.Start("2 км. кв. Н");
-              threeThread = new Thread(ChangeDistrictAndPage);
-              threeThread.Start("3 км. кв. Н");
-              fourThread = new Thread(ChangeDistrictAndPage);
-              fourThread.Start("4 км. кв. Н");
+              //studiiThread = new Thread(ChangeDistrictAndPage);
+              //studiiThread.Start("Студия Н");
+              //oneThread = new Thread(ChangeDistrictAndPage);
+              //oneThread.Start("1 км. кв. Н");
+              //twoThread = new Thread(ChangeDistrictAndPage);
+              //twoThread.Start("2 км. кв. Н");
+              //threeThread = new Thread(ChangeDistrictAndPage);
+              //threeThread.Start("3 км. кв. Н");
+              //fourThread = new Thread(ChangeDistrictAndPage);
+              //fourThread.Start("4 км. кв. Н");
 
-              studiiThreadOld = new Thread(ChangeDistrictAndPage);
-              studiiThreadOld.Start("Студия");
-              oneThreadOld = new Thread(ChangeDistrictAndPage);
-              oneThreadOld.Start("1 км. кв.");
-              twoThreadOld = new Thread(ChangeDistrictAndPage);
-              twoThreadOld.Start("2 км. кв.");
-              threeThreadOld = new Thread(ChangeDistrictAndPage);
-              threeThreadOld.Start("3 км. кв.");
-              fourThreadOld = new Thread(ChangeDistrictAndPage);
-              fourThreadOld.Start("4 км. кв.");
+              //studiiThreadOld = new Thread(ChangeDistrictAndPage);
+              //studiiThreadOld.Start("Студия");
+              //oneThreadOld = new Thread(ChangeDistrictAndPage);
+              //oneThreadOld.Start("1 км. кв.");
+              //twoThreadOld = new Thread(ChangeDistrictAndPage);
+              //twoThreadOld.Start("2 км. кв.");
+              //threeThreadOld = new Thread(ChangeDistrictAndPage);
+              //threeThreadOld.Start("3 км. кв.");
+              //fourThreadOld = new Thread(ChangeDistrictAndPage);
+              //fourThreadOld.Start("4 км. кв.");
 
-              while (true)
-              {
-                if (!studiiThreadOld.IsAlive)
-                  if (!studiiThread.IsAlive)
-                    if (!oneThreadOld.IsAlive)
-                      if (!twoThreadOld.IsAlive)
-                        if (!threeThreadOld.IsAlive)
-                          if (!fourThreadOld.IsAlive)
-                                if (!oneThread.IsAlive)
-                                  if (!twoThread.IsAlive)
-                                    if (!threeThread.IsAlive)
-                                      if (!fourThread.IsAlive)
-                                          break;
-              }
+              //while (true)
+              //{
+              //  if (!studiiThreadOld.IsAlive)
+              //    if (!studiiThread.IsAlive)
+              //      if (!oneThreadOld.IsAlive)
+              //        if (!twoThreadOld.IsAlive)
+              //          if (!threeThreadOld.IsAlive)
+              //            if (!fourThreadOld.IsAlive)
+              //                  if (!oneThread.IsAlive)
+              //                    if (!twoThread.IsAlive)
+              //                      if (!threeThread.IsAlive)
+              //                        if (!fourThread.IsAlive)
+              //                            break;
+              //}
 
 
               studiiThread = new Thread(UnionFlats);
