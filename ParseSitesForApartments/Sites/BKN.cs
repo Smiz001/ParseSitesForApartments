@@ -1071,19 +1071,6 @@ namespace ParseSitesForApartments.Sites
             }
           }
         }
-
-        try
-        {
-          Monitor.Enter(locker);
-          export.AddFlatInList(this, new AppendFlatEventArgs {Flat = flat});
-        }
-        finally
-        {
-          Monitor.Exit(locker);
-        }
-
-        progress.UpdateProgress(count);
-        count++;
       }
     }
 
