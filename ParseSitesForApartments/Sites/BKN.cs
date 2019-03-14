@@ -52,8 +52,7 @@ namespace ParseSitesForApartments.Sites
     private CoreExport export;
     public delegate void Append(object sender, AppendFlatEventArgs e);
     public event Append OnAppend;
-    private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
-    private string filename = @"d:\ParserInfo\Appartament\BKNProdam.csv";
+    private string filename = string.Empty;
 
     #endregion
 
@@ -147,6 +146,16 @@ namespace ParseSitesForApartments.Sites
                 fourThread.Start("4 км. кв.");
                 fiveThread = new Thread(UnionFlats);
                 fiveThread.Start("5 км. кв.");
+                while (true)
+                {
+                  if (!studiiThread.IsAlive)
+                    if (!oneThread.IsAlive)
+                      if (!twoThread.IsAlive)
+                        if (!threeThread.IsAlive)
+                          if (!fourThread.IsAlive)
+                            if (!fiveThread.IsAlive)
+                              break;
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -190,7 +199,19 @@ namespace ParseSitesForApartments.Sites
               {
                 studiiThread = new Thread(ChangeDistrictAndPage);
                 studiiThread.Start("Студия");
-                
+                while (true)
+                {
+                  if (!studiiThread.IsAlive)
+                              break;
+                }
+
+                studiiThread = new Thread(UnionFlats);
+                studiiThread.Start("Студия");
+                while (true)
+                {
+                  if (!studiiThread.IsAlive)
+                    break;
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -224,7 +245,19 @@ namespace ParseSitesForApartments.Sites
               {
                 oneThread = new Thread(ChangeDistrictAndPage);
                 oneThread.Start("1 км. кв.");
-                
+
+                while (true)
+                {
+                  if (!oneThread.IsAlive)
+                    break;
+                }
+                oneThread = new Thread(UnionFlats);
+                oneThread.Start("1 км. кв.");
+                while (true)
+                {
+                  if (!oneThread.IsAlive)
+                    break;
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -258,7 +291,19 @@ namespace ParseSitesForApartments.Sites
               {
                 twoThread = new Thread(ChangeDistrictAndPage);
                 twoThread.Start("2 км. кв.");
-                
+
+                while (true)
+                {
+                  if (!twoThread.IsAlive)
+                    break;
+                }
+                twoThread = new Thread(UnionFlats);
+                twoThread.Start("2 км. кв.");
+                while (true)
+                {
+                  if (!twoThread.IsAlive)
+                    break;
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -292,7 +337,18 @@ namespace ParseSitesForApartments.Sites
               {
                 threeThread = new Thread(ChangeDistrictAndPage);
                 threeThread.Start("3 км. кв.");
-                
+                while (true)
+                {
+                  if (!threeThread.IsAlive)
+                    break;
+                }
+                threeThread = new Thread(UnionFlats);
+                threeThread.Start("3 км. кв.");
+                while (true)
+                {
+                  if (!threeThread.IsAlive)
+                    break;
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -326,7 +382,18 @@ namespace ParseSitesForApartments.Sites
               {
                 fourThread = new Thread(ChangeDistrictAndPage);
                 fourThread.Start("4 км. кв.");
-               
+                while (true)
+                {
+                  if (!fourThread.IsAlive)
+                    break;
+                }
+                fourThread = new Thread(UnionFlats);
+                fourThread.Start("4 км. кв.");
+                while (true)
+                {
+                  if (!fourThread.IsAlive)
+                    break;
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -360,7 +427,18 @@ namespace ParseSitesForApartments.Sites
               {
                 fiveThread = new Thread(ChangeDistrictAndPage);
                 fiveThread.Start("5 км. кв.");
-                
+                while (true)
+                {
+                  if (!fiveThread.IsAlive)
+                    break;
+                }
+                fiveThread = new Thread(UnionFlats);
+                fiveThread.Start("5 км. кв.");
+                while (true)
+                {
+                  if (!fiveThread.IsAlive)
+                    break;
+                }
 
                 MessageBox.Show("Загрузка завершена");
                 progress.BeginInvoke(new Action(() => progress.Close()));
@@ -537,6 +615,10 @@ namespace ParseSitesForApartments.Sites
       var parseStreet = new ParseStreet();
       for (int j = 0; j < collection.Length; j++)
       {
+        //Monitor.Enter(locker);
+        progress.UpdateAllProgress(allcount);
+        allcount++;
+        //Monitor.Exit(locker);
         string town = string.Empty;
         var flat = new Flat();
         flat.CountRoom = typeRoom;
@@ -990,28 +1072,18 @@ namespace ParseSitesForApartments.Sites
           }
         }
 
-        //Monitor.Enter(locker);
-        //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-        //{
-        //  unionInfo.UnionInfoProdam(flat);
-        //}
-        //OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-        //Monitor.Exit(locker);
+        try
+        {
+          Monitor.Enter(locker);
+          export.AddFlatInList(this, new AppendFlatEventArgs {Flat = flat});
+        }
+        finally
+        {
+          Monitor.Exit(locker);
+        }
 
-        //flat.Building.Street = parseStreet.Execute()
-        //  Monitor.Enter(locker);
-        //  progress.UpdateProgress(count);
-        //  count++;
-        //  if (!string.IsNullOrEmpty(flat.Building.Number))
-        //  {
-        //    using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Open), Encoding.UTF8))
-        //    {
-        //      sw.BaseStream.Position = sw.BaseStream.Length;
-        //      sw.WriteLine($@"{town};{flat.Building.Street};{flat.Building.Number};{flat.Building.Structure};{flat.Building.Liter};{flat.CountRoom};{flat.Square};{flat.Price};{flat.Floor};{flat.Building.Metro};{flat.Building.Distance}");
-        //    }
-        //  }
-        //  Monitor.Exit(locker);
-        ////}
+        progress.UpdateProgress(count);
+        count++;
       }
     }
 
