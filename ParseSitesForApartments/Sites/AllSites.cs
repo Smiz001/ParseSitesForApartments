@@ -141,11 +141,11 @@ namespace ParseSitesForApartments.Sites
       elmsThread = new Thread(elms.ParsingAll);
       elmsThread.Start();
       WaitUntilWorkThread(elmsThread);
-      avito.TypeParseFlat = this.TypeParseFlat;
-      avito.Filename = $@"{path}Avito.csv";
-      avitoThread = new Thread(avito.ParsingAll);
-      avitoThread.Start();
-      WaitUntilWorkThread(avitoThread);
+      //avito.TypeParseFlat = this.TypeParseFlat;
+      //avito.Filename = $@"{path}Avito.csv";
+      //avitoThread = new Thread(avito.ParsingAll);
+      //avitoThread.Start();
+      //WaitUntilWorkThread(avitoThread);
 
       UnionFiles();
     }
