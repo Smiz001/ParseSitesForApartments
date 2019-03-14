@@ -214,7 +214,14 @@ namespace ParseSitesForApartments.Sites
               //CheckCloseThread(-1);
               //export.Execute();
 
-              MessageBox.Show("Загрузка завершена");
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                  {
+                    MessageBox.Show("Загрузка завершена");
+                  }
+                )
+              );
+              threadMessage.Start();
               progress.BeginInvoke(new Action(() => progress.Close()));
             }
             catch (Exception ex)
@@ -511,7 +518,7 @@ namespace ParseSitesForApartments.Sites
     private string CreateExportForRoom(string typeRoom)
     {
       var path = ExctractPath();
-      path = $@"{path}{typeRoom}-{DateTime.Now.ToShortDateString()}.csv";
+      path = $@"{path}{typeRoom}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
       if (!File.Exists(Filename))
       {
         File.Delete(path);
@@ -1389,7 +1396,7 @@ namespace ParseSitesForApartments.Sites
       Log.Debug($"Start Union {type}");
       var union = new UnionParseInfoWithDataBase();
       var path = ExctractPath();
-      path = $@"{path}{type}-{DateTime.Now.ToShortDateString()}.csv";
+      path = $@"{path}{type}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
       using (var sr = new StreamReader(path))
       {
         sr.ReadLine();
