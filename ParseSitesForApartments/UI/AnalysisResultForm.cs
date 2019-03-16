@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ParseSitesForApartments.UI
@@ -14,15 +17,17 @@ namespace ParseSitesForApartments.UI
     private int countFlat;
     private float averPrice;
     private List<float> averPriceForFlat = new List<float>();
-    private short priceColumn = -1;
-    private short squareColumn = -1;
-    private short floorColumn = -1;
-    private short dateBuildColumn = -1;
-    private short typeBuildColumn = -1;
-    private short districtColumn = -1;
-    private short distanceCarColumn = -1;
-    private short distaneFootColumn = -1;
-    private short urlColumn = -1;
+    private short priceColumn;
+    private short squareColumn;
+    private short typeRoomColumn;
+    private short floorColumn;
+    private short dateBuildColumn;
+    private short typeBuildColumn;
+    private short districtColumn;
+    private short distanceCarColumn;
+    private short distaneFootColumn;
+    private short urlColumn;
+    private DataTable table;
 
     #endregion
 
@@ -55,16 +60,28 @@ namespace ParseSitesForApartments.UI
 
     private void btnLoad_Click(object sender, EventArgs e)
     {
-      if (Path.GetExtension(tbPathToFile.Text) == "csv")
+      priceColumn = -1;
+      squareColumn = -1;
+      floorColumn = -1;
+      dateBuildColumn = -1;
+      typeBuildColumn = -1;
+      districtColumn = -1;
+      distanceCarColumn = -1;
+      distaneFootColumn = -1;
+      urlColumn = -1;
+      typeRoomColumn = -1;
+
+      if (Path.GetExtension(tbPathToFile.Text) == ".csv")
       {
         if (CheckHeaderColumnAndSetNumColumns())
         {
-          
+          CreateColumns();
+          ReadFlatsFromFiles();
         }
       }
       else
       {
-        MessageBox.Show("Данный файл должен быть с раширением csv","Ошибка",MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show("Данный файл должен быть с раширением csv", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -137,9 +154,17 @@ namespace ParseSitesForApartments.UI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "URL")
+          if (ar[i].ToUpper() == "ОТКУДА ВЗЯТО")
           {
             urlColumn = i;
+            break;
+          }
+        }
+        for (short i = 0; i < ar.Length; i++)
+        {
+          if (ar[i].ToUpper() == "КОЛ-ВО КОМНАТ")
+          {
+            typeRoomColumn = i;
             break;
           }
         }
@@ -184,6 +209,11 @@ namespace ParseSitesForApartments.UI
           MessageBox.Show("Не найдена колонка РАЙОН", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }
+        if (typeRoomColumn == -1)
+        {
+          MessageBox.Show("Не найдена колонка КОЛ-ВО КОМНАТ", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return false;
+        }
       }
       else
       {
@@ -192,6 +222,98 @@ namespace ParseSitesForApartments.UI
       }
 
       return true;
+    }
+
+    private void ReadFlatsFromFiles()
+    {
+      using (var sr = new StreamReader(tbPathToFile.Text))
+      {
+        string line = sr.ReadLine();
+        if (line != null)
+        {
+          while ((line = sr.ReadLine()) != null)
+          {
+            var arLine = line.Split(';');
+            var row = table.NewRow();
+            int price;
+            if (int.TryParse(arLine[priceColumn], out price))
+            {
+              row["Цена"] = price;
+            }
+
+            float square;
+            if (float.TryParse(arLine[squareColumn], out square))
+            {
+              row["Площадь"] = square;
+            }
+
+            row["Кол-во комнат"] = arLine[typeRoomColumn];
+
+            short floor;
+            if (short.TryParse(arLine[floorColumn], out floor))
+            {
+              row["Этаж"] = floor;
+            }
+            row["Год постройки"] = arLine[dateBuildColumn];
+            row["Район"] = arLine[districtColumn];
+            row["Расстояние пешком"] = arLine[distaneFootColumn];
+            row["Расстояние на машине"] = arLine[distanceCarColumn];
+            if(!string.IsNullOrWhiteSpace(arLine[urlColumn]))
+              row["Url"] = new Uri(arLine[urlColumn]);
+            table.Rows.Add(row);
+          }
+        }
+      }
+
+      dataGridView1.DataSource = table.DefaultView;
+    }
+
+    private void CreateColumns()
+    {
+      dataGridView1.Rows.Clear();
+      dataGridView1.Refresh();
+      dataGridView1.DataSource = null;
+
+
+      table = new DataTable();
+      var column = new DataColumn("Цена", typeof(int));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Площадь", typeof(float));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Кол-во комнат", typeof(string));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Этаж", typeof(short));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Год постройки", typeof(string));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Район", typeof(string));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Расстояние пешком", typeof(string));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Расстояние на машине", typeof(string));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Url", typeof(Uri));
+      table.Columns.Add(column);
+    }
+
+    private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+    {
+      var cell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+      if (!string.IsNullOrWhiteSpace(cell))
+      {
+        if (cell.Contains("http"))
+        {
+          System.Diagnostics.Process.Start(cell);
+        }
+      }
     }
   }
 }
