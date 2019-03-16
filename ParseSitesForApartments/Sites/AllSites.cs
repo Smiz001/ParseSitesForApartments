@@ -126,28 +126,51 @@ namespace ParseSitesForApartments.Sites
       string path = ExctractPath();
       //TODO нужно переделать обработку сайтов
       // Каждый сайт парсится в свой файл, после того как все спарсилось, все сливается в один файл
-      bn.TypeParseFlat = this.TypeParseFlat;
-      bn.Filename = $@"{path}BN.csv";
-      bnThread = new Thread(bn.ParsingAll);
-      bnThread.Start();
-      WaitUntilWorkThread(bnThread);
-      bkn.TypeParseFlat = this.TypeParseFlat;
-      bkn.Filename = $@"{path}BKN.csv";
-      bknThread = new Thread(bkn.ParsingAll);
-      bknThread.Start();
-      WaitUntilWorkThread(bknThread);
-      elms.TypeParseFlat = this.TypeParseFlat;
-      elms.Filename = $@"{path}ELMS.csv";
-      elmsThread = new Thread(elms.ParsingAll);
-      elmsThread.Start();
-      WaitUntilWorkThread(elmsThread);
+
+     
+
+      var threadbackground = new Thread(
+  new ThreadStart(() =>
+  {
+    elms.TypeParseFlat = this.TypeParseFlat;
+    elms.Filename = $@"{path}ELMS.csv";
+    elms.ParsingAll();
+    while (!elms.IsFinished)
+    { }
+    bn.TypeParseFlat = this.TypeParseFlat;
+    bn.Filename = $@"{path}BN.csv";
+    bn.ParsingAll();
+    while (!bn.IsFinished)
+    { }
+    bkn.TypeParseFlat = this.TypeParseFlat;
+    bkn.Filename = $@"{path}BKN.csv";
+    bkn.ParsingAll();
+    while (!bkn.IsFinished)
+    { }
+
+    UnionFiles();
+  }
+  ));
+      threadbackground.Start();
+      //elmsThread = new Thread(elms.ParsingAll);
+      //elmsThread.Start();
+      //WaitUntilWorkThread(elmsThread);
+      //bn.TypeParseFlat = this.TypeParseFlat;
+      //bn.Filename = $@"{path}BN.csv";
+      //bnThread = new Thread(bn.ParsingAll);
+      //bnThread.Start();
+      //WaitUntilWorkThread(bnThread);
+      //bkn.TypeParseFlat = this.TypeParseFlat;
+      //bkn.Filename = $@"{path}BKN.csv";
+      //bknThread = new Thread(bkn.ParsingAll);
+      //bknThread.Start();
+      //WaitUntilWorkThread(bknThread);
       //avito.TypeParseFlat = this.TypeParseFlat;
       //avito.Filename = $@"{path}Avito.csv";
       //avitoThread = new Thread(avito.ParsingAll);
       //avitoThread.Start();
       //WaitUntilWorkThread(avitoThread);
 
-      UnionFiles();
     }
 
     public override void ParsingStudii()

@@ -42,6 +42,7 @@
       this.sfdParseFile = new System.Windows.Forms.SaveFileDialog();
       this.lblTypeSell = new System.Windows.Forms.Label();
       this.cbTypeSell = new System.Windows.Forms.ComboBox();
+      this.AnalysisResaltToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -58,6 +59,7 @@
       // tspmFile
       // 
       this.tspmFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AnalysisResaltToolStripMenuItem,
             this.tspmExit});
       this.tspmFile.Name = "tspmFile";
       this.tspmFile.Size = new System.Drawing.Size(48, 20);
@@ -66,7 +68,7 @@
       // tspmExit
       // 
       this.tspmExit.Name = "tspmExit";
-      this.tspmExit.Size = new System.Drawing.Size(108, 22);
+      this.tspmExit.Size = new System.Drawing.Size(180, 22);
       this.tspmExit.Text = "Выход";
       this.tspmExit.Click += new System.EventHandler(this.tspmExit_Click);
       // 
@@ -179,6 +181,12 @@
       this.cbTypeSell.Size = new System.Drawing.Size(121, 21);
       this.cbTypeSell.TabIndex = 35;
       // 
+      // AnalysisResaltToolStripMenuItem
+      // 
+      this.AnalysisResaltToolStripMenuItem.Name = "AnalysisResaltToolStripMenuItem";
+      this.AnalysisResaltToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.AnalysisResaltToolStripMenuItem.Text = "Анализ результата";
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -222,6 +230,7 @@
     private System.Windows.Forms.SaveFileDialog sfdParseFile;
     private System.Windows.Forms.Label lblTypeSell;
     private System.Windows.Forms.ComboBox cbTypeSell;
+    private System.Windows.Forms.ToolStripMenuItem AnalysisResaltToolStripMenuItem;
   }
 }
 

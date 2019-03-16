@@ -157,6 +157,7 @@ namespace ParseSitesForApartments.Sites
                               break;
                 }
 
+                IsFinished = true;
                 var threadMessage = new Thread(
                   new ThreadStart(() =>
                   {
@@ -175,6 +176,9 @@ namespace ParseSitesForApartments.Sites
           ));
         threadbackground.Start();
         progress.Show();
+
+        while (threadbackground.IsAlive)
+          Thread.Sleep(10000);
       }
       else
       {

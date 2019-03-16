@@ -75,6 +75,12 @@
     <Compile Include="Program.cs" />
     <Compile Include="Proxy\FreeProxy.cs" />
     <Compile Include="Proxy\ProxyInfo.cs" />
+    <Compile Include="UI\AnalysisResultForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\AnalysisResultForm.Designer.cs">
+      <DependentUpon>AnalysisResultForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,6 +105,9 @@
     <Compile Include="Yandex.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\AnalysisResultForm.resx">
+      <DependentUpon>AnalysisResultForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ProgressForm.resx">
       <DependentUpon>ProgressForm.cs</DependentUpon>

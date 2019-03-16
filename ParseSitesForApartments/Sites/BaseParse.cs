@@ -29,6 +29,7 @@ namespace ParseSitesForApartments.Sites
     public abstract string FilenameWithinfoSdam { get; }
     public abstract string NameSite { get; }
     public TypeParseFlat TypeParseFlat { get; set; }
+    public bool IsFinished { get; set; } = false;
 
     public abstract void ParsingAll();
     public abstract void ParsingStudii();
