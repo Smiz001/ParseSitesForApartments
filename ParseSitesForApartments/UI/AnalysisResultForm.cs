@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ParseSitesForApartments.UI
@@ -390,10 +391,12 @@ namespace ParseSitesForApartments.UI
       }
       else
       {
-        if ("Все комнаты" != selectTypeRoom.ToString())
-          dv.RowFilter = $"Metro = '{selectMetro.Name}' AND Количество_комнат LIKE '%{selectTypeRoom}%'";
-        else
+        if ("Все комнаты" == selectTypeRoom.ToString())
           dv.RowFilter = $"Metro = '{selectMetro.Name}'";
+        else if (selectTypeRoom.ToString() == "Более 4 км.")
+          dv.RowFilter = $"Metro = '{selectMetro.Name}' AND Количество_комнат LIKE '%5%' OR Количество_комнат LIKE '%6%' OR Количество_комнат LIKE '%7%' OR Количество_комнат LIKE '%8%' OR Количество_комнат LIKE '%9%'";
+        else
+          dv.RowFilter = $"Metro = '{selectMetro.Name}' AND Количество_комнат LIKE '%{selectTypeRoom}%'";
       }
 
       countFlat = 0;
