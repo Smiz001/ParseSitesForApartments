@@ -34,13 +34,16 @@
       this.label2 = new System.Windows.Forms.Label();
       this.btnLoad = new System.Windows.Forms.Button();
       this.dataGridView1 = new System.Windows.Forms.DataGridView();
+      this.tbPathToFile = new System.Windows.Forms.TextBox();
+      this.btnSelectFile = new System.Windows.Forms.Button();
+      this.label3 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
       this.SuspendLayout();
       // 
       // label1
       // 
       this.label1.AutoSize = true;
-      this.label1.Location = new System.Drawing.Point(12, 20);
+      this.label1.Location = new System.Drawing.Point(12, 59);
       this.label1.Name = "label1";
       this.label1.Size = new System.Drawing.Size(39, 13);
       this.label1.TabIndex = 0;
@@ -50,7 +53,7 @@
       // 
       this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.comboBox1.FormattingEnabled = true;
-      this.comboBox1.Location = new System.Drawing.Point(15, 47);
+      this.comboBox1.Location = new System.Drawing.Point(15, 80);
       this.comboBox1.Name = "comboBox1";
       this.comboBox1.Size = new System.Drawing.Size(155, 21);
       this.comboBox1.TabIndex = 1;
@@ -66,7 +69,7 @@
             "3 ком.",
             "4 ком.",
             "Более 4 ком."});
-      this.comboBox2.Location = new System.Drawing.Point(176, 47);
+      this.comboBox2.Location = new System.Drawing.Point(176, 80);
       this.comboBox2.Name = "comboBox2";
       this.comboBox2.Size = new System.Drawing.Size(164, 21);
       this.comboBox2.TabIndex = 2;
@@ -74,7 +77,7 @@
       // label2
       // 
       this.label2.AutoSize = true;
-      this.label2.Location = new System.Drawing.Point(173, 20);
+      this.label2.Location = new System.Drawing.Point(173, 59);
       this.label2.Name = "label2";
       this.label2.Size = new System.Drawing.Size(81, 13);
       this.label2.TabIndex = 3;
@@ -82,12 +85,13 @@
       // 
       // btnLoad
       // 
-      this.btnLoad.Location = new System.Drawing.Point(346, 47);
+      this.btnLoad.Location = new System.Drawing.Point(346, 80);
       this.btnLoad.Name = "btnLoad";
       this.btnLoad.Size = new System.Drawing.Size(75, 21);
       this.btnLoad.TabIndex = 4;
       this.btnLoad.Text = "Загрузить";
       this.btnLoad.UseVisualStyleBackColor = true;
+      this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
       // 
       // dataGridView1
       // 
@@ -96,16 +100,46 @@
             | System.Windows.Forms.AnchorStyles.Right)));
       this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView1.Cursor = System.Windows.Forms.Cursors.Default;
-      this.dataGridView1.Location = new System.Drawing.Point(15, 74);
+      this.dataGridView1.Location = new System.Drawing.Point(15, 107);
       this.dataGridView1.Name = "dataGridView1";
-      this.dataGridView1.Size = new System.Drawing.Size(734, 330);
+      this.dataGridView1.Size = new System.Drawing.Size(734, 361);
       this.dataGridView1.TabIndex = 5;
+      // 
+      // tbPathToFile
+      // 
+      this.tbPathToFile.Location = new System.Drawing.Point(12, 28);
+      this.tbPathToFile.Name = "tbPathToFile";
+      this.tbPathToFile.ReadOnly = true;
+      this.tbPathToFile.Size = new System.Drawing.Size(242, 20);
+      this.tbPathToFile.TabIndex = 6;
+      // 
+      // btnSelectFile
+      // 
+      this.btnSelectFile.Location = new System.Drawing.Point(260, 26);
+      this.btnSelectFile.Name = "btnSelectFile";
+      this.btnSelectFile.Size = new System.Drawing.Size(26, 23);
+      this.btnSelectFile.TabIndex = 7;
+      this.btnSelectFile.Text = "...";
+      this.btnSelectFile.UseVisualStyleBackColor = true;
+      this.btnSelectFile.Click += new System.EventHandler(this.btnSelectFile_Click);
+      // 
+      // label3
+      // 
+      this.label3.AutoSize = true;
+      this.label3.Location = new System.Drawing.Point(12, 9);
+      this.label3.Name = "label3";
+      this.label3.Size = new System.Drawing.Size(75, 13);
+      this.label3.TabIndex = 8;
+      this.label3.Text = "Выбор файла";
       // 
       // AnalysisResultForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(761, 416);
+      this.ClientSize = new System.Drawing.Size(761, 480);
+      this.Controls.Add(this.label3);
+      this.Controls.Add(this.btnSelectFile);
+      this.Controls.Add(this.tbPathToFile);
       this.Controls.Add(this.dataGridView1);
       this.Controls.Add(this.btnLoad);
       this.Controls.Add(this.label2);
@@ -128,5 +162,8 @@
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Button btnLoad;
     private System.Windows.Forms.DataGridView dataGridView1;
+    private System.Windows.Forms.TextBox tbPathToFile;
+    private System.Windows.Forms.Button btnSelectFile;
+    private System.Windows.Forms.Label label3;
   }
 }

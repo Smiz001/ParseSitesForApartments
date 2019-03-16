@@ -85,7 +85,7 @@ namespace ParseSitesForApartments.Sites
     {
       CoreCreator creator = new CsvExportCreator();
       export = creator.FactoryCreate(Filename);
-      OnAppend += export.AddFlatInList;
+      OnAppend += export.AddFlatInListWithBaseInfo;
 
       if (export is CsvExport)
       {
@@ -177,8 +177,8 @@ namespace ParseSitesForApartments.Sites
         threadbackground.Start();
         progress.Show();
 
-        while (threadbackground.IsAlive)
-          Thread.Sleep(10000);
+        //while (threadbackground.IsAlive)
+        //  Thread.Sleep(10000);
       }
       else
       {

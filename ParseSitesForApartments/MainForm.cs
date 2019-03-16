@@ -239,5 +239,11 @@ namespace ParseSitesForApartments
           break;
       }
     }
+
+    private void AnalysisResaltToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      var analys = new AnalysisResultForm(listMetros);
+      analys.ShowDialog();
+    }
   }
 }

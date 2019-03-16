@@ -30,6 +30,7 @@
     {
       this.menuStrip1 = new System.Windows.Forms.MenuStrip();
       this.tspmFile = new System.Windows.Forms.ToolStripMenuItem();
+      this.AnalysisResaltToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.tspmExit = new System.Windows.Forms.ToolStripMenuItem();
       this.lblChooseParse = new System.Windows.Forms.Label();
       this.cbChooseParse = new System.Windows.Forms.ComboBox();
@@ -42,7 +43,6 @@
       this.sfdParseFile = new System.Windows.Forms.SaveFileDialog();
       this.lblTypeSell = new System.Windows.Forms.Label();
       this.cbTypeSell = new System.Windows.Forms.ComboBox();
-      this.AnalysisResaltToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -64,6 +64,13 @@
       this.tspmFile.Name = "tspmFile";
       this.tspmFile.Size = new System.Drawing.Size(48, 20);
       this.tspmFile.Text = "Файл";
+      // 
+      // AnalysisResaltToolStripMenuItem
+      // 
+      this.AnalysisResaltToolStripMenuItem.Name = "AnalysisResaltToolStripMenuItem";
+      this.AnalysisResaltToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.AnalysisResaltToolStripMenuItem.Text = "Анализ результата";
+      this.AnalysisResaltToolStripMenuItem.Click += new System.EventHandler(this.AnalysisResaltToolStripMenuItem_Click);
       // 
       // tspmExit
       // 
@@ -180,12 +187,6 @@
       this.cbTypeSell.Name = "cbTypeSell";
       this.cbTypeSell.Size = new System.Drawing.Size(121, 21);
       this.cbTypeSell.TabIndex = 35;
-      // 
-      // AnalysisResaltToolStripMenuItem
-      // 
-      this.AnalysisResaltToolStripMenuItem.Name = "AnalysisResaltToolStripMenuItem";
-      this.AnalysisResaltToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-      this.AnalysisResaltToolStripMenuItem.Text = "Анализ результата";
       // 
       // MainForm
       // 
