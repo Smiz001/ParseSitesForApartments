@@ -8,5 +8,10 @@ namespace ParseSitesForApartments
     public float XCoor { get; set; }
     public float YCoor { get; set; }
     public Guid Id { get; set; } = Guid.NewGuid();
+
+    public override string ToString()
+    {
+      return Name;
+    }
   }
 }

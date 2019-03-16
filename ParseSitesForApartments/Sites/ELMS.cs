@@ -1416,7 +1416,6 @@ namespace ParseSitesForApartments.Sites
           }
         }
       }
-
       File.Delete(path);
     }
   }
