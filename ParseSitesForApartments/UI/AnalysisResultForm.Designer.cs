@@ -61,6 +61,7 @@
       this.cbMetro.Name = "cbMetro";
       this.cbMetro.Size = new System.Drawing.Size(155, 21);
       this.cbMetro.TabIndex = 1;
+      this.cbMetro.SelectedIndexChanged += new System.EventHandler(this.cbMetro_SelectedIndexChanged);
       // 
       // cbCountRoom
       // 
@@ -68,16 +69,17 @@
       this.cbCountRoom.FormattingEnabled = true;
       this.cbCountRoom.Items.AddRange(new object[] {
             "Все комнаты",
-            "Студии",
-            "1 ком.",
-            "2 ком.",
-            "3 ком.",
-            "4 ком.",
-            "Более 4 ком."});
+            "Студия",
+            "1 км.",
+            "2 км.",
+            "3 км.",
+            "4 км.",
+            "Более 4 км."});
       this.cbCountRoom.Location = new System.Drawing.Point(176, 80);
       this.cbCountRoom.Name = "cbCountRoom";
       this.cbCountRoom.Size = new System.Drawing.Size(164, 21);
       this.cbCountRoom.TabIndex = 2;
+      this.cbCountRoom.SelectedIndexChanged += new System.EventHandler(this.cbCountRoom_SelectedIndexChanged);
       // 
       // label2
       // 

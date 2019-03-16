@@ -37,8 +37,8 @@ namespace ParseSitesForApartments.UI
         cbMetro.Items.Add(item);
       }
 
-      cbMetro.SelectedIndex = 0;
-      cbCountRoom.SelectedIndex = 0;
+      //cbMetro.SelectedIndex = 0;
+      //cbCountRoom.SelectedIndex = 0;
     }
 
     private void btnSelectFile_Click(object sender, EventArgs e)
@@ -260,7 +260,7 @@ namespace ParseSitesForApartments.UI
               row["Площадь"] = square;
             }
 
-            row["Кол-во комнат"] = arLine[typeRoomColumn];
+            row["Количество_комнат"] = arLine[typeRoomColumn];
 
             short floor;
             if (short.TryParse(arLine[floorColumn], out floor))
@@ -281,16 +281,16 @@ namespace ParseSitesForApartments.UI
         }
       }
 
-      var selectMetro = cbMetro.SelectedItem as Metro;
       //EnumerableRowCollection<DataRow> query = from flat in table.AsEnumerable()
       //  where flat.Field<string>("Metro").Contains(selectMetro.Name)
       //  orderby flat.Field<string>("Цена"), flat.Field<string>("Площадь")
       //  select flat;
 
 
-      var dv =table.DefaultView;
+      var dv = table.DefaultView;
+      var selectMetro = cbMetro.SelectedItem as Metro;
       
-      dv.RowFilter = $"Metro = '{selectMetro.Name}'";
+      //dv.RowFilter = $"Metro = '{selectMetro.Name}'";
 
       for (int i = 0; i < dv.Count; i++)
       {
@@ -327,7 +327,7 @@ namespace ParseSitesForApartments.UI
       column = new DataColumn("Площадь", typeof(float));
       table.Columns.Add(column);
 
-      column = new DataColumn("Кол-во комнат", typeof(string));
+      column = new DataColumn("Количество_комнат", typeof(string));
       table.Columns.Add(column);
 
       column = new DataColumn("Этаж", typeof(short));
@@ -354,14 +354,71 @@ namespace ParseSitesForApartments.UI
 
     private void dataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
     {
-      var cell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-      if (!string.IsNullOrWhiteSpace(cell))
+      if (e.RowIndex > -1 && e.ColumnIndex > -1)
       {
-        if (cell.Contains("http"))
+        var cell = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+        if (!string.IsNullOrWhiteSpace(cell))
         {
-          System.Diagnostics.Process.Start(cell);
+          if (cell.Contains("http"))
+          {
+            System.Diagnostics.Process.Start(cell);
+          }
         }
       }
+    }
+
+    private void cbMetro_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      WorkToFilter();
+    }
+
+    private void cbCountRoom_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      WorkToFilter();
+    }
+
+    private void WorkToFilter()
+    {
+      if (table == null)return;
+
+      var selectMetro = cbMetro.SelectedItem as Metro;
+      var selectTypeRoom = cbCountRoom.SelectedItem;
+      var dv = table.DefaultView;
+      if (selectTypeRoom == null)
+      {
+        dv.RowFilter = $"Metro = '{selectMetro.Name}'";
+      }
+      else
+      {
+        if ("Все комнаты" != selectTypeRoom.ToString())
+          dv.RowFilter = $"Metro = '{selectMetro.Name}' AND Количество_комнат LIKE '%{selectTypeRoom}%'";
+        else
+          dv.RowFilter = $"Metro = '{selectMetro.Name}'";
+      }
+
+      countFlat = 0;
+      averPrice = 0;
+      for (int i = 0; i < dv.Count; i++)
+      {
+        var price = (int)dv[i]["Цена"];
+        var square = (float)dv[i]["Площадь"];
+        averPriceForFlatList.Add(price / square);
+        countFlat++;
+      }
+
+      float sum = 0;
+      foreach (var val in averPriceForFlatList)
+      {
+        sum += val;
+      }
+      averPriceForFlatList.Clear();
+      lbCountFlat.Text = countFlat.ToString();
+      averPrice = sum / countFlat;
+      lbAveragePriceForSquare.Text = averPrice.ToString();
+
+      dv.Sort = "Цена ASC, Площадь ASC";
+
+      dataGridView1.DataSource = dv;
     }
   }
 }
