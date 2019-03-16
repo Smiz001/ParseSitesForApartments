@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace ParseSitesForApartments.UI
@@ -16,7 +13,7 @@ namespace ParseSitesForApartments.UI
 
     private int countFlat;
     private float averPrice;
-    private List<float> averPriceForFlat = new List<float>();
+    private List<float> averPriceForFlatList = new List<float>();
     private short priceColumn;
     private short squareColumn;
     private short typeRoomColumn;
@@ -26,6 +23,7 @@ namespace ParseSitesForApartments.UI
     private short districtColumn;
     private short distanceCarColumn;
     private short distaneFootColumn;
+    private short metroColum;
     private short urlColumn;
     private DataTable table;
 
@@ -70,7 +68,8 @@ namespace ParseSitesForApartments.UI
       distaneFootColumn = -1;
       urlColumn = -1;
       typeRoomColumn = -1;
-
+      metroColum = -1;
+      Cursor.Current = Cursors.WaitCursor;
       if (Path.GetExtension(tbPathToFile.Text) == ".csv")
       {
         if (CheckHeaderColumnAndSetNumColumns())
@@ -83,6 +82,7 @@ namespace ParseSitesForApartments.UI
       {
         MessageBox.Show("Данный файл должен быть с раширением csv", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+      Cursor.Current = Cursors.Default;
     }
 
     private bool CheckHeaderColumnAndSetNumColumns()
@@ -168,6 +168,14 @@ namespace ParseSitesForApartments.UI
             break;
           }
         }
+        for (short i = 0; i < ar.Length; i++)
+        {
+          if (ar[i].ToUpper() == "МЕТРО")
+          {
+            metroColum = i;
+            break;
+          }
+        }
 
         if (distaneFootColumn == -1)
         {
@@ -212,6 +220,11 @@ namespace ParseSitesForApartments.UI
         if (typeRoomColumn == -1)
         {
           MessageBox.Show("Не найдена колонка КОЛ-ВО КОМНАТ", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return false;
+        }
+        if (metroColum == -1)
+        {
+          MessageBox.Show("Не найдена колонка МЕТРО", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }
       }
@@ -260,12 +273,44 @@ namespace ParseSitesForApartments.UI
             row["Расстояние на машине"] = arLine[distanceCarColumn];
             if(!string.IsNullOrWhiteSpace(arLine[urlColumn]))
               row["Url"] = new Uri(arLine[urlColumn]);
+
+            if (!string.IsNullOrWhiteSpace(arLine[metroColum]))
+              row["Metro"] = arLine[metroColum];
             table.Rows.Add(row);
           }
         }
       }
 
-      dataGridView1.DataSource = table.DefaultView;
+      var selectMetro = cbMetro.SelectedItem as Metro;
+      //EnumerableRowCollection<DataRow> query = from flat in table.AsEnumerable()
+      //  where flat.Field<string>("Metro").Contains(selectMetro.Name)
+      //  orderby flat.Field<string>("Цена"), flat.Field<string>("Площадь")
+      //  select flat;
+
+
+      var dv =table.DefaultView;
+      
+      dv.RowFilter = $"Metro = '{selectMetro.Name}'";
+
+      for (int i = 0; i < dv.Count; i++)
+      {
+        var price = (int)dv[i]["Цена"];
+        var square = (float)dv[i]["Площадь"];
+        averPriceForFlatList.Add(price / square);
+        countFlat++;
+      }
+
+      float sum = 0;
+      foreach (var val in averPriceForFlatList)
+      {
+        sum += val;
+      }
+      averPriceForFlatList.Clear();
+      lbCountFlat.Text = countFlat.ToString();
+      averPrice = sum / countFlat;
+      lbAveragePriceForSquare.Text = averPrice.ToString();
+
+      dataGridView1.DataSource = dv;
     }
 
     private void CreateColumns()
@@ -298,6 +343,9 @@ namespace ParseSitesForApartments.UI
       table.Columns.Add(column);
 
       column = new DataColumn("Расстояние на машине", typeof(string));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Metro", typeof(string));
       table.Columns.Add(column);
 
       column = new DataColumn("Url", typeof(Uri));

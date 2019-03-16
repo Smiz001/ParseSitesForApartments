@@ -67,6 +67,7 @@
       this.cbCountRoom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.cbCountRoom.FormattingEnabled = true;
       this.cbCountRoom.Items.AddRange(new object[] {
+            "Все комнаты",
             "Студии",
             "1 ком.",
             "2 ком.",
@@ -160,15 +161,16 @@
       // lbAveragePriceForSquare
       // 
       this.lbAveragePriceForSquare.AutoSize = true;
+      this.lbAveragePriceForSquare.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lbAveragePriceForSquare.Location = new System.Drawing.Point(608, 26);
       this.lbAveragePriceForSquare.Name = "lbAveragePriceForSquare";
-      this.lbAveragePriceForSquare.Size = new System.Drawing.Size(35, 13);
+      this.lbAveragePriceForSquare.Size = new System.Drawing.Size(0, 13);
       this.lbAveragePriceForSquare.TabIndex = 11;
-      this.lbAveragePriceForSquare.Text = "label6";
       // 
       // lbCountFlat
       // 
       this.lbCountFlat.AutoSize = true;
+      this.lbCountFlat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.lbCountFlat.Location = new System.Drawing.Point(608, 49);
       this.lbCountFlat.Name = "lbCountFlat";
       this.lbCountFlat.Size = new System.Drawing.Size(0, 13);
