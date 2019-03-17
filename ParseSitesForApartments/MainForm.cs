@@ -163,6 +163,15 @@ namespace ParseSitesForApartments
           fileName += "Больше 4 ком. ";
           break;
       }
+      switch (cbTypeRoom.SelectedIndex)
+      {
+        case 0:
+          fileName += "Продажа ";
+          break;
+        case 1:
+          fileName += "Сдача ";
+          break;
+      }
       fileName += DateTime.Now.ToShortDateString();
       //TODO проверить имя
       sfdParseFile.FileName = fileName;

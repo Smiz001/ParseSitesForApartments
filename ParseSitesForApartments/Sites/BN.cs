@@ -130,7 +130,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("БН Все квартиры");
+        progress = new ProgressForm("БН Все квартиры Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
           {
@@ -210,10 +210,6 @@ namespace ParseSitesForApartments.Sites
                                   if (!fourThread.IsAlive)
                                     break;
               }
-              //Thread.Sleep(10000);
-              //CheckCloseThread(-1);
-              //export.Execute();
-
               IsFinished = true;
               var threadMessage = new Thread(
                 new ThreadStart(() =>
@@ -233,29 +229,81 @@ namespace ParseSitesForApartments.Sites
           ));
         threadbackground.Start();
         progress.Show();
-        //while(threadbackground.IsAlive)
-        //  Thread.Sleep(10000);
       }
       else
       {
-        studiiSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        studiiSdamThread.Start("Студия");
-        oneSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        oneSdamThread.Start("1 км. кв.");
-        twoSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        twoSdamThread.Start("2 км. кв.");
-        threeSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        threeSdamThread.Start("3 км. кв.");
-        fourSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        fourSdamThread.Start("4 км. кв.");
+        progress = new ProgressForm("БН Все квартиры Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              studiiSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              studiiSdamThread.Start("Студия");
+              oneSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              oneSdamThread.Start("1 км. кв.");
+              twoSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              twoSdamThread.Start("2 км. кв.");
+              threeSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              threeSdamThread.Start("3 км. кв.");
+              fourSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              fourSdamThread.Start("4 км. кв.");
+              while (true)
+              {
+                if (!studiiSdamThread.IsAlive)
+                  if (!oneSdamThread.IsAlive)
+                    if (!twoSdamThread.IsAlive)
+                      if (!threeSdamThread.IsAlive)
+                        if (!fourSdamThread.IsAlive)
+                          break;
+              }
+              studiiSdamThread = new Thread(UnionFlats);
+              studiiSdamThread.Start("Студия");
+              oneSdamThread = new Thread(UnionFlats);
+              oneSdamThread.Start("1 км. кв.");
+              twoSdamThread = new Thread(UnionFlats);
+              twoSdamThread.Start("2 км. кв.");
+              threeSdamThread = new Thread(UnionFlats);
+              threeSdamThread.Start("3 км. кв.");
+              fourSdamThread = new Thread(UnionFlats);
+              fourSdamThread.Start("4 км. кв.");
+              while (true)
+              {
+                if (!studiiSdamThread.IsAlive)
+                  if (!oneSdamThread.IsAlive)
+                    if (!twoSdamThread.IsAlive)
+                      if (!threeSdamThread.IsAlive)
+                        if (!fourSdamThread.IsAlive)
+                          break;
+              }
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
+
       }
     }
 
     public override void ParsingStudii()
     {
+      CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        CreateExport();
         progress = new ProgressForm("БН Студии");
         var threadbackground = new Thread(
           new ThreadStart(() =>
@@ -271,7 +319,7 @@ namespace ParseSitesForApartments.Sites
                 {
                   if (!studiiThreadOld.IsAlive)
                     if (!studiiThread.IsAlive)
-                                      break;
+                      break;
                 }
 
                 studiiThread = new Thread(UnionFlats);
@@ -299,18 +347,53 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        CreateExportSdam();
-        studiiSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        studiiSdamThread.Start("Студия");
+        progress = new ProgressForm("БН Студии Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              studiiSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              studiiSdamThread.Start("Студия");
+              while (true)
+              {
+                if (!studiiSdamThread.IsAlive)
+                  break;
+              }
+              studiiSdamThread = new Thread(UnionFlats);
+              studiiSdamThread.Start("Студия");
+              while (true)
+              {
+                if (!studiiSdamThread.IsAlive)
+                  break;
+              }
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
     public override void ParsingOne()
     {
+      CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        CreateExport();
-
         progress = new ProgressForm("БН 1 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
@@ -352,17 +435,53 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        CreateExportSdam();
-        oneSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        oneSdamThread.Start("1 км. кв.");
+        progress = new ProgressForm("БН 1 км. кв. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              oneSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              oneSdamThread.Start("1 км. кв.");
+              while (true)
+              {
+                if (!oneSdamThread.IsAlive)
+                  break;
+              }
+              oneSdamThread = new Thread(UnionFlats);
+              oneSdamThread.Start("1 км. кв.");
+              while (true)
+              {
+                if (!oneSdamThread.IsAlive)
+                  break;
+              }
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
     public override void ParsingTwo()
     {
+      CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        CreateExport();
         progress = new ProgressForm("БН 2 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
@@ -404,17 +523,53 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        CreateExportSdam();
-        twoSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        twoSdamThread.Start("2 км. кв.");
+        progress = new ProgressForm("БН 2 км. кв. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              twoSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              twoSdamThread.Start("2 км. кв.");
+              while (true)
+              {
+                if (!twoSdamThread.IsAlive)
+                  break;
+              }
+              twoSdamThread = new Thread(UnionFlats);
+              twoSdamThread.Start("2 км. кв.");
+              while (true)
+              {
+                if (!twoSdamThread.IsAlive)
+                  break;
+              }
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
     public override void ParsingThree()
     {
+      CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        CreateExport();
         progress = new ProgressForm("БН 3 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
@@ -455,17 +610,53 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        CreateExportSdam();
-        threeSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        threeSdamThread.Start("3 км. кв.");
+        progress = new ProgressForm("БН 3 км. кв. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              threeSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              threeSdamThread.Start("3 км. кв.");
+              while (true)
+              {
+                if (!threeSdamThread.IsAlive)
+                  break;
+              }
+              threeSdamThread = new Thread(UnionFlats);
+              threeSdamThread.Start("3 км. кв.");
+              while (true)
+              {
+                if (!threeSdamThread.IsAlive)
+                  break;
+              }
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
     public override void ParsingFour()
     {
+      CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        CreateExport();
         progress = new ProgressForm("БН 4 км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
@@ -506,9 +697,45 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        CreateExportSdam();
-        fourSdamThread = new Thread(ChangeDistrictAndPageForSdam);
-        fourSdamThread.Start("4 км. кв.");
+        progress = new ProgressForm("БН 4 км. кв. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              fourSdamThread = new Thread(ChangeDistrictAndPageForSdam);
+              fourSdamThread.Start("4 км. кв.");
+              while (true)
+              {
+                if (!fourSdamThread.IsAlive)
+                  break;
+              }
+              fourSdamThread = new Thread(UnionFlats);
+              fourSdamThread.Start("4 км. кв.");
+              while (true)
+              {
+                if (!fourSdamThread.IsAlive)
+                  break;
+              }
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -599,7 +826,7 @@ namespace ParseSitesForApartments.Sites
           }
         }
       }
-     //MessageBox.Show($"Закончили - {typeRoom}");
+      //MessageBox.Show($"Закончили - {typeRoom}");
     }
 
     private void ChangeDistrictAndPageForSdam(object typeRoom)
@@ -671,7 +898,7 @@ namespace ParseSitesForApartments.Sites
       }
     }
 
-    private void ParseSheet(string typeRoom, IHtmlDocument document, District district, CoreExport export )
+    private void ParseSheet(string typeRoom, IHtmlDocument document, District district, CoreExport export)
     {
       var apartaments = document.GetElementsByClassName("object--item");
       var urlElems = document.GetElementsByClassName("object--link-to-object button_mode_one");
@@ -686,7 +913,7 @@ namespace ParseSitesForApartments.Sites
           Url = $"https://www.bn.ru{urlElems[i].GetAttribute("href")}"
         };
         if (apartaments[i].GetElementsByClassName("object__square").Length > 0)
-          flat.Square = apartaments[i].GetElementsByClassName("object__square")[0].TextContent.Replace("м2","").Replace(".", ",").Trim();
+          flat.Square = apartaments[i].GetElementsByClassName("object__square")[0].TextContent.Replace("м2", "").Replace(".", ",").Trim();
         flat.CountRoom = typeRoom;
         if (typeRoom == "4 км. кв." || typeRoom == "4 км. кв. Н")
         {
@@ -702,11 +929,11 @@ namespace ParseSitesForApartments.Sites
         var priceString = apartaments[i].GetElementsByClassName("object--price_original")[0].TextContent.Trim();
         var ms = regex.Matches(priceString);
         if (ms.Count > 1)
-          if(TypeParseFlat == TypeParseFlat.Sale)
+          if (TypeParseFlat == TypeParseFlat.Sale)
             flat.Price = int.Parse($"{ms[0].Value}{ms[1].Value}000");
           else
             flat.Price = int.Parse($"{ms[0].Value}{ms[1].Value}");
-        else 
+        else
         if (TypeParseFlat == TypeParseFlat.Sale)
           flat.Price = int.Parse($"{ms[0].Value}000");
         else
@@ -1033,7 +1260,7 @@ namespace ParseSitesForApartments.Sites
 
     public override void ParsingSdamAll()
     {
-      if(export is CsvExport)
+      if (export is CsvExport)
       {
         using (var sw = new StreamWriter(new FileStream(Filename, FileMode.Create), Encoding.UTF8))
         {
