@@ -163,7 +163,7 @@ namespace ParseSitesForApartments
           fileName += "Больше 4 ком. ";
           break;
       }
-      switch (cbTypeRoom.SelectedIndex)
+      switch (cbTypeSell.SelectedIndex)
       {
         case 0:
           fileName += "Продажа ";

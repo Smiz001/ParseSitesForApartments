@@ -138,7 +138,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("ELMS Все квартиры");
+        progress = new ProgressForm("ELMS Все квартиры Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -181,12 +181,12 @@ namespace ParseSitesForApartments.Sites
                             if (!fourThreadOld.IsAlive)
                               if (!fiveThreadOld.IsAlive)
                                 if (!sixThreadOld.IsAlive)
-                                  if(!oneThread.IsAlive)
+                                  if (!oneThread.IsAlive)
                                     if (!twoThread.IsAlive)
                                       if (!threeThread.IsAlive)
                                         if (!fourThread.IsAlive)
                                           if (!fiveThread.IsAlive)
-                                              break;
+                                            break;
                 }
 
                 studiiThread = new Thread(UnionFlats);
@@ -258,20 +258,83 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
-        studiiRentThread.Start("Студия");
-        oneRentThread = new Thread(ChangeDistrictAndPageForRent);
-        oneRentThread.Start("1 км. кв.");
-        twoRentThread = new Thread(ChangeDistrictAndPageForRent);
-        twoRentThread.Start("2 км. кв.");
-        threeRentThread = new Thread(ChangeDistrictAndPageForRent);
-        threeRentThread.Start("3 км. кв.");
-        fourRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fourRentThread.Start("4 км. кв.");
-        fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fiveRentThread.Start("5 км. кв.");
-        sixRentThreadOld = new Thread(ChangeDistrictAndPageForRent);
-        sixRentThreadOld.Start("6 км. кв.");
+        progress = new ProgressForm("ELMS Все квартиры Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
+              studiiRentThread.Start("Студия");
+              oneRentThread = new Thread(ChangeDistrictAndPageForRent);
+              oneRentThread.Start("1 км. кв.");
+              twoRentThread = new Thread(ChangeDistrictAndPageForRent);
+              twoRentThread.Start("2 км. кв.");
+              threeRentThread = new Thread(ChangeDistrictAndPageForRent);
+              threeRentThread.Start("3 км. кв.");
+              fourRentThread = new Thread(ChangeDistrictAndPageForRent);
+              fourRentThread.Start("4 км. кв.");
+              fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
+              fiveRentThread.Start("5 км. кв.");
+              sixRentThreadOld = new Thread(ChangeDistrictAndPageForRent);
+              sixRentThreadOld.Start("6 км. кв.");
+
+              while (true)
+              {
+                if (!studiiRentThread.IsAlive)
+                  if (!oneRentThread.IsAlive)
+                    if (!twoRentThread.IsAlive)
+                      if (!threeRentThread.IsAlive)
+                        if (!fourRentThread.IsAlive)
+                          if (!fiveRentThread.IsAlive)
+                            if (!sixRentThreadOld.IsAlive)
+                              break;
+              }
+              studiiRentThread = new Thread(UnionFlats);
+              studiiRentThread.Start("Студия");
+              oneRentThread = new Thread(UnionFlats);
+              oneRentThread.Start("1 км. кв.");
+              twoRentThread = new Thread(UnionFlats);
+              twoRentThread.Start("2 км. кв.");
+              threeRentThread = new Thread(UnionFlats);
+              threeRentThread.Start("3 км. кв.");
+              fourRentThread = new Thread(UnionFlats);
+              fourRentThread.Start("4 км. кв.");
+              fiveRentThread = new Thread(UnionFlats);
+              fiveRentThread.Start("5 км. кв.");
+              sixRentThreadOld = new Thread(UnionFlats);
+              sixRentThreadOld.Start("6 км. кв.");
+              while (true)
+              {
+                if (!studiiRentThread.IsAlive)
+                  if (!oneRentThread.IsAlive)
+                    if (!twoRentThread.IsAlive)
+                      if (!threeRentThread.IsAlive)
+                        if (!fourRentThread.IsAlive)
+                          if (!fiveRentThread.IsAlive)
+                            if (!sixRentThreadOld.IsAlive)
+                              break;
+              }
+
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -280,7 +343,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("ELMS Студии");
+        progress = new ProgressForm("ELMS Студии Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -337,8 +400,47 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
-        studiiRentThread.Start("Студия");
+        progress = new ProgressForm("ELMS Студия Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
+              studiiRentThread.Start("Студия");
+
+              while (true)
+              {
+                if (!studiiRentThread.IsAlive)
+                  break;
+              }
+              studiiRentThread = new Thread(UnionFlats);
+              studiiRentThread.Start("Студия");
+              while (true)
+              {
+                if (!studiiRentThread.IsAlive)
+                  break;
+              }
+
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -347,7 +449,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("ELMS 1 км. кв.");
+        progress = new ProgressForm("ELMS 1 км. кв. Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -402,8 +504,46 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        oneRentThread = new Thread(ChangeDistrictAndPageForRent);
-        oneRentThread.Start("1 км. кв.");
+        progress = new ProgressForm("ELMS 1 км. кв. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              oneRentThread = new Thread(ChangeDistrictAndPageForRent);
+              oneRentThread.Start("1 км. кв.");
+              while (true)
+              {
+                if (!oneRentThread.IsAlive)
+                  break;
+              }
+              oneRentThread = new Thread(UnionFlats);
+              oneRentThread.Start("1 км. кв.");
+              while (true)
+              {
+                if (!oneRentThread.IsAlive)
+                  break;
+              }
+
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -412,7 +552,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("ELMS 2 км. кв.");
+        progress = new ProgressForm("ELMS 2 км. кв. Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -465,8 +605,47 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        twoRentThread = new Thread(ChangeDistrictAndPageForRent);
-        twoRentThread.Start("2 км. кв.");
+        progress = new ProgressForm("ELMS 2 км. кв. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              twoRentThread = new Thread(ChangeDistrictAndPageForRent);
+              twoRentThread.Start("2 км. кв.");
+
+              while (true)
+              {
+                if (!twoRentThread.IsAlive)
+                  break;
+              }
+              twoRentThread = new Thread(UnionFlats);
+              twoRentThread.Start("2 км. кв.");
+              while (true)
+              {
+                if (!twoRentThread.IsAlive)
+                  break;
+              }
+
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -475,7 +654,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("ELMS 3 км. кв.");
+        progress = new ProgressForm("ELMS 3 км. кв. Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -528,8 +707,47 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        threeRentThread = new Thread(ChangeDistrictAndPageForRent);
-        threeRentThread.Start("3 км. кв.");
+        progress = new ProgressForm("ELMS 3 км. кв. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              threeRentThread = new Thread(ChangeDistrictAndPageForRent);
+              threeRentThread.Start("3 км. кв.");
+
+              while (true)
+              {
+                if (!threeRentThread.IsAlive)
+                  break;
+              }
+              threeRentThread = new Thread(UnionFlats);
+              threeRentThread.Start("3 км. кв.");
+              while (true)
+              {
+                if (!threeRentThread.IsAlive)
+                  break;
+              }
+
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -538,7 +756,7 @@ namespace ParseSitesForApartments.Sites
       CreateExport();
       if (TypeParseFlat == TypeParseFlat.Sale)
       {
-        progress = new ProgressForm("ELMS 4 км. кв.");
+        progress = new ProgressForm("ELMS 4 км. кв. Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
             {
@@ -591,8 +809,47 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        fourRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fourRentThread.Start("4 км. кв.");
+        progress = new ProgressForm("ELMS4 км. кв. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              fourRentThread = new Thread(ChangeDistrictAndPageForRent);
+              fourRentThread.Start("4 км. кв.");
+
+              while (true)
+              {
+                if (!fourRentThread.IsAlive)
+                  break;
+              }
+              fourRentThread = new Thread(UnionFlats);
+              fourRentThread.Start("4 км. кв.");
+              while (true)
+              {
+                if (!fourRentThread.IsAlive)
+                  break;
+              }
+
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -654,10 +911,53 @@ namespace ParseSitesForApartments.Sites
       }
       else
       {
-        fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fiveRentThread.Start("5 км. кв.");
-        sixRentThreadOld = new Thread(ChangeDistrictAndPageForRent);
-        sixRentThreadOld.Start("6 км. кв.");
+        progress = new ProgressForm("ELMS Более 4 км. Сдача");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
+              fiveRentThread.Start("5 км. кв.");
+              sixRentThreadOld = new Thread(ChangeDistrictAndPageForRent);
+              sixRentThreadOld.Start("6 км. кв.");
+
+              while (true)
+              {
+                if (!fiveRentThread.IsAlive)
+                  if (!sixRentThreadOld.IsAlive)
+                    break;
+              }
+              fiveRentThread = new Thread(UnionFlats);
+              fiveRentThread.Start("5 км. кв.");
+              sixRentThreadOld = new Thread(UnionFlats);
+              sixRentThreadOld.Start("6 км. кв.");
+              while (true)
+              {
+                if (!fiveRentThread.IsAlive)
+                  if (!sixRentThreadOld.IsAlive)
+                    break;
+              }
+
+              IsFinished = true;
+              var threadMessage = new Thread(
+                new ThreadStart(() =>
+                {
+                  MessageBox.Show("Загрузка завершена");
+                }
+                )
+              );
+              threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -859,7 +1159,7 @@ namespace ParseSitesForApartments.Sites
         }
         else if (mc.Count == 2)
         {
-          liter = mc[2].Value;
+          liter = mc[1].Value;
         }
 
         if (!string.IsNullOrEmpty(liter))
@@ -1095,6 +1395,10 @@ namespace ParseSitesForApartments.Sites
 
     private void ChangeDistrictAndPageForRent(object typeRoom)
     {
+      var path = CreateExportForRoom(typeRoom.ToString());
+      CoreCreator creator = new CsvExportCreator();
+      var exportPart = creator.FactoryCreate(path);
+
       HtmlParser parser = new HtmlParser();
       using (var webClient = new WebClient())
       {
@@ -1137,17 +1441,15 @@ namespace ParseSitesForApartments.Sites
             }
 
             if (!ExecuteParseRent(url, webClient, parser, (string)typeRoom,
-              ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First()))
+              ListDistricts.Where(x => x.Name.ToLower() == distr.Value.ToLower()).First(), exportPart))
               break;
           }
         }
       }
-
-      MessageBox.Show($"Закончили - {typeRoom}");
     }
 
     private bool ExecuteParseRent(string url, WebClient webClient, HtmlParser parser, string typeRoom,
-      District district)
+      District district, CoreExport export)
     {
       var random = new Random();
       Thread.Sleep(random.Next(2000, 4000));
@@ -1156,7 +1458,7 @@ namespace ParseSitesForApartments.Sites
       var responce = webClient.DownloadString(url);
       var document = parser.Parse(responce);
       var tableElements = document.GetElementsByClassName("row1");
-      //ParseSheet(tableElements, typeRoom, district);
+      ParseSheet(tableElements, typeRoom, district, export);
       if (tableElements.Length == 0)
         return false;
       return true;
@@ -1347,11 +1649,11 @@ namespace ParseSitesForApartments.Sites
           number = ar[2];
           struc = ar[3];
           liter = ar[4];
-          
+
           District dis = null;
           try
           {
-             dis = ListDistricts.Where(x => string.Equals(x.Name, ar[0], StringComparison.CurrentCultureIgnoreCase)).First();
+            dis = ListDistricts.Where(x => string.Equals(x.Name, ar[0], StringComparison.CurrentCultureIgnoreCase)).First();
           }
           catch (Exception e)
           {
