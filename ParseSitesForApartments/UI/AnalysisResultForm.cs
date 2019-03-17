@@ -59,6 +59,10 @@ namespace ParseSitesForApartments.UI
 
     private void btnLoad_Click(object sender, EventArgs e)
     {
+      countFlat = 0;
+      averPrice = 0;
+      averPriceForFlatList.Clear();
+
       priceColumn = -1;
       squareColumn = -1;
       floorColumn = -1;
@@ -70,6 +74,7 @@ namespace ParseSitesForApartments.UI
       urlColumn = -1;
       typeRoomColumn = -1;
       metroColum = -1;
+
       Cursor.Current = Cursors.WaitCursor;
       if (Path.GetExtension(tbPathToFile.Text) == ".csv")
       {
@@ -316,8 +321,7 @@ namespace ParseSitesForApartments.UI
 
     private void CreateColumns()
     {
-      dataGridView1.Rows.Clear();
-      dataGridView1.Refresh();
+      table?.Clear();
       dataGridView1.DataSource = null;
 
 
