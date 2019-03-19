@@ -38,6 +38,8 @@ namespace ParseSitesForApartments
     public string DistanceOnCar { get; set; } = string.Empty;
     public string TimeOnFootToMetro { get; set; } = string.Empty;
     public string TimeOnCarToMetro { get; set; } = string.Empty;
+    public string TypeBuilding { get; set; } = string.Empty;
+    public string IsRepair { get; set; } = string.Empty;
 
     public List<Flat> FlatsOnSale { get; set; } = new List<Flat>();
     public Metro MetroObj { get; set; }

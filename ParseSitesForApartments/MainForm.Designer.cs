@@ -43,13 +43,16 @@
       this.sfdParseFile = new System.Windows.Forms.SaveFileDialog();
       this.lblTypeSell = new System.Windows.Forms.Label();
       this.cbTypeSell = new System.Windows.Forms.ComboBox();
+      this.дополениеБазыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmUpdateTypeBuilding = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
       // menuStrip1
       // 
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tspmFile});
+            this.tspmFile,
+            this.дополениеБазыToolStripMenuItem});
       this.menuStrip1.Location = new System.Drawing.Point(0, 0);
       this.menuStrip1.Name = "menuStrip1";
       this.menuStrip1.Size = new System.Drawing.Size(443, 24);
@@ -68,14 +71,14 @@
       // AnalysisResaltToolStripMenuItem
       // 
       this.AnalysisResaltToolStripMenuItem.Name = "AnalysisResaltToolStripMenuItem";
-      this.AnalysisResaltToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.AnalysisResaltToolStripMenuItem.Size = new System.Drawing.Size(176, 22);
       this.AnalysisResaltToolStripMenuItem.Text = "Анализ результата";
       this.AnalysisResaltToolStripMenuItem.Click += new System.EventHandler(this.AnalysisResaltToolStripMenuItem_Click);
       // 
       // tspmExit
       // 
       this.tspmExit.Name = "tspmExit";
-      this.tspmExit.Size = new System.Drawing.Size(180, 22);
+      this.tspmExit.Size = new System.Drawing.Size(176, 22);
       this.tspmExit.Text = "Выход";
       this.tspmExit.Click += new System.EventHandler(this.tspmExit_Click);
       // 
@@ -188,6 +191,21 @@
       this.cbTypeSell.Size = new System.Drawing.Size(121, 21);
       this.cbTypeSell.TabIndex = 35;
       // 
+      // дополениеБазыToolStripMenuItem
+      // 
+      this.дополениеБазыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmUpdateTypeBuilding});
+      this.дополениеБазыToolStripMenuItem.Name = "дополениеБазыToolStripMenuItem";
+      this.дополениеБазыToolStripMenuItem.Size = new System.Drawing.Size(111, 20);
+      this.дополениеБазыToolStripMenuItem.Text = "Дополение базы";
+      // 
+      // tsmUpdateTypeBuilding
+      // 
+      this.tsmUpdateTypeBuilding.Name = "tsmUpdateTypeBuilding";
+      this.tsmUpdateTypeBuilding.Size = new System.Drawing.Size(188, 22);
+      this.tsmUpdateTypeBuilding.Text = "Обновить тип домов";
+      this.tsmUpdateTypeBuilding.Click += new System.EventHandler(this.tsmUpdateTypeBuilding_Click);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -232,6 +250,8 @@
     private System.Windows.Forms.Label lblTypeSell;
     private System.Windows.Forms.ComboBox cbTypeSell;
     private System.Windows.Forms.ToolStripMenuItem AnalysisResaltToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem дополениеБазыToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem tsmUpdateTypeBuilding;
   }
 }
 

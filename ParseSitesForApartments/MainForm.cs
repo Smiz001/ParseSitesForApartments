@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using DataBase.Connections;
 using log4net;
@@ -17,7 +19,7 @@ namespace ParseSitesForApartments
     private List<District> listDistricts = new List<District>();
     private List<Metro> listMetros = new List<Metro>();
     protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-    private List<ProxyInfo> listProxy =new List<ProxyInfo>();
+    private List<ProxyInfo> listProxy = new List<ProxyInfo>();
 
     public MainForm()
     {
@@ -66,7 +68,7 @@ namespace ParseSitesForApartments
         var exportSetting = new ExportConfigDataBase();
         exportSetting.Export(fileName);
       }
-      
+
       cbChooseParse.SelectedIndex = 0;
       cbTypeRoom.SelectedIndex = 0;
       cbTypeSell.SelectedIndex = 0;
@@ -253,6 +255,169 @@ namespace ParseSitesForApartments
     {
       var analys = new AnalysisResultForm(listMetros);
       analys.ShowDialog();
+    }
+
+    private void tsmUpdateTypeBuilding_Click(object sender, EventArgs e)
+    {
+      string path = string.Empty;
+      using (OpenFileDialog openFileDialog = new OpenFileDialog())
+      {
+        openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+        openFileDialog.FilterIndex = 1;
+        openFileDialog.RestoreDirectory = true;
+        if (openFileDialog.ShowDialog() == DialogResult.OK)
+        {
+          path = openFileDialog.FileName;
+        }
+      }
+
+      var threadbackground = new Thread(
+        new ThreadStart(() =>
+        {
+          if (Path.GetExtension(path) == ".csv")
+          {
+            if (CheckHeaderColumnAndSetNumColumns(path))
+            {
+              using (var sr = new StreamReader(path))
+              {
+                string line = sr.ReadLine();
+                if (line != null)
+                {
+                  var con = ConnetionToSqlServer.Default();
+                  while ((line = sr.ReadLine()) != null)
+                  {
+                    var arLine = line.Split(';');
+                    //Парсинг адреса
+                    var adress = arLine[1].Split(',');
+                    string street = adress[0].Trim();
+                    string number = string.Empty;
+                    string structure = string.Empty;
+                    string liter = string.Empty;
+                    if (adress.Length > 1)
+                    {
+                      if (adress[1].Contains("корп."))
+                      {
+                        var regex = new Regex(@"(корп\.\s+\d+)");
+                        var val = regex.Match(adress[1]).Value;
+                        if (string.IsNullOrEmpty(val))
+                        {
+                          regex = new Regex(@"(корп\.\d+)");
+                          val = regex.Match(adress[1]).Value;
+                        }
+                        structure = val.Replace("корп.", "").Trim();
+                        try
+                        {
+                          adress[1] = adress[1].Replace(val, "");
+                        }
+                        catch
+                        {
+                          Log.Error(arLine[1]);
+                        }
+                      }
+
+                      if (adress[1].Contains("литер"))
+                      {
+                        var str = adress[1].Replace("литер", "").Replace(" ", "");
+                        var regex = new Regex(@"(\D)");
+                        var val = regex.Match(str).Value;
+                        if (!string.IsNullOrWhiteSpace(val))
+                        {
+                          if (val == "/" || (val == "-"))
+                          {
+                            if (regex.Matches(str).Count > 1)
+                            {
+                              val = regex.Matches(str)[1].Value;
+                            }
+                          }
+                          liter = val;
+                          if (!string.IsNullOrEmpty(val))
+                            number = str.Replace(val, "");
+                        }
+                      }
+                      else
+                        number = adress[1];
+                    }
+
+                    //Парсинг типа дома
+                    var type = arLine[2].Split(',');
+                    string typeBuild = string.Empty;
+                    string isRepair = string.Empty;
+                    if (type.Length == 2)
+                    {
+                      typeBuild = type[0];
+                      if (type[1].Contains("капитальный"))
+                      {
+                        isRepair = type[1];
+                      }
+                    }
+                    else
+                    {
+                      typeBuild = type[0];
+                    }
+
+                    string update = string.Empty;
+                    if (!string.IsNullOrEmpty(structure))
+                    {
+                      if (!string.IsNullOrEmpty(liter))
+                      {
+                        update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+  set TypeBuild = '{typeBuild}',
+  IsRepair = '{isRepair}'
+  where Street = '{street}' and Number = '{number}' and Bulding = '{structure}' and Letter = '{liter}'";
+                      }
+                      else
+                      {
+                        update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+  set TypeBuild = '{typeBuild}',
+  IsRepair = '{isRepair}'
+  where Street = '{street}' and Number = '{number}' and Bulding = '{structure}'";
+                      }
+                    }
+                    else
+                    {
+                      if (!string.IsNullOrEmpty(liter))
+                        update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+  set TypeBuild = '{typeBuild}',
+  IsRepair = '{isRepair}'
+  where Street = '{street}' and Number = '{number}' and Letter = '{liter}'";
+                      else
+                        update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
+  set TypeBuild = '{typeBuild}',
+  IsRepair = '{isRepair}'
+  where Street = '{street}' and Number = '{number}'";
+                    }
+                    con.ExecuteNonQuery(update);
+                  }
+                }
+              }
+            }
+          }
+          else
+          {
+            MessageBox.Show("Данный файл должен быть с раширением csv", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+        }
+        ));
+      threadbackground.Start();
+    }
+
+    private bool CheckHeaderColumnAndSetNumColumns(string path)
+    {
+      string line = null;
+      using (var sr = new StreamReader(path))
+      {
+        line = sr.ReadLine();
+      }
+      if (line != null)
+      {
+
+      }
+      else
+      {
+        MessageBox.Show("Файл пустой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return false;
+      }
+      return true;
     }
   }
 }

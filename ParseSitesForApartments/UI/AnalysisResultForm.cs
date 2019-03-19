@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -426,6 +427,19 @@ namespace ParseSitesForApartments.UI
       dv.Sort = "Цена ASC, Площадь ASC";
 
       dataGridView1.DataSource = dv;
+    }
+
+    private double CalculateAverageDeviation(List<double> listValue)
+    {
+      var aver = listValue.Average();
+      var dev = listValue.Count - 1;
+      double sum = 0;
+      foreach (var item in listValue)
+      {
+        sum += Math.Pow(item - aver,2);
+      }
+
+      return Math.Sqrt(sum / dev);
     }
   }
 }

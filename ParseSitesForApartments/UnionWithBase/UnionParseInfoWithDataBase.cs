@@ -996,6 +996,8 @@ values ('{flat.Building.Guid}','{flat.Building.Street}','{flat.Building.Number}'
             }
 
             building.Guid = reader.GetGuid(31);
+            building.TypeBuilding = reader.GetString(32);
+            building.IsRepair = reader.GetString(33);
           }
 
           reader.Close();
