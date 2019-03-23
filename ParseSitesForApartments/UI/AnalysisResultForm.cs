@@ -320,7 +320,7 @@ namespace ParseSitesForApartments.UI
               row["Metro"] = arLine[metroColum];
 
             var type = arLine[typeBuildColumn];
-            row["Тип дома"] = type;
+            row["Тип_дома"] = type;
             if(!listTypeBuild.Contains(type))
               listTypeBuild.Add(type);
             row["Проводился кап.ремонт"] = arLine[isRepairColumn];
@@ -329,18 +329,9 @@ namespace ParseSitesForApartments.UI
           cmbTypeBuild.DataSource = listTypeBuild;
         }
       }
-
-      //EnumerableRowCollection<DataRow> query = from flat in table.AsEnumerable()
-      //  where flat.Field<string>("Metro").Contains(selectMetro.Name)
-      //  orderby flat.Field<string>("Цена"), flat.Field<string>("Площадь")
-      //  select flat;
-
-
       var dv = table.DefaultView;
       var selectMetro = cbMetro.SelectedItem as Metro;
       
-      //dv.RowFilter = $"Metro = '{selectMetro.Name}'";
-
       for (int i = 0; i < dv.Count; i++)
       {
         var price = (int)dv[i]["Цена"];
@@ -397,7 +388,7 @@ namespace ParseSitesForApartments.UI
       column = new DataColumn("Metro", typeof(string));
       table.Columns.Add(column);
 
-      column = new DataColumn("Тип дома", typeof(string));
+      column = new DataColumn("Тип_дома", typeof(string));
       table.Columns.Add(column);
 
       column = new DataColumn("Проводился кап.ремонт", typeof(string));
@@ -439,20 +430,30 @@ namespace ParseSitesForApartments.UI
       var selectMetro = cbMetro.SelectedItem as Metro;
       var selectTypeRoom = cbCountRoom.SelectedItem;
       var dv = table.DefaultView;
+      string filter = string.Empty;
       if (selectTypeRoom == null)
       {
-        dv.RowFilter = $"Metro = '{selectMetro.Name}'";
+        filter = $"Metro = '{selectMetro.Name}'";
       }
       else
       {
         if ("Все комнаты" == selectTypeRoom.ToString())
-          dv.RowFilter = $"Metro = '{selectMetro.Name}'";
+          filter = $"Metro = '{selectMetro.Name}'";
         else if (selectTypeRoom.ToString() == "Более 4 км.")
-          dv.RowFilter = $"Metro = '{selectMetro.Name}' AND Количество_комнат LIKE '%5%' OR Количество_комнат LIKE '%6%' OR Количество_комнат LIKE '%7%' OR Количество_комнат LIKE '%8%' OR Количество_комнат LIKE '%9%'";
+          filter = $"Metro = '{selectMetro.Name}' AND Количество_комнат LIKE '%5%' OR Количество_комнат LIKE '%6%' OR Количество_комнат LIKE '%7%' OR Количество_комнат LIKE '%8%' OR Количество_комнат LIKE '%9%'";
         else
-          dv.RowFilter = $"Metro = '{selectMetro.Name}' AND Количество_комнат LIKE '%{selectTypeRoom}%'";
+          filter = $"Metro = '{selectMetro.Name}' AND Количество_комнат LIKE '%{selectTypeRoom}%'";
       }
 
+      if (cmbTypeBuild.SelectedIndex > -1)
+      {
+        var type = cmbTypeBuild.SelectedItem.ToString();
+        filter = $@"{filter} AND Тип_дома = '{type}'";
+      }
+      if (!string.IsNullOrWhiteSpace(filter))
+      {
+        dv.RowFilter = filter;
+      }
       countFlat = 0;
       averPrice = 0;
       //var listForAver = new List<double>();
@@ -482,20 +483,25 @@ namespace ParseSitesForApartments.UI
 
     private double CalculateAverageDeviation(List<double> listValue)
     {
-      var aver = listValue.Average();
-      var dev = listValue.Count - 1;
-      double sum = 0;
-      foreach (var item in listValue)
+      if (listValue.Count > 0)
       {
-        sum += Math.Pow(item - aver,2);
+        double sum = 0;
+        var aver = listValue.Average();
+        var dev = listValue.Count - 1;
+        foreach (var item in listValue)
+        {
+          sum += Math.Pow(item - aver, 2);
+        }
+
+        return Math.Round(Math.Sqrt(sum / dev), 2);
       }
 
-      return Math.Round(Math.Sqrt(sum / dev),2);
+      return 0;
     }
 
     private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
     {
-
+      WorkToFilter();
     }
   }
 }
