@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ParseSitesForApartments.UI
@@ -14,8 +13,9 @@ namespace ParseSitesForApartments.UI
     #region Fields
 
     private int countFlat;
-    private float averPrice;
-    private List<float> averPriceForFlatList = new List<float>();
+    private double averPrice;
+    private List<double> averPriceForFlatList = new List<double>();
+    private double averageDeviation;
     private short priceColumn;
     private short squareColumn;
     private short typeRoomColumn;
@@ -145,7 +145,7 @@ namespace ParseSitesForApartments.UI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "РАССТОЯНИЕ НА МАШИНЕ")
+          if (ar[i].ToUpper() == "РАССТОЯНИЕ НА МАШИНЕ, М")
           {
             distanceCarColumn = i;
             break;
@@ -153,7 +153,7 @@ namespace ParseSitesForApartments.UI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "РАССТОЯНИЕ ПЕШКОМ")
+          if (ar[i].ToUpper() == "РАССТОЯНИЕ ПЕШКОМ, М")
           {
             distaneFootColumn = i;
             break;
@@ -186,12 +186,12 @@ namespace ParseSitesForApartments.UI
 
         if (distaneFootColumn == -1)
         {
-          MessageBox.Show("Не найдена колонка РАССТОЯНИЕ ПЕШКОМ", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show("Не найдена колонка РАССТОЯНИЕ ПЕШКОМ, М", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }
         if (distanceCarColumn == -1)
         {
-          MessageBox.Show("Не найдена колонка РАССТОЯНИЕ НА МАШИНЕ", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          MessageBox.Show("Не найдена колонка РАССТОЯНИЕ НА МАШИНЕ, М", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }
         if (urlColumn == -1)
@@ -261,10 +261,10 @@ namespace ParseSitesForApartments.UI
               row["Цена"] = price;
             }
 
-            float square;
-            if (float.TryParse(arLine[squareColumn], out square))
+            double square;
+            if (double.TryParse(arLine[squareColumn], out square))
             {
-              row["Площадь"] = square;
+              row["Площадь"] = Math.Round(square,2);
             }
 
             row["Количество_комнат"] = arLine[typeRoomColumn];
@@ -276,8 +276,13 @@ namespace ParseSitesForApartments.UI
             }
             row["Год постройки"] = arLine[dateBuildColumn];
             row["Район"] = arLine[districtColumn];
-            row["Расстояние пешком"] = arLine[distaneFootColumn];
-            row["Расстояние на машине"] = arLine[distanceCarColumn];
+            if (string.IsNullOrWhiteSpace(arLine[distaneFootColumn]))
+              arLine[distaneFootColumn] = "0";
+            row["Расстояние пешком"] = int.Parse(arLine[distaneFootColumn]);
+
+            if (string.IsNullOrWhiteSpace(arLine[distanceCarColumn]))
+              arLine[distanceCarColumn] = "0";
+            row["Расстояние на машине"] = int.Parse(arLine[distanceCarColumn]);
             if(!string.IsNullOrWhiteSpace(arLine[urlColumn]))
               row["Url"] = new Uri(arLine[urlColumn]);
 
@@ -302,21 +307,22 @@ namespace ParseSitesForApartments.UI
       for (int i = 0; i < dv.Count; i++)
       {
         var price = (int)dv[i]["Цена"];
-        var square = (float)dv[i]["Площадь"];
+        var square = (double)dv[i]["Площадь"];
         averPriceForFlatList.Add(price / square);
         countFlat++;
       }
 
-      float sum = 0;
+      double sum = 0;
       foreach (var val in averPriceForFlatList)
       {
         sum += val;
       }
+      averageDeviation = CalculateAverageDeviation(averPriceForFlatList);
       averPriceForFlatList.Clear();
       lbCountFlat.Text = countFlat.ToString();
-      averPrice = sum / countFlat;
+      averPrice = Math.Round(sum / countFlat,2);
       lbAveragePriceForSquare.Text = averPrice.ToString();
-
+      lblOtklonenie.Text = averageDeviation.ToString();
       dataGridView1.DataSource = dv;
     }
 
@@ -330,7 +336,7 @@ namespace ParseSitesForApartments.UI
       var column = new DataColumn("Цена", typeof(int));
       table.Columns.Add(column);
 
-      column = new DataColumn("Площадь", typeof(float));
+      column = new DataColumn("Площадь", typeof(double));
       table.Columns.Add(column);
 
       column = new DataColumn("Количество_комнат", typeof(string));
@@ -345,10 +351,10 @@ namespace ParseSitesForApartments.UI
       column = new DataColumn("Район", typeof(string));
       table.Columns.Add(column);
 
-      column = new DataColumn("Расстояние пешком", typeof(string));
+      column = new DataColumn("Расстояние пешком", typeof(int));
       table.Columns.Add(column);
 
-      column = new DataColumn("Расстояние на машине", typeof(string));
+      column = new DataColumn("Расстояние на машине", typeof(int));
       table.Columns.Add(column);
 
       column = new DataColumn("Metro", typeof(string));
@@ -406,22 +412,24 @@ namespace ParseSitesForApartments.UI
 
       countFlat = 0;
       averPrice = 0;
+      //var listForAver = new List<double>();
       for (int i = 0; i < dv.Count; i++)
       {
         var price = (int)dv[i]["Цена"];
-        var square = (float)dv[i]["Площадь"];
+        var square = (double)dv[i]["Площадь"];
         averPriceForFlatList.Add(price / square);
         countFlat++;
       }
 
-      float sum = 0;
+      double sum = 0;
+      lblOtklonenie.Text = CalculateAverageDeviation(averPriceForFlatList).ToString();
       foreach (var val in averPriceForFlatList)
       {
         sum += val;
       }
       averPriceForFlatList.Clear();
       lbCountFlat.Text = countFlat.ToString();
-      averPrice = sum / countFlat;
+      averPrice = Math.Round(sum / countFlat,2);
       lbAveragePriceForSquare.Text = averPrice.ToString();
 
       dv.Sort = "Цена ASC, Площадь ASC";
@@ -439,7 +447,12 @@ namespace ParseSitesForApartments.UI
         sum += Math.Pow(item - aver,2);
       }
 
-      return Math.Sqrt(sum / dev);
+      return Math.Round(Math.Sqrt(sum / dev),2);
+    }
+
+    private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
     }
   }
 }

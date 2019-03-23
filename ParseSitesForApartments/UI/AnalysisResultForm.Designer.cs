@@ -41,6 +41,10 @@
       this.label5 = new System.Windows.Forms.Label();
       this.lbAveragePriceForSquare = new System.Windows.Forms.Label();
       this.lbCountFlat = new System.Windows.Forms.Label();
+      this.cmbTypeBuild = new System.Windows.Forms.ComboBox();
+      this.label6 = new System.Windows.Forms.Label();
+      this.label7 = new System.Windows.Forms.Label();
+      this.lblOtklonenie = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
       this.SuspendLayout();
       // 
@@ -77,7 +81,7 @@
             "Более 4 км."});
       this.cbCountRoom.Location = new System.Drawing.Point(176, 80);
       this.cbCountRoom.Name = "cbCountRoom";
-      this.cbCountRoom.Size = new System.Drawing.Size(164, 21);
+      this.cbCountRoom.Size = new System.Drawing.Size(110, 21);
       this.cbCountRoom.TabIndex = 2;
       this.cbCountRoom.SelectedIndexChanged += new System.EventHandler(this.cbCountRoom_SelectedIndexChanged);
       // 
@@ -92,7 +96,8 @@
       // 
       // btnLoad
       // 
-      this.btnLoad.Location = new System.Drawing.Point(346, 80);
+      this.btnLoad.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnLoad.Location = new System.Drawing.Point(674, 131);
       this.btnLoad.Name = "btnLoad";
       this.btnLoad.Size = new System.Drawing.Size(75, 21);
       this.btnLoad.TabIndex = 4;
@@ -108,10 +113,10 @@
       this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
       this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
       this.dataGridView1.Cursor = System.Windows.Forms.Cursors.Default;
-      this.dataGridView1.Location = new System.Drawing.Point(15, 107);
+      this.dataGridView1.Location = new System.Drawing.Point(15, 159);
       this.dataGridView1.Name = "dataGridView1";
       this.dataGridView1.ReadOnly = true;
-      this.dataGridView1.Size = new System.Drawing.Size(734, 361);
+      this.dataGridView1.Size = new System.Drawing.Size(734, 377);
       this.dataGridView1.TabIndex = 5;
       this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick);
       // 
@@ -145,7 +150,7 @@
       // label4
       // 
       this.label4.AutoSize = true;
-      this.label4.Location = new System.Drawing.Point(481, 26);
+      this.label4.Location = new System.Drawing.Point(438, 26);
       this.label4.Name = "label4";
       this.label4.Size = new System.Drawing.Size(121, 13);
       this.label4.TabIndex = 9;
@@ -154,7 +159,7 @@
       // label5
       // 
       this.label5.AutoSize = true;
-      this.label5.Location = new System.Drawing.Point(481, 49);
+      this.label5.Location = new System.Drawing.Point(438, 49);
       this.label5.Name = "label5";
       this.label5.Size = new System.Drawing.Size(115, 13);
       this.label5.TabIndex = 10;
@@ -164,7 +169,7 @@
       // 
       this.lbAveragePriceForSquare.AutoSize = true;
       this.lbAveragePriceForSquare.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lbAveragePriceForSquare.Location = new System.Drawing.Point(608, 26);
+      this.lbAveragePriceForSquare.Location = new System.Drawing.Point(586, 26);
       this.lbAveragePriceForSquare.Name = "lbAveragePriceForSquare";
       this.lbAveragePriceForSquare.Size = new System.Drawing.Size(0, 13);
       this.lbAveragePriceForSquare.TabIndex = 11;
@@ -173,16 +178,57 @@
       // 
       this.lbCountFlat.AutoSize = true;
       this.lbCountFlat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-      this.lbCountFlat.Location = new System.Drawing.Point(608, 49);
+      this.lbCountFlat.Location = new System.Drawing.Point(586, 49);
       this.lbCountFlat.Name = "lbCountFlat";
       this.lbCountFlat.Size = new System.Drawing.Size(0, 13);
       this.lbCountFlat.TabIndex = 12;
+      // 
+      // cmbTypeBuild
+      // 
+      this.cmbTypeBuild.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cmbTypeBuild.FormattingEnabled = true;
+      this.cmbTypeBuild.Location = new System.Drawing.Point(16, 132);
+      this.cmbTypeBuild.Name = "cmbTypeBuild";
+      this.cmbTypeBuild.Size = new System.Drawing.Size(154, 21);
+      this.cmbTypeBuild.TabIndex = 13;
+      this.cmbTypeBuild.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
+      // 
+      // label6
+      // 
+      this.label6.AutoSize = true;
+      this.label6.Location = new System.Drawing.Point(16, 113);
+      this.label6.Name = "label6";
+      this.label6.Size = new System.Drawing.Size(55, 13);
+      this.label6.TabIndex = 14;
+      this.label6.Text = "Тип дома";
+      // 
+      // label7
+      // 
+      this.label7.AutoSize = true;
+      this.label7.Location = new System.Drawing.Point(438, 75);
+      this.label7.Name = "label7";
+      this.label7.Size = new System.Drawing.Size(136, 13);
+      this.label7.TabIndex = 15;
+      this.label7.Text = "Сред. квадр. отклонение:";
+      // 
+      // lblOtklonenie
+      // 
+      this.lblOtklonenie.AutoSize = true;
+      this.lblOtklonenie.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.lblOtklonenie.Location = new System.Drawing.Point(586, 75);
+      this.lblOtklonenie.Name = "lblOtklonenie";
+      this.lblOtklonenie.Size = new System.Drawing.Size(0, 13);
+      this.lblOtklonenie.TabIndex = 16;
       // 
       // AnalysisResultForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(761, 480);
+      this.ClientSize = new System.Drawing.Size(761, 548);
+      this.Controls.Add(this.lblOtklonenie);
+      this.Controls.Add(this.label7);
+      this.Controls.Add(this.label6);
+      this.Controls.Add(this.cmbTypeBuild);
       this.Controls.Add(this.lbCountFlat);
       this.Controls.Add(this.lbAveragePriceForSquare);
       this.Controls.Add(this.label5);
@@ -219,5 +265,9 @@
     private System.Windows.Forms.Label label5;
     private System.Windows.Forms.Label lbAveragePriceForSquare;
     private System.Windows.Forms.Label lbCountFlat;
+    private System.Windows.Forms.ComboBox cmbTypeBuild;
+    private System.Windows.Forms.Label label6;
+    private System.Windows.Forms.Label label7;
+    private System.Windows.Forms.Label lblOtklonenie;
   }
 }
