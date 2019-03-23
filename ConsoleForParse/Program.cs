@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Sites;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,15 +11,15 @@ namespace ConsoleForParse
   {
     static void Main(string[] args)
     {
-      //BaseParse parser = null;
-      //if (args.Length == 3)
-      //{
-      //  var site = args[0];
-      //  switch (@enum)
-      //  {
-            
-      //  }
-      //}
+      BaseParse parser = null;
+      if (args.Length == 3)
+      {
+        var site = args[0];
+        //switch (@enum)
+        //{
+
+        //}
+      }
     }
   }
 }
