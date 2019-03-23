@@ -27,6 +27,7 @@ namespace ParseSitesForApartments.UI
     private short distaneFootColumn;
     private short metroColum;
     private short urlColumn;
+    private short isRepairColumn;
     private DataTable table;
 
     #endregion
@@ -75,6 +76,7 @@ namespace ParseSitesForApartments.UI
       urlColumn = -1;
       typeRoomColumn = -1;
       metroColum = -1;
+      isRepairColumn = -1;
 
       Cursor.Current = Cursors.WaitCursor;
       if (Path.GetExtension(tbPathToFile.Text) == ".csv")
@@ -183,6 +185,22 @@ namespace ParseSitesForApartments.UI
             break;
           }
         }
+        for (short i = 0; i < ar.Length; i++)
+        {
+          if (ar[i].ToUpper() == "ТИП ДОМА")
+          {
+            typeBuildColumn = i;
+            break;
+          }
+        }
+        for (short i = 0; i < ar.Length; i++)
+        {
+          if (ar[i].ToUpper() == "ПРОВОДИЛСЯ КАП.РЕМОНТ")
+          {
+            isRepairColumn = i;
+            break;
+          }
+        }
 
         if (distaneFootColumn == -1)
         {
@@ -232,6 +250,16 @@ namespace ParseSitesForApartments.UI
         if (metroColum == -1)
         {
           MessageBox.Show("Не найдена колонка МЕТРО", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return false;
+        }
+        if (typeBuildColumn == -1)
+        {
+          MessageBox.Show("Не найдена колонка ТИП ДОМА", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return false;
+        }
+        if (isRepairColumn == -1)
+        {
+          MessageBox.Show("Не найдена колонка ПРОВОДИЛСЯ КАП.РЕМОНТ", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return false;
         }
       }
@@ -288,6 +316,9 @@ namespace ParseSitesForApartments.UI
 
             if (!string.IsNullOrWhiteSpace(arLine[metroColum]))
               row["Metro"] = arLine[metroColum];
+
+            row["Тип дома"] = arLine[typeBuildColumn];
+            row["Проводился кап.ремонт"] = arLine[isRepairColumn];
             table.Rows.Add(row);
           }
         }
@@ -358,6 +389,12 @@ namespace ParseSitesForApartments.UI
       table.Columns.Add(column);
 
       column = new DataColumn("Metro", typeof(string));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Тип дома", typeof(string));
+      table.Columns.Add(column);
+
+      column = new DataColumn("Проводился кап.ремонт", typeof(string));
       table.Columns.Add(column);
 
       column = new DataColumn("Url", typeof(Uri));
