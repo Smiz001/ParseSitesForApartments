@@ -29,6 +29,7 @@ namespace ParseSitesForApartments.UI
     private short urlColumn;
     private short isRepairColumn;
     private DataTable table;
+    private List<string> listTypeBuild = new List<string>();
 
     #endregion
 
@@ -64,6 +65,7 @@ namespace ParseSitesForApartments.UI
       countFlat = 0;
       averPrice = 0;
       averPriceForFlatList.Clear();
+      listTypeBuild.Clear();
 
       priceColumn = -1;
       squareColumn = -1;
@@ -317,10 +319,14 @@ namespace ParseSitesForApartments.UI
             if (!string.IsNullOrWhiteSpace(arLine[metroColum]))
               row["Metro"] = arLine[metroColum];
 
-            row["Тип дома"] = arLine[typeBuildColumn];
+            var type = arLine[typeBuildColumn];
+            row["Тип дома"] = type;
+            if(!listTypeBuild.Contains(type))
+              listTypeBuild.Add(type);
             row["Проводился кап.ремонт"] = arLine[isRepairColumn];
             table.Rows.Add(row);
           }
+          cmbTypeBuild.DataSource = listTypeBuild;
         }
       }
 
