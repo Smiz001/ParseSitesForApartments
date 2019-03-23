@@ -1,5 +1,4 @@
-﻿using ParseSitesForApartments.Sites;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -7,10 +6,12 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using Core.Connections;
+using Core.Enum;
+using Core.MainClasses;
+using Core.Proxy;
+using Core.Sites;
+using CoreUI;
 using log4net;
-using ParseSitesForApartments.Enum;
-using ParseSitesForApartments.Proxy;
-using ParseSitesForApartments.UI;
 
 namespace ParseSitesForApartments
 {
