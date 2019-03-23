@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace ParseSitesForApartments
+namespace Core.MainClasses
 {
   public class Yandex
   {

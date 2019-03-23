@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using Core.Connections;
 
-namespace ParseSitesForApartments.UI
+namespace CoreUI
 {
   public partial class ConnectionForm : Form
   {

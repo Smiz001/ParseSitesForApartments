@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml;
-using DataBase.Connections;
+using Core.Connections;
 
 namespace ParseSitesForApartments
 {

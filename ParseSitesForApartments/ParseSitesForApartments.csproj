@@ -168,9 +168,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataBase\DataBase.csproj">
+    <ProjectReference Include="..\DataBase\Core.csproj">
       <Project>{7dcb4432-544c-49a4-879c-7d71b5d7090b}</Project>
-      <Name>DataBase</Name>
+      <Name>Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

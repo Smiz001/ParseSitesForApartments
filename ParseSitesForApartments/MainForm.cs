@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using DataBase.Connections;
+using Core.Connections;
 using log4net;
 using ParseSitesForApartments.Enum;
 using ParseSitesForApartments.Proxy;

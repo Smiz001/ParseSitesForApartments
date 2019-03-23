@@ -1,7 +1,4 @@
-﻿using AngleSharp.Parser.Html;
-using log4net;
-using ParseSitesForApartments.Sites;
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -13,9 +10,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
+using AngleSharp.Html.Parser;
 using Core.Connections;
+using Core.MainClasses;
+using log4net;
+using Core.Sites;
 
-namespace ParseSitesForApartments.UnionWithBase
+namespace Core.UnionWithBase
 {
   public class UnionParseInfoWithDataBase
   {
@@ -245,7 +246,7 @@ where ID='{IdBuilding}'";
                           webClient.Encoding = Encoding.UTF8;
                           var responce = webClient.DownloadString(url);
                           var parser = new HtmlParser();
-                          var document = parser.Parse(responce);
+                          var document = parser.ParseDocument(responce);
 
                           var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
                           if (timeDoc.Length > 0)
@@ -284,7 +285,7 @@ where ID='{IdBuilding}'";
                           }
 
                           responce = webClient.DownloadString(urlCar);
-                          document = parser.Parse(responce);
+                          document = parser.ParseDocument(responce);
                           timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
                           if (timeDoc.Length > 0)
                           {
@@ -351,7 +352,7 @@ where ID='{IdBuilding}'";
                           webClient.Encoding = Encoding.UTF8;
                           var responce = webClient.DownloadString(urlCar);
                           var parser = new HtmlParser();
-                          var document = parser.Parse(responce);
+                          var document = parser.ParseDocument(responce);
 
                           var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
                           if (timeDoc.Length > 0)
@@ -467,7 +468,7 @@ where ID='{IdBuilding}'";
                         Log.Debug(url);
                         var responce = webClient.DownloadString(url);
                         var parser = new HtmlParser();
-                        var document = parser.Parse(responce);
+                        var document = parser.ParseDocument(responce);
 
                         var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
                         if (timeDoc.Length > 0)
@@ -496,7 +497,7 @@ where ID='{IdBuilding}'";
                         }
 
                         responce = webClient.DownloadString(urlCar);
-                        document = parser.Parse(responce);
+                        document = parser.ParseDocument(responce);
                         timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
                         if (timeDoc.Length > 0)
                         {
@@ -793,7 +794,7 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
             {
               var responce = webClient.DownloadString(url);
               var parser = new HtmlParser();
-              var document = parser.Parse(responce);
+              var document = parser.ParseDocument(responce);
 
               var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
               if (timeDoc.Length > 0)
@@ -827,7 +828,7 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
               }
 
               responce = webClient.DownloadString(urlCar);
-              document = parser.Parse(responce);
+              document = parser.ParseDocument(responce);
               timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
               if (timeDoc.Length > 0)
               {
@@ -1045,7 +1046,7 @@ values ('{flat.Building.Guid}','{flat.Building.Street}','{flat.Building.Number}'
             {
               var responce = webClient.DownloadString(url);
               var parser = new HtmlParser();
-              var document = parser.Parse(responce);
+              var document = parser.ParseDocument(responce);
 
               var timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
               if (timeDoc.Length > 0)
@@ -1079,7 +1080,7 @@ values ('{flat.Building.Guid}','{flat.Building.Street}','{flat.Building.Number}'
               }
 
               responce = webClient.DownloadString(urlCar);
-              document = parser.Parse(responce);
+              document = parser.ParseDocument(responce);
               timeDoc = document.GetElementsByClassName("autoResults__routeHeaderContentDuration");
               if (timeDoc.Length > 0)
               {

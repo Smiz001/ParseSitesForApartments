@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 using System.Reflection;
 using log4net;
 
-namespace DataBase.Connections
+namespace Core.Connections
 {
   public class ConnetionToSqlServer
   {
