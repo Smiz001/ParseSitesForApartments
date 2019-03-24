@@ -76,22 +76,27 @@ namespace ConsoleForParse
           switch (typeRoom)
           {
             case "all":
+              parser.ParsingAll();
               break;
             case "studii":
+              parser.ParsingStudii();
               break;
             case "one":
+              parser.ParsingOne();
               break;
             case "two":
+              parser.ParsingTwo();
               break;
             case "three":
+              parser.ParsingThree();
               break;
             case "four":
+              parser.ParsingFour();
               break;
             case "five":
+              parser.ParsingMoreFour();
               break;
           }
-
-          parser.ParsingAll();
         }
       }
     }
