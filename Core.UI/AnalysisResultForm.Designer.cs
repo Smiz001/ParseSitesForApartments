@@ -45,7 +45,13 @@
       this.label6 = new System.Windows.Forms.Label();
       this.label7 = new System.Windows.Forms.Label();
       this.lblOtklonenie = new System.Windows.Forms.Label();
+      this.nudFoot = new System.Windows.Forms.NumericUpDown();
+      this.nudCar = new System.Windows.Forms.NumericUpDown();
+      this.label8 = new System.Windows.Forms.Label();
+      this.label9 = new System.Windows.Forms.Label();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudFoot)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCar)).BeginInit();
       this.SuspendLayout();
       // 
       // label1
@@ -220,11 +226,69 @@
       this.lblOtklonenie.Size = new System.Drawing.Size(0, 13);
       this.lblOtklonenie.TabIndex = 16;
       // 
+      // nudFoot
+      // 
+      this.nudFoot.Location = new System.Drawing.Point(176, 133);
+      this.nudFoot.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+      this.nudFoot.Name = "nudFoot";
+      this.nudFoot.Size = new System.Drawing.Size(120, 20);
+      this.nudFoot.TabIndex = 17;
+      this.nudFoot.Value = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+      this.nudFoot.ValueChanged += new System.EventHandler(this.nudFoot_ValueChanged);
+      // 
+      // nudCar
+      // 
+      this.nudCar.Location = new System.Drawing.Point(302, 133);
+      this.nudCar.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+      this.nudCar.Name = "nudCar";
+      this.nudCar.Size = new System.Drawing.Size(120, 20);
+      this.nudCar.TabIndex = 18;
+      this.nudCar.Value = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+      this.nudCar.ValueChanged += new System.EventHandler(this.nudCar_ValueChanged);
+      // 
+      // label8
+      // 
+      this.label8.AutoSize = true;
+      this.label8.Location = new System.Drawing.Point(173, 113);
+      this.label8.Name = "label8";
+      this.label8.Size = new System.Drawing.Size(97, 13);
+      this.label8.TabIndex = 19;
+      this.label8.Text = "Пешком не более";
+      // 
+      // label9
+      // 
+      this.label9.AutoSize = true;
+      this.label9.Location = new System.Drawing.Point(299, 113);
+      this.label9.Name = "label9";
+      this.label9.Size = new System.Drawing.Size(95, 13);
+      this.label9.TabIndex = 20;
+      this.label9.Text = "На авто не более";
+      // 
       // AnalysisResultForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(761, 548);
+      this.Controls.Add(this.label9);
+      this.Controls.Add(this.label8);
+      this.Controls.Add(this.nudCar);
+      this.Controls.Add(this.nudFoot);
       this.Controls.Add(this.lblOtklonenie);
       this.Controls.Add(this.label7);
       this.Controls.Add(this.label6);
@@ -245,6 +309,8 @@
       this.Name = "AnalysisResultForm";
       this.Text = "Анализ квартир";
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudFoot)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.nudCar)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -269,5 +335,9 @@
     private System.Windows.Forms.Label label6;
     private System.Windows.Forms.Label label7;
     private System.Windows.Forms.Label lblOtklonenie;
+    private System.Windows.Forms.NumericUpDown nudFoot;
+    private System.Windows.Forms.NumericUpDown nudCar;
+    private System.Windows.Forms.Label label8;
+    private System.Windows.Forms.Label label9;
   }
 }

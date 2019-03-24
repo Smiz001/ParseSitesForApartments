@@ -309,11 +309,11 @@ namespace CoreUI
             row["Район"] = arLine[districtColumn];
             if (string.IsNullOrWhiteSpace(arLine[distaneFootColumn]))
               arLine[distaneFootColumn] = "0";
-            row["Расстояние пешком"] = int.Parse(arLine[distaneFootColumn]);
+            row["Расстояние_пешком"] = int.Parse(arLine[distaneFootColumn]);
 
             if (string.IsNullOrWhiteSpace(arLine[distanceCarColumn]))
               arLine[distanceCarColumn] = "0";
-            row["Расстояние на машине"] = int.Parse(arLine[distanceCarColumn]);
+            row["Расстояние_на_машине"] = int.Parse(arLine[distanceCarColumn]);
             if(!string.IsNullOrWhiteSpace(arLine[urlColumn]))
               row["Url"] = new Uri(arLine[urlColumn]);
 
@@ -380,10 +380,10 @@ namespace CoreUI
       column = new DataColumn("Район", typeof(string));
       table.Columns.Add(column);
 
-      column = new DataColumn("Расстояние пешком", typeof(int));
+      column = new DataColumn("Расстояние_пешком", typeof(int));
       table.Columns.Add(column);
 
-      column = new DataColumn("Расстояние на машине", typeof(int));
+      column = new DataColumn("Расстояние_на_машине", typeof(int));
       table.Columns.Add(column);
 
       column = new DataColumn("Metro", typeof(string));
@@ -453,6 +453,7 @@ namespace CoreUI
       }
       if (!string.IsNullOrWhiteSpace(filter))
       {
+        filter = $@"{filter} AND Расстояние_пешком < {(int)nudFoot.Value} AND Расстояние_на_машине < {(int)nudCar.Value}";
         dv.RowFilter = filter;
       }
       countFlat = 0;
@@ -501,6 +502,16 @@ namespace CoreUI
     }
 
     private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      WorkToFilter();
+    }
+
+    private void nudFoot_ValueChanged(object sender, EventArgs e)
+    {
+      WorkToFilter();
+    }
+
+    private void nudCar_ValueChanged(object sender, EventArgs e)
     {
       WorkToFilter();
     }
