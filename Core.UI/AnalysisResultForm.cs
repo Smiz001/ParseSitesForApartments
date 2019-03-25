@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -298,6 +299,7 @@ namespace CoreUI
               row["Площадь"] = Math.Round(square,2);
             }
 
+            row["Цена_За_Кв_М"] = Math.Round(price / square,2);
             row["Количество_комнат"] = arLine[typeRoomColumn];
 
             short floor;
@@ -367,6 +369,9 @@ namespace CoreUI
 
       column = new DataColumn("Площадь", typeof(double));
       table.Columns.Add(column);
+      
+      column = new DataColumn("Цена_За_Кв_М", typeof(double));
+      table.Columns.Add(column);
 
       column = new DataColumn("Количество_комнат", typeof(string));
       table.Columns.Add(column);
@@ -434,7 +439,8 @@ namespace CoreUI
       string filter = string.Empty;
       if (selectTypeRoom == null)
       {
-        filter = $"Metro = '{selectMetro.Name}'";
+        if(selectMetro != null)
+          filter = $"Metro = '{selectMetro.Name}'";
       }
       else
       {
@@ -449,11 +455,16 @@ namespace CoreUI
       if (cmbTypeBuild.SelectedIndex > -1)
       {
         var type = cmbTypeBuild.SelectedItem.ToString();
-        filter = $@"{filter} AND Тип_дома = '{type}'";
+        if(!string.IsNullOrEmpty(filter))
+          filter = $@"{filter} AND Тип_дома = '{type}'";
+        else
+          filter = $@"Тип_дома = '{type}'";
       }
       if (!string.IsNullOrWhiteSpace(filter))
       {
         filter = $@"{filter} AND Расстояние_пешком < {(int)nudFoot.Value} AND Расстояние_на_машине < {(int)nudCar.Value}";
+        if(cbAverOtkl.Checked)
+          filter = $@"{filter} AND Цена_За_Кв_М > {(averPrice - averageDeviation).ToString(CultureInfo.InvariantCulture)} AND Цена_За_Кв_М < {(averPrice + averageDeviation).ToString(CultureInfo.InvariantCulture)}";
         dv.RowFilter = filter;
       }
       countFlat = 0;
@@ -461,14 +472,13 @@ namespace CoreUI
       //var listForAver = new List<double>();
       for (int i = 0; i < dv.Count; i++)
       {
-        var price = (int)dv[i]["Цена"];
-        var square = (double)dv[i]["Площадь"];
-        averPriceForFlatList.Add(price / square);
+        averPriceForFlatList.Add((double)dv[i]["Цена_За_Кв_М"]);
         countFlat++;
       }
 
       double sum = 0;
-      lblOtklonenie.Text = CalculateAverageDeviation(averPriceForFlatList).ToString();
+      averageDeviation= CalculateAverageDeviation(averPriceForFlatList);
+      lblOtklonenie.Text = averageDeviation.ToString(CultureInfo.InvariantCulture);
       foreach (var val in averPriceForFlatList)
       {
         sum += val;
@@ -512,6 +522,11 @@ namespace CoreUI
     }
 
     private void nudCar_ValueChanged(object sender, EventArgs e)
+    {
+      WorkToFilter();
+    }
+
+    private void checkBox1_CheckedChanged(object sender, EventArgs e)
     {
       WorkToFilter();
     }

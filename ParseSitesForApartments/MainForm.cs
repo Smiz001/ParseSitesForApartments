@@ -357,10 +357,15 @@ namespace ParseSitesForApartments
                     }
 
                     string update = string.Empty;
+                    string exists = string.Empty;
                     if (!string.IsNullOrEmpty(structure))
                     {
                       if (!string.IsNullOrEmpty(liter))
                       {
+                        exists = $@"if exists (select * from [dbo].[MainInfoAboutBulding] where [Street] = '{street}' and  and Street = '{street}' and Number = '{number}' and Bulding = '{structure}' and Letter = '{liter}')
+	select 1 as IsExist
+else
+	select 0 as IsExist";
                         update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
   set TypeBuild = '{typeBuild}',
   IsRepair = '{isRepair}'
@@ -368,6 +373,10 @@ namespace ParseSitesForApartments
                       }
                       else
                       {
+                        exists = $@"if exists (select * from [dbo].[MainInfoAboutBulding] where [Street] = '{street}' and  and Number = '{number}' and Bulding = '{structure}')
+	select 1 as IsExist
+else
+	select 0 as IsExist";
                         update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
   set TypeBuild = '{typeBuild}',
   IsRepair = '{isRepair}'
@@ -377,17 +386,36 @@ namespace ParseSitesForApartments
                     else
                     {
                       if (!string.IsNullOrEmpty(liter))
+                      {
+                        exists = $@"if exists (select * from [dbo].[MainInfoAboutBulding] where Street = '{street}' and Number = '{number}' and Letter = '{liter}')
+	select 1 as IsExist
+else
+	select 0 as IsExist";
                         update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
   set TypeBuild = '{typeBuild}',
   IsRepair = '{isRepair}'
   where Street = '{street}' and Number = '{number}' and Letter = '{liter}'";
+                      }
                       else
+                      {
+                        exists = $@"if exists (select * from [dbo].[MainInfoAboutBulding] where Street = '{street}' and Number = '{number}')
+	select 1 as IsExist
+else
+	select 0 as IsExist";
                         update = $@"update [ParseBulding].[dbo].[MainInfoAboutBulding]
   set TypeBuild = '{typeBuild}',
   IsRepair = '{isRepair}'
   where Street = '{street}' and Number = '{number}'";
+                      }
                     }
-                    con.ExecuteNonQuery(update);
+
+                    var exi = (int) con.ExecuteValue(exists);
+                    if(exi == 1)
+                      con.ExecuteNonQuery(update);
+                    else
+                    {
+                      Log.Debug($"Не найден дом - {line}");
+                    }
                   }
                 }
               }

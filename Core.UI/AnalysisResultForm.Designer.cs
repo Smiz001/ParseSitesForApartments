@@ -49,6 +49,7 @@
       this.nudCar = new System.Windows.Forms.NumericUpDown();
       this.label8 = new System.Windows.Forms.Label();
       this.label9 = new System.Windows.Forms.Label();
+      this.cbAverOtkl = new System.Windows.Forms.CheckBox();
       ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudFoot)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.nudCar)).BeginInit();
@@ -280,11 +281,23 @@
       this.label9.TabIndex = 20;
       this.label9.Text = "На авто не более";
       // 
+      // cbAverOtkl
+      // 
+      this.cbAverOtkl.AutoSize = true;
+      this.cbAverOtkl.Location = new System.Drawing.Point(428, 134);
+      this.cbAverOtkl.Name = "cbAverOtkl";
+      this.cbAverOtkl.Size = new System.Drawing.Size(127, 17);
+      this.cbAverOtkl.TabIndex = 21;
+      this.cbAverOtkl.Text = "Учесть ср. кв. откл.";
+      this.cbAverOtkl.UseVisualStyleBackColor = true;
+      this.cbAverOtkl.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+      // 
       // AnalysisResultForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(761, 548);
+      this.Controls.Add(this.cbAverOtkl);
       this.Controls.Add(this.label9);
       this.Controls.Add(this.label8);
       this.Controls.Add(this.nudCar);
@@ -339,5 +352,6 @@
     private System.Windows.Forms.NumericUpDown nudCar;
     private System.Windows.Forms.Label label8;
     private System.Windows.Forms.Label label9;
+    private System.Windows.Forms.CheckBox cbAverOtkl;
   }
 }
