@@ -43,19 +43,19 @@ namespace ConsoleForParse
         {
           case "all":
             parser = new AllSites(listDistricts, listMetros, listProxy);
-            siteName = "Все сайты";
+              //siteName = "Все сайты";
             break;
           case "elms":
             parser = new ELMS(listDistricts, listMetros, listProxy);
-            siteName = "ELMS";
+            //siteName = "ELMS";
             break;
           case "bkn":
             parser = new BKN(listDistricts, listMetros, listProxy);
-            siteName = "BKN";
+            //siteName = "BKN";
             break;
           case "bn":
             parser = new BN(listDistricts, listMetros, listProxy);
-            siteName = "BN";
+            //siteName = "BN";
             break;
         }
         if (parser != null)

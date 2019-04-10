@@ -157,14 +157,14 @@ namespace Core.Sites
                 }
 
                 IsFinished = true;
-                var threadMessage = new Thread(
-                  new ThreadStart(() =>
-                  {
-                    MessageBox.Show("Загрузка завершена");
-                  }
-                    )
-                  );
-                threadMessage.Start();
+                //var threadMessage = new Thread(
+                //  new ThreadStart(() =>
+                //  {
+                //    MessageBox.Show("Загрузка завершена");
+                //  }
+                //    )
+                //  );
+                //threadMessage.Start();
                 progress.BeginInvoke(new Action(() => progress.Close()));
               }
               catch (Exception ex)
