@@ -28,6 +28,7 @@ namespace Core.Sites
     private List<string> stantions = new List<string>() { "Автово", "Адмиралтейская", "Академическая", "Балтийская", "Беговая", "Бухарестская", "Василеостровская", "Владимирская", "Волковская", "Выборгская", "Горьковская", "Гостиный двор", "Гражданский проспект", "Девяткино", "Достоевская", "Елизаровская", "Звёздная", "Звенигородская", "Кировский завод", "Комендантский проспект", "Крестовский остров", "Купчино", "Ладожская", "Ленинский проспект", "Лесная", "Лиговский проспект", "Ломоносовская", "Маяковская", "Международная", "Московская", "Московские ворота", "Нарвская", "Невский проспект", "Новокрестовская", "Новочеркасская", "Обводный канал", "Обухово", "Озерки", "Парк Победы", "Парнас", "Петроградская", "Пионерская", "Площадь Александра Невского", "Площадь Восстания", "Площадь Ленина", "Площадь Мужества", "Политехническая", "Приморская", "Пролетарская", "Проспект Большевиков", "Проспект Ветеранов", "Проспект Просвещения", "Пушкинская", "Рыбацкое", "Садовая", "Сенная площадь", "Спасская", "Спортивная", "Старая Деревня", "Технологический институт", "Удельная", "Улица Дыбенко", "Фрунзенская", "Чёрная речка", "Чернышевская", "Чкаловская", "Электросила" };
     private static object locker = new object();
     private static object lockerDistrict = new object();
+    private static object lockerUnion = new object();
     private string filename = @"d:\ParserInfo\Appartament\AvitoProdam.csv";
     private CoreExport export;
     public delegate void Append(object sender, AppendFlatEventArgs e);
@@ -58,6 +59,7 @@ namespace Core.Sites
     private Thread nineNewThread;
     private ProgressForm progress;
     private int count = 1;
+    private int allcount = 1;
 
     #endregion
 
@@ -99,9 +101,9 @@ namespace Core.Sites
 
     private void ChangeDistrictAndPage(object typeRoom)
     {
-      var random = new Random();
-      var proxyInfo = ListProxy[random.Next(0, 1)];
-      Log.Debug($"Use proxy - {proxyInfo}");
+      //var random = new Random();
+      //var proxyInfo = ListProxy[random.Next(0, 1)];
+      //Log.Debug($"Use proxy - {proxyInfo}");
 
       //var proxy = WebRequest.GetSystemWebProxy();
       //CredentialCache cc = new CredentialCache();
@@ -111,15 +113,18 @@ namespace Core.Sites
       //nc.Password = proxyInfo.Password;
       //cc.Add($"https://{proxyInfo.Address}", proxyInfo.Port, "Basic", nc);
       //proxy.Credentials = cc;
-      WebProxy myProxy = new WebProxy();
-      Uri newUri = new Uri($"http://{proxyInfo.Address}:{proxyInfo.Port}");
-      myProxy.Address = newUri;
-      myProxy.Credentials = new NetworkCredential(proxyInfo.User, proxyInfo.Password);
+      //WebProxy myProxy = new WebProxy();
+      //Uri newUri = new Uri($"http://{proxyInfo.Address}:{proxyInfo.Port}");
+      //myProxy.Address = newUri;
+      //myProxy.Credentials = new NetworkCredential(proxyInfo.User, proxyInfo.Password);
+      var path = CreateExportForRoom(typeRoom.ToString());
+      CoreCreator creator = new CsvExportCreator();
+      var exportPart = creator.FactoryCreate(path);
 
       HtmlParser parser = new HtmlParser();
       using (var webClient = new WebClient())
       {
-        webClient.Proxy = myProxy;
+        //webClient.Proxy = myProxy;
         webClient.Encoding = Encoding.UTF8;
         ServicePointManager.Expect100Continue = true;
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -214,14 +219,14 @@ namespace Core.Sites
                 $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye/novostroyka?p={i}";
               break;
           }
-          if (!ExecuteParse(url, webClient, parser, (string)typeRoom))
+          if (!ExecuteParse(url, webClient, parser, (string)typeRoom, exportPart))
             break;
         }
       }
-      MessageBox.Show($"Закончили - {typeRoom}");
+      //MessageBox.Show($"Закончили - {typeRoom}");
     }
 
-    private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom)
+    private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, CoreExport export)
     {
       var random = new Random();
       Thread.Sleep(random.Next(8000, 9000));
@@ -234,7 +239,7 @@ namespace Core.Sites
 
         var collections = document.GetElementsByClassName("description item_table-description");
         if (collections.Length > 0)
-          ParsingSheet(typeRoom, collections);
+          ParsingSheet(typeRoom, collections, export);
         return true;
       }
       catch (Exception e)
@@ -259,53 +264,140 @@ namespace Core.Sites
               {
                 studiiThread = new Thread(ChangeDistrictAndPage);
                 studiiThread.Start("Студия");
+                while (studiiThread.IsAlive) { }
                 oneThread = new Thread(ChangeDistrictAndPage);
                 oneThread.Start("1 км. кв.");
+                while (oneThread.IsAlive) { }
                 twoThread = new Thread(ChangeDistrictAndPage);
                 twoThread.Start("2 км. кв.");
+                while (twoThread.IsAlive) { }
                 threeThread = new Thread(ChangeDistrictAndPage);
                 threeThread.Start("3 км. кв.");
+                while (threeThread.IsAlive) { }
                 fourThread = new Thread(ChangeDistrictAndPage);
                 fourThread.Start("4 км. кв.");
+                while (fourThread.IsAlive) { }
                 fiveThread = new Thread(ChangeDistrictAndPage);
                 fiveThread.Start("5 км. кв.");
+                while (fiveThread.IsAlive) { }
                 sixThread = new Thread(ChangeDistrictAndPage);
                 sixThread.Start("6 км. кв.");
+                while (sixThread.IsAlive) { }
                 sevenThread = new Thread(ChangeDistrictAndPage);
                 sevenThread.Start("7 км. кв.");
+                while (sevenThread.IsAlive) { }
                 eightThread = new Thread(ChangeDistrictAndPage);
                 eightThread.Start("8 км. кв.");
+                while (eightThread.IsAlive) { }
                 nineThread = new Thread(ChangeDistrictAndPage);
                 nineThread.Start("9 км. кв.");
+                while (nineThread.IsAlive) { }
                 moreNineThread = new Thread(ChangeDistrictAndPage);
                 moreNineThread.Start("9 км. кв. +");
+                while (moreNineThread.IsAlive) { }
 
                 studiiNewThread = new Thread(ChangeDistrictAndPage);
                 studiiNewThread.Start("Студия Н");
+                while (studiiNewThread.IsAlive) { }
                 oneNewThread = new Thread(ChangeDistrictAndPage);
                 oneNewThread.Start("1 км. кв. Н");
+                while (oneNewThread.IsAlive) { }
                 twoNewThread = new Thread(ChangeDistrictAndPage);
                 twoNewThread.Start("2 км. кв. Н");
+                while (twoNewThread.IsAlive) { }
                 threeNewThread = new Thread(ChangeDistrictAndPage);
                 threeNewThread.Start("3 км. кв. Н");
+                while (threeNewThread.IsAlive) { }
                 fourNewThread = new Thread(ChangeDistrictAndPage);
                 fourNewThread.Start("4 км. кв. Н");
+                while (fourNewThread.IsAlive) { }
                 fiveNewThread = new Thread(ChangeDistrictAndPage);
                 fiveNewThread.Start("5 км. кв. Н");
+                while (fiveNewThread.IsAlive) { }
                 sixNewThread = new Thread(ChangeDistrictAndPage);
                 sixNewThread.Start("6 км. кв. Н");
+                while (sixNewThread.IsAlive) { }
                 sevenNewThread = new Thread(ChangeDistrictAndPage);
                 sevenNewThread.Start("7 км. кв. Н");
+                while (sevenNewThread.IsAlive) { }
                 eightNewThread = new Thread(ChangeDistrictAndPage);
                 eightNewThread.Start("8 км. кв. Н");
+                while (eightNewThread.IsAlive) { }
                 nineNewThread = new Thread(ChangeDistrictAndPage);
                 nineNewThread.Start("9 км. кв. Н");
+                while (nineNewThread.IsAlive) { }
 
-                Thread.Sleep(10000);
-                CheckCloseThread(-1);
-                export.Execute();
+                //Union
+                studiiThread = new Thread(UnionFlats);
+                studiiThread.Start("Студия");
+                oneThread = new Thread(UnionFlats);
+                oneThread.Start("1 км. кв.");
+                twoThread = new Thread(UnionFlats);
+                twoThread.Start("2 км. кв.");
+                threeThread = new Thread(UnionFlats);
+                threeThread.Start("3 км. кв.");
+                fourThread = new Thread(UnionFlats);
+                fourThread.Start("4 км. кв.");
+                fiveThread = new Thread(UnionFlats);
+                fiveThread.Start("5 км. кв.");
+                sixThread = new Thread(UnionFlats);
+                sixThread.Start("6 км. кв.");
+                sevenThread = new Thread(UnionFlats);
+                sevenThread.Start("7 км. кв.");
+                eightThread = new Thread(UnionFlats);
+                eightThread.Start("8 км. кв.");
+                nineThread = new Thread(UnionFlats);
+                nineThread.Start("9 км. кв.");
+                moreNineThread = new Thread(UnionFlats);
+                moreNineThread.Start("9 км. кв. +");
 
-                MessageBox.Show("Загрузка завершена");
+                studiiNewThread = new Thread(UnionFlats);
+                studiiNewThread.Start("Студия Н");
+                oneNewThread = new Thread(UnionFlats);
+                oneNewThread.Start("1 км. кв. Н");
+                twoNewThread = new Thread(UnionFlats);
+                twoNewThread.Start("2 км. кв. Н");
+                threeNewThread = new Thread(UnionFlats);
+                threeNewThread.Start("3 км. кв. Н");
+                fourNewThread = new Thread(UnionFlats);
+                fourNewThread.Start("4 км. кв. Н");
+                fiveNewThread = new Thread(UnionFlats);
+                fiveNewThread.Start("5 км. кв. Н");
+                sixNewThread = new Thread(UnionFlats);
+                sixNewThread.Start("6 км. кв. Н");
+                sevenNewThread = new Thread(UnionFlats);
+                sevenNewThread.Start("7 км. кв. Н");
+                eightNewThread = new Thread(UnionFlats);
+                eightNewThread.Start("8 км. кв. Н");
+                nineNewThread = new Thread(UnionFlats);
+                nineNewThread.Start("9 км. кв. Н");
+
+                while (true)
+                {
+                  if (!studiiThread.IsAlive)
+                    if (!oneThread.IsAlive)
+                      if (!twoThread.IsAlive)
+                        if (!threeThread.IsAlive)
+                          if (!fourThread.IsAlive)
+                            if (!fiveThread.IsAlive)
+                              if (!sixThread.IsAlive)
+                                if (!sevenThread.IsAlive)
+                                  if (!eightThread.IsAlive)
+                                    if (!nineThread.IsAlive)
+                                      if (!moreNineThread.IsAlive)
+                                        if (!studiiNewThread.IsAlive)
+                                          if (!oneNewThread.IsAlive)
+                                            if (!twoNewThread.IsAlive)
+                                              if (!threeNewThread.IsAlive)
+                                                if (!fourNewThread.IsAlive)
+                                                  if (!fiveNewThread.IsAlive)
+                                                    if (!sixNewThread.IsAlive)
+                                                      if (!sevenNewThread.IsAlive)
+                                                        if (!eightNewThread.IsAlive)
+                                                          if (!nineNewThread.IsAlive)
+                                                            break;
+                }
+                IsFinished = true;
                 progress.BeginInvoke(new Action(() => progress.Close()));
               }
               catch (Exception ex)
@@ -772,11 +864,13 @@ namespace Core.Sites
       }
     }
 
-    private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection)
+    private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection, CoreExport export)
     {
       var parseStreet = new ParseStreet();
       for (int k = 0; k < collection.Length; k++)
       {
+        progress.UpdateAllProgress(allcount);
+        allcount++;
         var flat = new Flat();
         string street = string.Empty;
         string number = string.Empty;
@@ -949,7 +1043,7 @@ namespace Core.Sites
                 //{
                 //  unionInfo.UnionInfoProdam(flat);
                 //}
-                OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+                export.AddFlatInList(this, new AppendFlatEventArgs { Flat = flat });
                 progress.UpdateProgress(count);
                 count++;
                 Monitor.Exit(locker);
@@ -1357,6 +1451,136 @@ namespace Core.Sites
     public override void ParsingSdamAll()
     {
       throw new NotImplementedException();
+    }
+
+    private string ExctractPath()
+    {
+      string path = string.Empty;
+      var arr = Filename.Split('\\');
+      path = Filename.Replace(arr[arr.Length - 1], "");
+      return path;
+    }
+
+    private string CreateExportForRoom(string typeRoom)
+    {
+      var path = ExctractPath();
+      path = $@"{path}{typeRoom}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
+      if (!File.Exists(Filename))
+      {
+        File.Delete(path);
+      }
+
+      using (var sw = new StreamWriter(new FileStream(path, FileMode.Create), Encoding.UTF8))
+      {
+        sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Цена;Метро;Откуда взято");
+      }
+
+      return path;
+    }
+
+    private void UnionFlats(object type)
+    {
+      Log.Debug($"Start Union {type}");
+      var union = new UnionParseInfoWithDataBase();
+      var path = ExctractPath();
+      path = $@"{path}{type}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
+      using (var sr = new StreamReader(path))
+      {
+        sr.ReadLine();
+        string line;
+        while ((line = sr.ReadLine()) != null)
+        {
+          string street = string.Empty;
+          string number = string.Empty;
+          string struc = string.Empty;
+          string liter = string.Empty;
+
+          var ar = line.Split(';');
+          Flat flat = new Flat();
+          if (ar.Length == 11)
+          {
+            flat.Url = ar[10];
+          }
+          flat.CountRoom = type.ToString();
+          flat.Price = int.Parse(ar[8]);
+          flat.Floor = ar[7];
+          flat.Square = ar[6];
+
+          street = ar[1];
+          number = ar[2];
+          struc = ar[3];
+          liter = ar[4];
+
+          District dis = null;
+          try
+          {
+            dis = ListDistricts.Where(x => string.Equals(x.Name, ar[0], StringComparison.CurrentCultureIgnoreCase)).First();
+          }
+          catch (Exception e)
+          {
+            Log.Error($@"{e.Message}; ar[0] - {ar[0]}");
+          }
+
+          if (dis == null)
+            continue;
+
+          Building building = null;
+          Monitor.Enter(lockerDistrict);
+          try
+          {
+            if (dis.Buildings.Count != 0)
+            {
+              var bldsEnum =
+                dis.Buildings.Where(x =>
+                  x.Street == street && x.Number == number && x.Structure == struc && x.Liter == liter);
+              if (bldsEnum.Count() > 0)
+                building = bldsEnum.First();
+            }
+
+            if (building == null)
+            {
+              building = new Building
+              {
+                Street = street,
+                Number = number,
+                Structure = struc,
+                Liter = liter,
+                District = dis,
+              };
+              dis.Buildings.Add(building);
+            }
+          }
+          finally
+          {
+            Monitor.Exit(lockerDistrict);
+          }
+
+          if (building.Guid == Guid.Empty)
+          {
+            Monitor.Enter(lockerUnion);
+            try
+            {
+              union.UnionInfo(building);
+            }
+            finally
+            {
+              Monitor.Exit(lockerUnion);
+            }
+          }
+          flat.Building = building;
+          Monitor.Enter(locker);
+          try
+          {
+            OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+          }
+          finally
+          {
+            Monitor.Exit(locker);
+          }
+        }
+      }
+
+      File.Delete(path);
     }
   }
 }
