@@ -85,7 +85,7 @@ namespace Core.Sites
     {
       CoreCreator creator = new CsvExportCreator();
       export = creator.FactoryCreate(Filename);
-      OnAppend += export.AddFlatInList;
+      OnAppend += export.AddFlatInListWithBaseInfo;
 
       if (export is CsvExport)
       {
@@ -101,22 +101,6 @@ namespace Core.Sites
 
     private void ChangeDistrictAndPage(object typeRoom)
     {
-      //var random = new Random();
-      //var proxyInfo = ListProxy[random.Next(0, 1)];
-      //Log.Debug($"Use proxy - {proxyInfo}");
-
-      //var proxy = WebRequest.GetSystemWebProxy();
-      //CredentialCache cc = new CredentialCache();
-      //NetworkCredential nc = new NetworkCredential();
-
-      //nc.UserName = proxyInfo.User;
-      //nc.Password = proxyInfo.Password;
-      //cc.Add($"https://{proxyInfo.Address}", proxyInfo.Port, "Basic", nc);
-      //proxy.Credentials = cc;
-      //WebProxy myProxy = new WebProxy();
-      //Uri newUri = new Uri($"http://{proxyInfo.Address}:{proxyInfo.Port}");
-      //myProxy.Address = newUri;
-      //myProxy.Credentials = new NetworkCredential(proxyInfo.User, proxyInfo.Password);
       var path = CreateExportForRoom(typeRoom.ToString());
       CoreCreator creator = new CsvExportCreator();
       var exportPart = creator.FactoryCreate(path);
@@ -228,6 +212,7 @@ namespace Core.Sites
 
     private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, CoreExport export)
     {
+      bool result;
       var random = new Random();
       Thread.Sleep(random.Next(8000, 9000));
       try
@@ -239,16 +224,24 @@ namespace Core.Sites
 
         var collections = document.GetElementsByClassName("description item_table-description");
         if (collections.Length > 0)
+        {
           ParsingSheet(typeRoom, collections, export);
-        return true;
+          result = true;
+        }
+        else
+          result = false;
       }
       catch (Exception e)
       {
         Log.Error(e.Message);
         //TODO Если страница долго не отвечает то пропускаем ее
         Thread.Sleep(1000);
-        return true;
+        if (e.Message == "Запрос был прерван: Соединение было неожиданно закрыто.")
+          result = false;
+        else
+          result = true;
       }
+      return result;
     }
 
     public override void ParsingAll()
@@ -624,14 +617,21 @@ namespace Core.Sites
             {
               studiiThread = new Thread(ChangeDistrictAndPage);
               studiiThread.Start("Студия");
+              while (studiiThread.IsAlive) { }
               studiiNewThread = new Thread(ChangeDistrictAndPage);
               studiiNewThread.Start("Студия Н");
+              while (studiiNewThread.IsAlive) { }
 
-              Thread.Sleep(10000);
-              CheckCloseThread(0);
-              export.Execute();
-
-              MessageBox.Show("Загрузка завершена");
+              studiiThread = new Thread(UnionFlats);
+              studiiThread.Start("Студия");
+              studiiNewThread = new Thread(UnionFlats);
+              studiiNewThread.Start("Студия Н");
+              while (true)
+              {
+                if (!studiiThread.IsAlive)
+                  if (!studiiNewThread.IsAlive)
+                    break;
+              }
               progress.BeginInvoke(new Action(() => progress.Close()));
             }
             catch (Exception ex)
@@ -906,7 +906,7 @@ namespace Core.Sites
             {
               metro = street.Split(',')[0];
               regex = new Regex(@"(\d+\.\d+\s+км)|(\d+\s+км)|(\d+\s+м)");
-              metro = metro.Replace(regex.Match(metro).Value, "");
+              metro = metro.Replace(regex.Match(metro).Value, "").Trim();
             }
           }
 
@@ -1017,17 +1017,13 @@ namespace Core.Sites
 
         if (building.MetroObj == null)
         {
-          var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper() == metro.Trim().ToUpper());
+          var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper() == metro.ToUpper());
           if (metroObjEnum.Count() > 0)
           {
             building.MetroObj = metroObjEnum.First();
           }
         }
         flat.Building = building;
-
-        //Monitor.Enter(locker);
-        //OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-        //Monitor.Exit(locker);
 
         if (!string.IsNullOrWhiteSpace(flat.Building.Number))
         {
@@ -1039,10 +1035,6 @@ namespace Core.Sites
               if (!string.IsNullOrWhiteSpace(flat.Building.Street))
               {
                 Monitor.Enter(locker);
-                //if (string.IsNullOrWhiteSpace(flat.Building.DateBuild))
-                //{
-                //  unionInfo.UnionInfoProdam(flat);
-                //}
                 export.AddFlatInList(this, new AppendFlatEventArgs { Flat = flat });
                 progress.UpdateProgress(count);
                 count++;
@@ -1484,103 +1476,105 @@ namespace Core.Sites
       var union = new UnionParseInfoWithDataBase();
       var path = ExctractPath();
       path = $@"{path}{type}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
-      using (var sr = new StreamReader(path))
+      if(File.Exists(path))
       {
-        sr.ReadLine();
-        string line;
-        while ((line = sr.ReadLine()) != null)
+        using (var sr = new StreamReader(path))
         {
-          string street = string.Empty;
-          string number = string.Empty;
-          string struc = string.Empty;
-          string liter = string.Empty;
-
-          var ar = line.Split(';');
-          Flat flat = new Flat();
-          if (ar.Length == 11)
+          sr.ReadLine();
+          string line;
+          while ((line = sr.ReadLine()) != null)
           {
-            flat.Url = ar[10];
-          }
-          flat.CountRoom = type.ToString();
-          flat.Price = int.Parse(ar[8]);
-          flat.Floor = ar[7];
-          flat.Square = ar[6];
+            string street = string.Empty;
+            string number = string.Empty;
+            string struc = string.Empty;
+            string liter = string.Empty;
 
-          street = ar[1];
-          number = ar[2];
-          struc = ar[3];
-          liter = ar[4];
-
-          District dis = null;
-          try
-          {
-            dis = ListDistricts.Where(x => string.Equals(x.Name, ar[0], StringComparison.CurrentCultureIgnoreCase)).First();
-          }
-          catch (Exception e)
-          {
-            Log.Error($@"{e.Message}; ar[0] - {ar[0]}");
-          }
-
-          if (dis == null)
-            continue;
-
-          Building building = null;
-          Monitor.Enter(lockerDistrict);
-          try
-          {
-            if (dis.Buildings.Count != 0)
+            var ar = line.Split(';');
+            Flat flat = new Flat();
+            if (ar.Length == 11)
             {
-              var bldsEnum =
-                dis.Buildings.Where(x =>
-                  x.Street == street && x.Number == number && x.Structure == struc && x.Liter == liter);
-              if (bldsEnum.Count() > 0)
-                building = bldsEnum.First();
+              flat.Url = ar[10];
             }
+            flat.CountRoom = type.ToString();
+            flat.Price = int.Parse(ar[8]);
+            flat.Floor = ar[7];
+            flat.Square = ar[6];
 
-            if (building == null)
-            {
-              building = new Building
-              {
-                Street = street,
-                Number = number,
-                Structure = struc,
-                Liter = liter,
-                District = dis,
-              };
-              dis.Buildings.Add(building);
-            }
-          }
-          finally
-          {
-            Monitor.Exit(lockerDistrict);
-          }
+            street = ar[1];
+            number = ar[2];
+            struc = ar[3];
+            liter = ar[4];
 
-          if (building.Guid == Guid.Empty)
-          {
-            Monitor.Enter(lockerUnion);
+            District dis = null;
             try
             {
-              union.UnionInfo(building);
+              dis = ListDistricts.Where(x => string.Equals(x.Name, ar[0], StringComparison.CurrentCultureIgnoreCase)).First();
+            }
+            catch (Exception e)
+            {
+              Log.Error($@"{e.Message}; ar[0] - {ar[0]}");
+            }
+
+            //if (dis == null)
+            //  continue;
+
+            Building building = null;
+            Monitor.Enter(lockerDistrict);
+            try
+            {
+              if (dis?.Buildings.Count != 0)
+              {
+                var bldsEnum =
+                  dis.Buildings.Where(x =>
+                    x.Street == street && x.Number == number && x.Structure == struc && x.Liter == liter);
+                if (bldsEnum.Count() > 0)
+                  building = bldsEnum.First();
+              }
+
+              if (building == null)
+              {
+                building = new Building
+                {
+                  Street = street,
+                  Number = number,
+                  Structure = struc,
+                  Liter = liter,
+                  District = dis,
+                };
+                dis?.Buildings.Add(building);
+              }
             }
             finally
             {
-              Monitor.Exit(lockerUnion);
+              Monitor.Exit(lockerDistrict);
+            }
+
+            if (building.Guid == Guid.Empty)
+            {
+              Monitor.Enter(lockerUnion);
+              try
+              {
+                union.UnionInfo(building);
+              }
+              finally
+              {
+                Monitor.Exit(lockerUnion);
+              }
+            }
+            flat.Building = building;
+            Monitor.Enter(locker);
+            try
+            {
+              OnAppend(this, new AppendFlatEventArgs { Flat = flat });
+            }
+            finally
+            {
+              Monitor.Exit(locker);
             }
           }
-          flat.Building = building;
-          Monitor.Enter(locker);
-          try
-          {
-            OnAppend(this, new AppendFlatEventArgs { Flat = flat });
-          }
-          finally
-          {
-            Monitor.Exit(locker);
-          }
         }
+        File.Delete(path);
       }
-
-      File.Delete(path);
     }
   }
 }

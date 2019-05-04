@@ -124,7 +124,7 @@ namespace Core.Sites
                 fiveThread.Start("5 км. кв.");
                 while (true)
                 {
-                  if(!studiiThread.IsAlive)
+                  if (!studiiThread.IsAlive)
                     if (!oneThread.IsAlive)
                       if (!twoThread.IsAlive)
                         if (!threeThread.IsAlive)
@@ -157,14 +157,6 @@ namespace Core.Sites
                 }
 
                 IsFinished = true;
-                //var threadMessage = new Thread(
-                //  new ThreadStart(() =>
-                //  {
-                //    MessageBox.Show("Загрузка завершена");
-                //  }
-                //    )
-                //  );
-                //threadMessage.Start();
                 progress.BeginInvoke(new Action(() => progress.Close()));
               }
               catch (Exception ex)
@@ -175,24 +167,73 @@ namespace Core.Sites
           ));
         threadbackground.Start();
         progress.Show();
-
-        //while (threadbackground.IsAlive)
-        //  Thread.Sleep(10000);
       }
       else
       {
-        studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
-        studiiRentThread.Start("Студия");
-        oneRentThread = new Thread(ChangeDistrictAndPageForRent);
-        oneRentThread.Start("1 км. кв.");
-        twoRentThread = new Thread(ChangeDistrictAndPageForRent);
-        twoRentThread.Start("2 км. кв.");
-        threeRentThread = new Thread(ChangeDistrictAndPageForRent);
-        threeRentThread.Start("3 км. кв.");
-        fourRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fourRentThread.Start("4 км. кв.");
-        fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
-        fiveRentThread.Start("5 км. кв.");
+        progress = new ProgressForm("БКН Все квартиры (Сдача)");
+        var threadbackground = new Thread(
+          new ThreadStart(() =>
+          {
+            try
+            {
+              studiiRentThread = new Thread(ChangeDistrictAndPageForRent);
+              studiiRentThread.Start("Студия");
+              oneRentThread = new Thread(ChangeDistrictAndPageForRent);
+              oneRentThread.Start("1 км. кв.");
+              twoRentThread = new Thread(ChangeDistrictAndPageForRent);
+              twoRentThread.Start("2 км. кв.");
+              threeRentThread = new Thread(ChangeDistrictAndPageForRent);
+              threeRentThread.Start("3 км. кв.");
+              fourRentThread = new Thread(ChangeDistrictAndPageForRent);
+              fourRentThread.Start("4 км. кв.");
+              fiveRentThread = new Thread(ChangeDistrictAndPageForRent);
+              fiveRentThread.Start("5 км. кв.");
+
+              while (true)
+              {
+                if (!studiiRentThread.IsAlive)
+                  if (!oneRentThread.IsAlive)
+                    if (!twoRentThread.IsAlive)
+                      if (!threeRentThread.IsAlive)
+                        if (!fourRentThread.IsAlive)
+                          if (!fiveRentThread.IsAlive)
+                            break;
+              }
+
+              studiiRentThread = new Thread(UnionFlats);
+              studiiRentThread.Start("Студия");
+              oneRentThread = new Thread(UnionFlats);
+              oneRentThread.Start("1 км. кв.");
+              twoRentThread = new Thread(UnionFlats);
+              twoRentThread.Start("2 км. кв.");
+              threeRentThread = new Thread(UnionFlats);
+              threeRentThread.Start("3 км. кв.");
+              fourRentThread = new Thread(UnionFlats);
+              fourRentThread.Start("4 км. кв.");
+              fiveRentThread = new Thread(UnionFlats);
+              fiveRentThread.Start("5 км. кв.");
+              while (true)
+              {
+                if (!studiiRentThread.IsAlive)
+                  if (!oneRentThread.IsAlive)
+                    if (!twoRentThread.IsAlive)
+                      if (!threeRentThread.IsAlive)
+                        if (!fourRentThread.IsAlive)
+                          if (!fiveRentThread.IsAlive)
+                            break;
+              }
+
+              IsFinished = true;
+              progress.BeginInvoke(new Action(() => progress.Close()));
+            }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
+          ));
+        threadbackground.Start();
+        progress.Show();
       }
     }
 
@@ -212,7 +253,7 @@ namespace Core.Sites
                 while (true)
                 {
                   if (!studiiThread.IsAlive)
-                              break;
+                    break;
                 }
 
                 studiiThread = new Thread(UnionFlats);
@@ -542,7 +583,7 @@ namespace Core.Sites
           }
         }
       }
-     //MessageBox.Show($"Закончили - {typeRoom}");
+      //MessageBox.Show($"Закончили - {typeRoom}");
     }
 
     private void ChangeDistrictAndPageForRent(object typeRoom)

@@ -211,14 +211,6 @@ namespace Core.Sites
                                     break;
               }
               IsFinished = true;
-              //var threadMessage = new Thread(
-              //  new ThreadStart(() =>
-              //    {
-              //      MessageBox.Show("Загрузка завершена");
-              //    }
-              //  )
-              //);
-              //threadMessage.Start();
               progress.BeginInvoke(new Action(() => progress.Close()));
             }
             catch (Exception ex)
