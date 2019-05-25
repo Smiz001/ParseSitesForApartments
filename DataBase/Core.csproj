@@ -69,7 +69,10 @@
     <Compile Include="Export\Creators\CoreCreator.cs" />
     <Compile Include="Export\Creators\CsvExportCreator.cs" />
     <Compile Include="Export\CsvExport.cs" />
+    <Compile Include="Import\ImportForChart.cs" />
     <Compile Include="MainClasses\Building.cs" />
+    <Compile Include="MainClasses\Chart\DataForChart.cs" />
+    <Compile Include="MainClasses\Chart\Point.cs" />
     <Compile Include="MainClasses\District.cs" />
     <Compile Include="MainClasses\Flat.cs" />
     <Compile Include="MainClasses\Metro.cs" />
@@ -102,5 +105,6 @@
       <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
