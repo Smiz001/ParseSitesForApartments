@@ -99,149 +99,21 @@ namespace Core.Sites
       }
     }
 
-    private void ChangeDistrictAndPage(object typeRoom)
+    private string CreateExportForRoom(string typeRoom)
     {
-      var path = CreateExportForRoom(typeRoom.ToString());
-      CoreCreator creator = new CsvExportCreator();
-      var exportPart = creator.FactoryCreate(path);
-
-      HtmlParser parser = new HtmlParser();
-      using (var webClient = new WebClient())
+      var path = ExctractPath();
+      path = $@"{path}{typeRoom}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
+      if (!File.Exists(Filename))
       {
-        //webClient.Proxy = myProxy;
-        webClient.Encoding = Encoding.UTF8;
-        ServicePointManager.Expect100Continue = true;
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-        string url = "";
-        for (int i = minPage; i < maxPage; i++)
-        {
-          switch (typeRoom)
-          {
-            case "Студия":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii/vtorichka?p={i}";
-              break;
-            case "1 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye/vtorichka?p={i}";
-              break;
-            case "2 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye/vtorichka?p={i}";
-              break;
-            case "3 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye/vtorichka?p={i}";
-              break;
-            case "4 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye/vtorichka?p={i}";
-              break;
-            case "5 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye/vtorichka?p={i}";
-              break;
-            case "6 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye/vtorichka?p={i}";
-              break;
-            case "7 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye/vtorichka?p={i}";
-              break;
-            case "8 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye/vtorichka?p={i}";
-              break;
-            case "9 км. кв.":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye/vtorichka?p={i}";
-              break;
-            case "9 км. кв. +":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/mnogokomnatnye/vtorichka?s_trg=4";
-              break;
-            case "Студия Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii/novostroyka?p={i}";
-              break;
-            case "1 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye/novostroyka?p={i}";
-              break;
-            case "2 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye/novostroyka?p={i}";
-              break;
-            case "3 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye/novostroyka?p={i}";
-              break;
-            case "4 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye/novostroyka?p={i}";
-              break;
-            case "5 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye/novostroyka?p={i}";
-              break;
-            case "6 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye/novostroyka?p={i}";
-              break;
-            case "7 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye/novostroyka?p={i}";
-              break;
-            case "8 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye/novostroyka?p={i}";
-              break;
-            case "9 км. кв. Н":
-              url =
-                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye/novostroyka?p={i}";
-              break;
-          }
-          if (!ExecuteParse(url, webClient, parser, (string)typeRoom, exportPart))
-            break;
-        }
+        File.Delete(path);
       }
-      //MessageBox.Show($"Закончили - {typeRoom}");
-    }
 
-    private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, CoreExport export)
-    {
-      bool result;
-      var random = new Random();
-      Thread.Sleep(random.Next(8000, 9000));
-      try
+      using (var sw = new StreamWriter(new FileStream(path, FileMode.Create), Encoding.UTF8))
       {
-        Log.Debug("-----------URL-----------");
-        Log.Debug(url);
-        var responce = webClient.DownloadString(url);
-        var document = parser.ParseDocument(responce);
+        sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Цена;Метро;Откуда взято");
+      }
 
-        var collections = document.GetElementsByClassName("description item_table-description");
-        if (collections.Length > 0)
-        {
-          ParsingSheet(typeRoom, collections, export);
-          result = true;
-        }
-        else
-          result = false;
-      }
-      catch (Exception e)
-      {
-        Log.Error(e.Message);
-        //TODO Если страница долго не отвечает то пропускаем ее
-        Thread.Sleep(1000);
-        if (e.Message == "Запрос был прерван: Соединение было неожиданно закрыто.")
-          result = false;
-        else
-          result = true;
-      }
-      return result;
+      return path;
     }
 
     public override void ParsingAll()
@@ -864,6 +736,152 @@ namespace Core.Sites
       }
     }
 
+    private void ChangeDistrictAndPage(object typeRoom)
+    {
+      var path = CreateExportForRoom(typeRoom.ToString());
+      CoreCreator creator = new CsvExportCreator();
+      var exportPart = creator.FactoryCreate(path);
+
+      HtmlParser parser = new HtmlParser();
+      using (var webClient = new WebClient())
+      {
+        //webClient.Proxy = myProxy;
+        webClient.Encoding = Encoding.UTF8;
+        ServicePointManager.Expect100Continue = true;
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+        string url = "";
+        for (int i = minPage; i < maxPage; i++)
+        {
+          switch (typeRoom)
+          {
+            case "Студия":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii/vtorichka?p={i}";
+              break;
+            case "1 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye/vtorichka?p={i}";
+              break;
+            case "2 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye/vtorichka?p={i}";
+              break;
+            case "3 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye/vtorichka?p={i}";
+              break;
+            case "4 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye/vtorichka?p={i}";
+              break;
+            case "5 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye/vtorichka?p={i}";
+              break;
+            case "6 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye/vtorichka?p={i}";
+              break;
+            case "7 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye/vtorichka?p={i}";
+              break;
+            case "8 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye/vtorichka?p={i}";
+              break;
+            case "9 км. кв.":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye/vtorichka?p={i}";
+              break;
+            case "9 км. кв. +":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/mnogokomnatnye/vtorichka?s_trg=4";
+              break;
+            case "Студия Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/studii/novostroyka?p={i}";
+              break;
+            case "1 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/1-komnatnye/novostroyka?p={i}";
+              break;
+            case "2 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/2-komnatnye/novostroyka?p={i}";
+              break;
+            case "3 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/3-komnatnye/novostroyka?p={i}";
+              break;
+            case "4 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/4-komnatnye/novostroyka?p={i}";
+              break;
+            case "5 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/5-komnatnye/novostroyka?p={i}";
+              break;
+            case "6 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/6-komnatnye/novostroyka?p={i}";
+              break;
+            case "7 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/7-komnatnye/novostroyka?p={i}";
+              break;
+            case "8 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/8-komnatnye/novostroyka?p={i}";
+              break;
+            case "9 км. кв. Н":
+              url =
+                $@"https://www.avito.ru/sankt-peterburg/kvartiry/prodam/9-komnatnye/novostroyka?p={i}";
+              break;
+          }
+          if (!ExecuteParse(url, webClient, parser, (string)typeRoom, exportPart))
+            break;
+        }
+      }
+      //MessageBox.Show($"Закончили - {typeRoom}");
+    }
+
+    private bool ExecuteParse(string url, WebClient webClient, HtmlParser parser, string typeRoom, CoreExport export)
+    {
+      bool result;
+      var random = new Random();
+      Thread.Sleep(random.Next(8000, 9000));
+      try
+      {
+        Log.Debug("-----------URL-----------");
+        Log.Debug(url);
+        var responce = webClient.DownloadString(url);
+        var document = parser.ParseDocument(responce);
+
+        var collections = document.GetElementsByClassName("description item_table-description");
+        if (collections.Length > 0)
+        {
+          ParsingSheet(typeRoom, collections, export);
+          result = true;
+        }
+        else
+          result = false;
+      }
+      catch (Exception e)
+      {
+        Log.Error(e.Message);
+        //TODO Если страница долго не отвечает то пропускаем ее
+        Thread.Sleep(1000);
+        if (e.Message == "Запрос был прерван: Соединение было неожиданно закрыто.")
+          result = false;
+        else
+          result = true;
+      }
+      return result;
+    }
+
+  
     private void ParsingSheet(string typeRoom, IHtmlCollection<IElement> collection, CoreExport export)
     {
       var parseStreet = new ParseStreet();
@@ -1452,24 +1470,8 @@ namespace Core.Sites
       path = Filename.Replace(arr[arr.Length - 1], "");
       return path;
     }
-
-    private string CreateExportForRoom(string typeRoom)
-    {
-      var path = ExctractPath();
-      path = $@"{path}{typeRoom}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
-      if (!File.Exists(Filename))
-      {
-        File.Delete(path);
-      }
-
-      using (var sw = new StreamWriter(new FileStream(path, FileMode.Create), Encoding.UTF8))
-      {
-        sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Цена;Метро;Откуда взято");
-      }
-
-      return path;
-    }
-
+    //TODO добавить список домов
+    private List<Building> listBuildings = new List<Building>();
     private void UnionFlats(object type)
     {
       Log.Debug($"Start Union {type}");
@@ -1488,6 +1490,7 @@ namespace Core.Sites
             string number = string.Empty;
             string struc = string.Empty;
             string liter = string.Empty;
+            string metro = string.Empty;
 
             var ar = line.Split(';');
             Flat flat = new Flat();
@@ -1504,6 +1507,7 @@ namespace Core.Sites
             number = ar[2];
             struc = ar[3];
             liter = ar[4];
+            metro = ar[9];
 
             District dis = null;
             try
@@ -1522,7 +1526,7 @@ namespace Core.Sites
             Monitor.Enter(lockerDistrict);
             try
             {
-              if (dis?.Buildings.Count != 0)
+              if (listBuildings.Count != 0)
               {
                 var bldsEnum =
                   dis.Buildings.Where(x =>
@@ -1530,9 +1534,13 @@ namespace Core.Sites
                 if (bldsEnum.Count() > 0)
                   building = bldsEnum.First();
               }
-
               if (building == null)
               {
+                Metro metroObj = null;
+                var metroObjs = ListMetros.Where(x => x.Name.ToUpper() == metro.ToUpper());
+                if (metroObjs.Count() > 0)
+                  metroObj = metroObjs.First();
+
                 building = new Building
                 {
                   Street = street,
@@ -1540,8 +1548,9 @@ namespace Core.Sites
                   Structure = struc,
                   Liter = liter,
                   District = dis,
+                  MetroObj = metroObj
                 };
-                dis?.Buildings.Add(building);
+                listBuildings.Add(building);
               }
             }
             finally
