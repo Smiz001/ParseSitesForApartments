@@ -32,6 +32,8 @@
       this.tspmFile = new System.Windows.Forms.ToolStripMenuItem();
       this.AnalysisResaltToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.tspmExit = new System.Windows.Forms.ToolStripMenuItem();
+      this.дополениеБазыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.tsmUpdateTypeBuilding = new System.Windows.Forms.ToolStripMenuItem();
       this.lblChooseParse = new System.Windows.Forms.Label();
       this.cbChooseParse = new System.Windows.Forms.ComboBox();
       this.lblTypeRoom = new System.Windows.Forms.Label();
@@ -43,8 +45,7 @@
       this.sfdParseFile = new System.Windows.Forms.SaveFileDialog();
       this.lblTypeSell = new System.Windows.Forms.Label();
       this.cbTypeSell = new System.Windows.Forms.ComboBox();
-      this.дополениеБазыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.tsmUpdateTypeBuilding = new System.Windows.Forms.ToolStripMenuItem();
+      this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -81,6 +82,22 @@
       this.tspmExit.Size = new System.Drawing.Size(176, 22);
       this.tspmExit.Text = "Выход";
       this.tspmExit.Click += new System.EventHandler(this.tspmExit_Click);
+      // 
+      // дополениеБазыToolStripMenuItem
+      // 
+      this.дополениеБазыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmUpdateTypeBuilding,
+            this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem});
+      this.дополениеБазыToolStripMenuItem.Name = "дополениеБазыToolStripMenuItem";
+      this.дополениеБазыToolStripMenuItem.Size = new System.Drawing.Size(111, 20);
+      this.дополениеБазыToolStripMenuItem.Text = "Дополение базы";
+      // 
+      // tsmUpdateTypeBuilding
+      // 
+      this.tsmUpdateTypeBuilding.Name = "tsmUpdateTypeBuilding";
+      this.tsmUpdateTypeBuilding.Size = new System.Drawing.Size(299, 22);
+      this.tsmUpdateTypeBuilding.Text = "Обновить тип домов";
+      this.tsmUpdateTypeBuilding.Click += new System.EventHandler(this.tsmUpdateTypeBuilding_Click);
       // 
       // lblChooseParse
       // 
@@ -191,20 +208,12 @@
       this.cbTypeSell.Size = new System.Drawing.Size(121, 21);
       this.cbTypeSell.TabIndex = 35;
       // 
-      // дополениеБазыToolStripMenuItem
+      // загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem
       // 
-      this.дополениеБазыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmUpdateTypeBuilding});
-      this.дополениеБазыToolStripMenuItem.Name = "дополениеБазыToolStripMenuItem";
-      this.дополениеБазыToolStripMenuItem.Size = new System.Drawing.Size(111, 20);
-      this.дополениеБазыToolStripMenuItem.Text = "Дополение базы";
-      // 
-      // tsmUpdateTypeBuilding
-      // 
-      this.tsmUpdateTypeBuilding.Name = "tsmUpdateTypeBuilding";
-      this.tsmUpdateTypeBuilding.Size = new System.Drawing.Size(188, 22);
-      this.tsmUpdateTypeBuilding.Text = "Обновить тип домов";
-      this.tsmUpdateTypeBuilding.Click += new System.EventHandler(this.tsmUpdateTypeBuilding_Click);
+      this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem.Name = "загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem";
+      this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem.Size = new System.Drawing.Size(299, 22);
+      this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem.Text = "Загрузить данные по средней стоимости";
+      this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьДанныеПоСреднейСтоимостиToolStripMenuItem_Click);
       // 
       // MainForm
       // 
@@ -252,6 +261,7 @@
     private System.Windows.Forms.ToolStripMenuItem AnalysisResaltToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem дополениеБазыToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem tsmUpdateTypeBuilding;
+    private System.Windows.Forms.ToolStripMenuItem загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem;
   }
 }
 

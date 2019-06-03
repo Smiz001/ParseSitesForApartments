@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
@@ -447,6 +448,227 @@ else
         return false;
       }
       return true;
+    }
+
+    private void ЗагрузитьДанныеПоСреднейСтоимостиToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      string path =string.Empty;
+      using (OpenFileDialog openFileDialog = new OpenFileDialog())
+      {
+        openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+        openFileDialog.FilterIndex = 1;
+        openFileDialog.RestoreDirectory = true;
+        if (openFileDialog.ShowDialog() == DialogResult.OK)
+        {
+          path = openFileDialog.FileName;
+        }
+      }
+      if(!string.IsNullOrEmpty(path))
+      {
+        ReadAllPriceForAllRoom(path);
+        ReadPriceForMetroByRoom(path);
+        ReadPriceForDistrictByRoom(path);
+      }
+    }
+
+    private void ReadAllPriceForAllRoom(string path)
+    {
+      using (var sr = new StreamReader(path))
+      {
+        var listStudii = new List<double>();
+        var listOne = new List<double>();
+        var listTwo = new List<double>();
+        var listThree = new List<double>();
+        var listFour = new List<double>();
+        var listMoreFour = new List<double>();
+        string line = sr.ReadLine();
+        while ((line = sr.ReadLine()) != null)
+        {
+          var arr = line.Split(';');
+          var typeRoom = arr[5];
+          if (typeRoom.Contains("Студия"))
+          {
+            listStudii.Add(double.Parse(arr[9]));
+          }
+          else if (typeRoom.Contains("1 км."))
+          {
+            listOne.Add(double.Parse(arr[9]));
+          }
+          else if (typeRoom.Contains("2 км."))
+          {
+            listTwo.Add(double.Parse(arr[9]));
+          }
+          else if (typeRoom.Contains("3 км."))
+          {
+            listThree.Add(double.Parse(arr[9]));
+          }
+          else if (typeRoom.Contains("4 км."))
+          {
+            listFour.Add(double.Parse(arr[9]));
+          }
+          else
+          {
+            listMoreFour.Add(double.Parse(arr[9]));
+          }
+        }
+      }
+    }
+
+    private void ReadPriceForMetroByRoom(string path)
+    {
+      var studii = new { Name = "Студия", Dictionary = new Dictionary<string, List<double>>() };
+      var one = new { Name = "1 км.", Dictionary = new Dictionary<string, List<double>>() };
+      var two = new { Name = "2 км.", Dictionary = new Dictionary<string, List<double>>() };
+      var three = new { Name = "3 км.", Dictionary = new Dictionary<string, List<double>>() };
+      var four = new { Name = "4 км.", Dictionary = new Dictionary<string, List<double>>() };
+      var five = new { Name = "Более 4 км.", Dictionary = new Dictionary<string, List<double>>() };
+
+      foreach (var metro in listMetros)
+      {
+        studii.Dictionary.Add(metro.Name, new List<double>());
+        one.Dictionary.Add(metro.Name, new List<double>());
+        two.Dictionary.Add(metro.Name, new List<double>());
+        three.Dictionary.Add(metro.Name, new List<double>());
+        four.Dictionary.Add(metro.Name, new List<double>());
+        five.Dictionary.Add(metro.Name, new List<double>());
+      }
+      using (var sr = new StreamReader(path))
+      {
+        string line = sr.ReadLine();
+        while ((line = sr.ReadLine()) != null)
+        {
+          var arr = line.Split(';');
+          var metro = arr[10].Trim();
+          if(!string.IsNullOrEmpty(metro))
+          {
+            var typeRoom = arr[5];
+            if (typeRoom.Contains("Студия"))
+            {
+              var list = studii.Dictionary[metro];
+              list.Add(double.Parse(arr[9]));
+            }
+            else if (typeRoom.Contains("1 км."))
+            {
+              var list = one.Dictionary[metro];
+              list.Add(double.Parse(arr[9]));
+            }
+            else if (typeRoom.Contains("2 км."))
+            {
+              var list = two.Dictionary[metro];
+              list.Add(double.Parse(arr[9]));
+            }
+            else if (typeRoom.Contains("3 км."))
+            {
+              var list = three.Dictionary[metro];
+              list.Add(double.Parse(arr[9]));
+            }
+            else if (typeRoom.Contains("4 км."))
+            {
+              var list = four.Dictionary[metro];
+              list.Add(double.Parse(arr[9]));
+            }
+            else
+            {
+              var list = five.Dictionary[metro];
+              list.Add(double.Parse(arr[9]));
+            }
+          }
+        }
+      }
+    }
+
+    private void ReadPriceForDistrictByRoom(string path)
+    {
+      var studii = new { Name = "Студия", Dictionary = new Dictionary<string, List<double>>() };
+      var one = new { Name = "1 км.", Dictionary = new Dictionary<string, List<double>>() };
+      var two = new { Name = "2 км.", Dictionary = new Dictionary<string, List<double>>() };
+      var three = new { Name = "3 км.", Dictionary = new Dictionary<string, List<double>>() };
+      var four = new { Name = "4 км.", Dictionary = new Dictionary<string, List<double>>() };
+      var five = new { Name = "Более 4 км.", Dictionary = new Dictionary<string, List<double>>() };
+
+      foreach (var district in listDistricts)
+      {
+        studii.Dictionary.Add(district.Name, new List<double>());
+        one.Dictionary.Add(district.Name, new List<double>());
+        two.Dictionary.Add(district.Name, new List<double>());
+        three.Dictionary.Add(district.Name, new List<double>());
+        four.Dictionary.Add(district.Name, new List<double>());
+        five.Dictionary.Add(district.Name, new List<double>());
+      }
+      using (var sr = new StreamReader(path, Encoding.UTF8))
+      {
+        string line = sr.ReadLine();
+        while ((line = sr.ReadLine()) != null)
+        {
+          var arr = line.Split(';');
+          var distr = arr[0].Trim();
+          ////Слово скопиравано
+          //if (distr == "﻿Адмиралтейский")
+          //{
+          //  continue;
+          //}
+          ////Полностью на русском
+          //if (distr == "Адмиралтейский")
+          //{
+          //  var a1 = distr.GetHashCode();
+          //  var a2 = "﻿Адмиралтейский".GetHashCode();
+          //} 
+          //if (distr == "Адмиpалтейcкий") { } //Английская p и c
+          //if (distr == "Адмиралтейcкий") { }
+          if (!string.IsNullOrEmpty(distr))
+          {
+            var typeRoom = arr[5];
+            if (typeRoom.Contains("Студия"))
+            {
+              if(studii.Dictionary.ContainsKey(distr))
+              {
+                var list = studii.Dictionary[distr];
+                list.Add(double.Parse(arr[9]));
+              }
+            }
+            else if (typeRoom.Contains("1 км."))
+            {
+              if (one.Dictionary.ContainsKey(distr))
+              {
+                var list = one.Dictionary[distr];
+                list.Add(double.Parse(arr[9]));
+              }
+            }
+            else if (typeRoom.Contains("2 км."))
+            {
+              if (two.Dictionary.ContainsKey(distr))
+              {
+                var list = two.Dictionary[distr];
+                list.Add(double.Parse(arr[9]));
+              }
+            }
+            else if (typeRoom.Contains("3 км."))
+            {
+              if (three.Dictionary.ContainsKey(distr))
+              {
+                var list = three.Dictionary[distr];
+                list.Add(double.Parse(arr[9]));
+              }
+            }
+            else if (typeRoom.Contains("4 км."))
+            {
+              if (four.Dictionary.ContainsKey(distr))
+              {
+                var list = four.Dictionary[distr];
+                list.Add(double.Parse(arr[9]));
+              }
+            }
+            else
+            {
+              if (five.Dictionary.ContainsKey(distr))
+              {
+                var list = five.Dictionary[distr];
+                list.Add(double.Parse(arr[9]));
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
