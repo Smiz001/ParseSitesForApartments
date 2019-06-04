@@ -482,46 +482,78 @@ else
     {
       using (var sr = new StreamReader(path))
       {
-        var listStudii = new List<double>();
-        var listOne = new List<double>();
-        var listTwo = new List<double>();
-        var listThree = new List<double>();
-        var listFour = new List<double>();
-        var listMoreFour = new List<double>();
+        var dic = new Dictionary<string, List<double>>();
         string line = sr.ReadLine();
         while ((line = sr.ReadLine()) != null)
         {
           var arr = line.Split(';');
           var typeRoom = arr[5];
-          if (typeRoom.Contains("Студия"))
+          List<double> list = null;
+          if(!dic.ContainsKey(typeRoom))
           {
-            listStudii.Add(double.Parse(arr[9])/ double.Parse(arr[6]));
-          }
-          else if (typeRoom.Contains("1 км."))
-          {
-            listOne.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-          }
-          else if (typeRoom.Contains("2 км."))
-          {
-            listTwo.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-          }
-          else if (typeRoom.Contains("3 км."))
-          {
-            listThree.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-          }
-          else if (typeRoom.Contains("4 км."))
-          {
-            listFour.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
+            list = new List<double>();
+            dic.Add(typeRoom, list);
           }
           else
           {
-            listMoreFour.Add(double.Parse(arr[9]));
+            list = dic[typeRoom];
           }
+          list.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
         }
         var con = ConnetionToSqlServer.Default();
-        var insert = $@"insert into dbo.AverPriceForTypeRoom (TypeRoom, AverPrice, Date)
-values ('Студия',{listStudii.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'), ('1 км. кв.',{listOne.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('2 км. кв.',{listTwo.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('3 км. кв.',{listThree.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('4 км. кв.',{listFour.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('Более 4 км. кв.',{listMoreFour.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}')";
-        con.ExecuteNonQuery(insert);
+        var insert = $@"insert into dbo.AverPriceForTypeRoom (TypeRoom, AverPrice, Date) values ";
+        var countDic = dic.Count;
+        int i = 1;
+        foreach (var item in dic)
+        {
+          insert += $@"('{item.Key}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}, '{date}')";
+          if (i != countDic)
+          {
+            insert += ", ";
+            i++;
+          }
+        }
+
+        //        var listStudii = new List<double>();
+        //        var listOne = new List<double>();
+        //        var listTwo = new List<double>();
+        //        var listThree = new List<double>();
+        //        var listFour = new List<double>();
+        //        var listMoreFour = new List<double>();
+        //        string line = sr.ReadLine();
+        //        while ((line = sr.ReadLine()) != null)
+        //        {
+        //          var arr = line.Split(';');
+        //          var typeRoom = arr[5];
+        //          if (typeRoom.Contains("Студия"))
+        //          {
+        //            listStudii.Add(double.Parse(arr[9])/ double.Parse(arr[6]));
+        //          }
+        //          else if (typeRoom.Contains("1 км."))
+        //          {
+        //            listOne.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
+        //          }
+        //          else if (typeRoom.Contains("2 км."))
+        //          {
+        //            listTwo.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
+        //          }
+        //          else if (typeRoom.Contains("3 км."))
+        //          {
+        //            listThree.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
+        //          }
+        //          else if (typeRoom.Contains("4 км."))
+        //          {
+        //            listFour.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
+        //          }
+        //          else
+        //          {
+        //            listMoreFour.Add(double.Parse(arr[9]));
+        //          }
+        //        }
+        //        var con = ConnetionToSqlServer.Default();
+        //        var insert = $@"insert into dbo.AverPriceForTypeRoom (TypeRoom, AverPrice, Date)
+        //values ('Студия',{listStudii.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'), ('1 км. кв.',{listOne.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('2 км. кв.',{listTwo.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('3 км. кв.',{listThree.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('4 км. кв.',{listFour.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('Более 4 км. кв.',{listMoreFour.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}')";
+        //        con.ExecuteNonQuery(insert);
       }
     }
 
