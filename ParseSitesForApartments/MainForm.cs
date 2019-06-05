@@ -472,7 +472,7 @@ else
         var dt = regex.Match(namefile).Value;
         DateTime date = DateTime.Parse(dt);
 
-        ReadAllPriceForAllRoom(path, date);
+        //ReadAllPriceForAllRoom(path, date);
         ReadPriceForMetroByRoom(path, date);
         ReadPriceForDistrictByRoom(path, date);
       }
@@ -519,122 +519,57 @@ else
 
     private void ReadPriceForMetroByRoom(string path, DateTime date)
     {
-      var studii = new { Name = "Студия", Dictionary = new Dictionary<Metro, List<double>>() };
-      var one = new { Name = "1 км.", Dictionary = new Dictionary<Metro, List<double>>() };
-      var two = new { Name = "2 км.", Dictionary = new Dictionary<Metro, List<double>>() };
-      var three = new { Name = "3 км.", Dictionary = new Dictionary<Metro, List<double>>() };
-      var four = new { Name = "4 км.", Dictionary = new Dictionary<Metro, List<double>>() };
-      var five = new { Name = "Более 4 км.", Dictionary = new Dictionary<Metro, List<double>>() };
-
-      foreach (var metro in listMetros)
-      {
-        studii.Dictionary.Add(metro, new List<double>());
-        one.Dictionary.Add(metro, new List<double>());
-        two.Dictionary.Add(metro, new List<double>());
-        three.Dictionary.Add(metro, new List<double>());
-        four.Dictionary.Add(metro, new List<double>());
-        five.Dictionary.Add(metro, new List<double>());
-      }
+      var dic = new Dictionary<string, Dictionary<Metro, List<double>>>();
       using (var sr = new StreamReader(path))
       {
         string line = sr.ReadLine();
         while ((line = sr.ReadLine()) != null)
         {
           var arr = line.Split(';');
-          var metro = arr[10].Trim();
-          if(!string.IsNullOrEmpty(metro))
+          var typeRoom = arr[5];
+          Dictionary<Metro, List<double>> selectedDic;
+          if (!dic.ContainsKey(typeRoom))
           {
-            var metroObj = listMetros.Where(x => x.Name == metro).First();
-            var typeRoom = arr[5];
-            if (typeRoom.Contains("Студия"))
+            selectedDic = new Dictionary<Metro, List<double>>();
+            dic.Add(typeRoom, selectedDic);
+            foreach (var met in listMetros)
             {
-              var list = studii.Dictionary[metroObj];
-              list.Add(double.Parse(arr[9]));
+              selectedDic.Add(met, new List<double>());
             }
-            else if (typeRoom.Contains("1 км."))
+          }
+          else
+          {
+            selectedDic = dic[typeRoom];
+          }
+          var metros = listMetros.Where(x => x.Name == arr[10].Trim());
+            if(metros.Count()>0)
+          {
+            var metro = metros.First();
+            if (selectedDic.ContainsKey(metro))
             {
-              var list = one.Dictionary[metroObj];
-              list.Add(double.Parse(arr[9]));
-            }
-            else if (typeRoom.Contains("2 км."))
-            {
-              var list = two.Dictionary[metroObj];
-              list.Add(double.Parse(arr[9]));
-            }
-            else if (typeRoom.Contains("3 км."))
-            {
-              var list = three.Dictionary[metroObj];
-              list.Add(double.Parse(arr[9]));
-            }
-            else if (typeRoom.Contains("4 км."))
-            {
-              var list = four.Dictionary[metroObj];
-              list.Add(double.Parse(arr[9]));
-            }
-            else
-            {
-              var list = five.Dictionary[metroObj];
-              list.Add(double.Parse(arr[9]));
+              selectedDic[metro].Add(double.Parse(arr[9]) / double.Parse(arr[6]));
             }
           }
         }
+      }
+
+      var con = ConnetionToSqlServer.Default();
+      foreach (var d in dic)
+      {
         var insert = $@"insert into dbo.AverPriceForTypeRoomByMetro (TypeRoom, Metro, Date, AverPrice) values ";
-        foreach (var dic in studii.Dictionary)
+        var count = d.Value.Count();
+        int i = 1;
+        foreach (var item in d.Value)
         {
-          if(dic.Value.Count > 0)
+          if(item.Value.Count>0)
           {
-            string value = $@"('Студия', '{dic.Key.Id}', '{date}', {dic.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}),";
-            insert += value;
+            insert += $@"('{d.Key}', '{item.Key.Id}', '{date}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
           }
+          if (i != count)
+            insert += ", ";
+          i++;
         }
-        foreach (var dic in one.Dictionary)
-        {
-          if (dic.Value.Count > 0)
-          {
-            string value = $@"('1 км. кв.', '{dic.Key.Id}', '{date}', {dic.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}),";
-            insert += value;
-          }
-        }
-        foreach (var dic in two.Dictionary)
-        {
-          if (dic.Value.Count > 0)
-          {
-            string value = $@"('2 км. кв.', '{dic.Key.Id}', '{date}', {dic.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}),";
-            insert += value;
-          }
-        }
-        foreach (var dic in three.Dictionary)
-        {
-          if (dic.Value.Count > 0)
-          {
-            string value = $@"('3 км. кв.', '{dic.Key.Id}', '{date}', {dic.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}),";
-            insert += value;
-          }
-        }
-        foreach (var dic in four.Dictionary)
-        {
-          if (dic.Value.Count > 0)
-          {
-            string value = $@"('4 км. кв.', '{dic.Key.Id}', '{date}', {dic.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}),";
-            insert += value;
-          }
-        }
-        for (int i = 0; i < listMetros.Count; i++)
-        {
-          var metro = listMetros[i];
-          var list = five.Dictionary[metro];
-          if (list.Count > 0)
-          {
-            string value = $@"";
-            if (i == listMetros.Count - 1)
-            {
-              value = $@"('Более 4 км. кв.', '{metro.Id}', '{date}', {list.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
-            }
-            else
-              value = $@"('Более 4 км. кв.', '{metro.Id}', '{date}', {list.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}),";
-            insert += value;
-          }
-        }
+        con.ExecuteNonQuery(insert);
       }
     }
 
