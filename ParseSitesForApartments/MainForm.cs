@@ -513,47 +513,7 @@ else
             i++;
           }
         }
-
-        //        var listStudii = new List<double>();
-        //        var listOne = new List<double>();
-        //        var listTwo = new List<double>();
-        //        var listThree = new List<double>();
-        //        var listFour = new List<double>();
-        //        var listMoreFour = new List<double>();
-        //        string line = sr.ReadLine();
-        //        while ((line = sr.ReadLine()) != null)
-        //        {
-        //          var arr = line.Split(';');
-        //          var typeRoom = arr[5];
-        //          if (typeRoom.Contains("Студия"))
-        //          {
-        //            listStudii.Add(double.Parse(arr[9])/ double.Parse(arr[6]));
-        //          }
-        //          else if (typeRoom.Contains("1 км."))
-        //          {
-        //            listOne.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-        //          }
-        //          else if (typeRoom.Contains("2 км."))
-        //          {
-        //            listTwo.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-        //          }
-        //          else if (typeRoom.Contains("3 км."))
-        //          {
-        //            listThree.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-        //          }
-        //          else if (typeRoom.Contains("4 км."))
-        //          {
-        //            listFour.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-        //          }
-        //          else
-        //          {
-        //            listMoreFour.Add(double.Parse(arr[9]));
-        //          }
-        //        }
-        //        var con = ConnetionToSqlServer.Default();
-        //        var insert = $@"insert into dbo.AverPriceForTypeRoom (TypeRoom, AverPrice, Date)
-        //values ('Студия',{listStudii.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'), ('1 км. кв.',{listOne.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('2 км. кв.',{listTwo.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('3 км. кв.',{listThree.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('4 км. кв.',{listFour.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}'),('Более 4 км. кв.',{listMoreFour.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))},'{date}')";
-        //        con.ExecuteNonQuery(insert);
+        con.ExecuteNonQuery(insert);
       }
     }
 
