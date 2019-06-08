@@ -453,28 +453,35 @@ else
 
     private void ЗагрузитьДанныеПоСреднейСтоимостиToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      string path =string.Empty;
       using (OpenFileDialog openFileDialog = new OpenFileDialog())
       {
         openFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
         openFileDialog.FilterIndex = 1;
         openFileDialog.RestoreDirectory = true;
+        openFileDialog.Multiselect = true;
         if (openFileDialog.ShowDialog() == DialogResult.OK)
         {
-          path = openFileDialog.FileName;
-        }
-      }
-      if(!string.IsNullOrEmpty(path))
-      {
-        var namefile = Path.GetFileName(path);
-        var pattern = $@"\d+\.\d+\.\d+";
-        var regex = new Regex(pattern);
-        var dt = regex.Match(namefile).Value;
-        DateTime date = DateTime.Parse(dt);
+          var paths = openFileDialog.FileNames;
+          var thread = new Thread(x=> {
+            foreach (var path in paths)
+            {
+              if (!string.IsNullOrEmpty(path))
+              {
+                var namefile = Path.GetFileName(path);
+                var pattern = $@"\d+\.\d+\.\d+";
+                var regex = new Regex(pattern);
+                var dt = regex.Match(namefile).Value;
+                DateTime date = DateTime.Parse(dt);
 
-        //ReadAllPriceForAllRoom(path, date);
-        ReadPriceForMetroByRoom(path, date);
-        ReadPriceForDistrictByRoom(path, date);
+                ReadAllPriceForAllRoom(path, date);
+                ReadPriceForMetroByRoom(path, date);
+                ReadPriceForDistrictByRoom(path, date);
+              }
+            }
+            MessageBox.Show("Выполнено");
+          });
+          thread.Start();
+        }
       }
     }
 
@@ -542,7 +549,7 @@ else
             selectedDic = dic[typeRoom];
           }
           var metros = listMetros.Where(x => x.Name == arr[10].Trim());
-            if(metros.Count()>0)
+          if (metros.Count() > 0)
           {
             var metro = metros.First();
             if (selectedDic.ContainsKey(metro))
@@ -564,11 +571,13 @@ else
           if(item.Value.Count>0)
           {
             insert += $@"('{d.Key}', '{item.Key.Id}', '{date}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
+            if (i != count)
+              insert += ", ";
           }
-          if (i != count)
-            insert += ", ";
           i++;
         }
+        if (insert[insert.Length - 2] == ',')
+          insert = insert.Remove(insert.Length - 2, 2);
         con.ExecuteNonQuery(insert);
       }
     }
@@ -576,82 +585,59 @@ else
     //TODO На сервере некоторые районы записывается почему-то с другими буквами
     private void ReadPriceForDistrictByRoom(string path, DateTime date)
     {
-      var studii = new { Name = "Студия", Dictionary = new Dictionary<string, List<double>>() };
-      var one = new { Name = "1 км.", Dictionary = new Dictionary<string, List<double>>() };
-      var two = new { Name = "2 км.", Dictionary = new Dictionary<string, List<double>>() };
-      var three = new { Name = "3 км.", Dictionary = new Dictionary<string, List<double>>() };
-      var four = new { Name = "4 км.", Dictionary = new Dictionary<string, List<double>>() };
-      var five = new { Name = "Более 4 км.", Dictionary = new Dictionary<string, List<double>>() };
-
-      foreach (var district in listDistricts)
-      {
-        studii.Dictionary.Add(district.Name, new List<double>());
-        one.Dictionary.Add(district.Name, new List<double>());
-        two.Dictionary.Add(district.Name, new List<double>());
-        three.Dictionary.Add(district.Name, new List<double>());
-        four.Dictionary.Add(district.Name, new List<double>());
-        five.Dictionary.Add(district.Name, new List<double>());
-      }
-      using (var sr = new StreamReader(path, Encoding.UTF8))
+      var dic = new Dictionary<string, Dictionary<District, List<double>>>();
+      using (var sr = new StreamReader(path))
       {
         string line = sr.ReadLine();
         while ((line = sr.ReadLine()) != null)
         {
           var arr = line.Split(';');
-          var distr = arr[0].Trim();
-          if (!string.IsNullOrEmpty(distr))
+          var typeRoom = arr[5];
+          Dictionary<District, List<double>> selectedDic;
+          if (!dic.ContainsKey(typeRoom))
           {
-            var typeRoom = arr[5];
-            if (typeRoom.Contains("Студия"))
+            selectedDic = new Dictionary<District, List<double>>();
+            dic.Add(typeRoom, selectedDic);
+            foreach (var dis in listDistricts)
             {
-              if(studii.Dictionary.ContainsKey(distr))
-              {
-                var list = studii.Dictionary[distr];
-                list.Add(double.Parse(arr[9])/ double.Parse(arr[6]));
-              }
+              selectedDic.Add(dis, new List<double>());
             }
-            else if (typeRoom.Contains("1 км."))
+          }
+          else
+            selectedDic = dic[typeRoom];
+
+          var dist = listDistricts.Where(x => x.Name == arr[0].Trim());
+          if (dist.Count() > 0)
+          {
+            var dis = dist.First();
+            if (selectedDic.ContainsKey(dis))
             {
-              if (one.Dictionary.ContainsKey(distr))
-              {
-                var list = one.Dictionary[distr];
-                list.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-              }
-            }
-            else if (typeRoom.Contains("2 км."))
-            {
-              if (two.Dictionary.ContainsKey(distr))
-              {
-                var list = two.Dictionary[distr];
-                list.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-              }
-            }
-            else if (typeRoom.Contains("3 км."))
-            {
-              if (three.Dictionary.ContainsKey(distr))
-              {
-                var list = three.Dictionary[distr];
-                list.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-              }
-            }
-            else if (typeRoom.Contains("4 км."))
-            {
-              if (four.Dictionary.ContainsKey(distr))
-              {
-                var list = four.Dictionary[distr];
-                list.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-              }
-            }
-            else
-            {
-              if (five.Dictionary.ContainsKey(distr))
-              {
-                var list = five.Dictionary[distr];
-                list.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
-              }
+              selectedDic[dis].Add(double.Parse(arr[9]) / double.Parse(arr[6]));
             }
           }
         }
+      }
+
+      var con = ConnetionToSqlServer.Default();
+      foreach (var d in dic)
+      {
+        var insert = @"insert into [ParseBulding].[dbo].[AverPriceForTypeRoomByDistrict] (TypeRoom, District, Date, AverPrice)
+values";
+        var count = d.Value.Count();
+        int i = 1;
+        foreach (var item in d.Value)
+        {
+          if (item.Value.Count > 0)
+          {
+            insert += $@"('{d.Key}', '{item.Key.Id}', '{date}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
+            if (i != count)
+              insert += ", ";
+          }
+          i++;
+        }
+        if (insert[insert.Length - 2] == ',')
+          insert = insert.Remove(insert.Length - 2, 2);
+        con.ExecuteNonQuery(insert);
       }
     }
   }
