@@ -1719,5 +1719,10 @@ namespace Core.Sites
       }
       File.Delete(path);
     }
+
+    protected override void CalcAverPrice()
+    {
+      throw new NotImplementedException();
+    }
   }
 }

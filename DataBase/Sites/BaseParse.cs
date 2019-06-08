@@ -41,7 +41,7 @@ namespace Core.Sites
     public abstract void ParsingFour();
     public abstract void ParsingMoreFour();
 
-
+    protected abstract void CalcAverPrice();
     public abstract void ParsingSdamAll();
   }
 }

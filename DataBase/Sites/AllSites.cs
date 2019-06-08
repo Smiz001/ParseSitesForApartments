@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
+using Core.Connections;
 using Core.MainClasses;
 using Core.Proxy;
 
@@ -119,6 +121,163 @@ namespace Core.Sites
           }
         }
         File.Delete(bkn.Filename);
+      }
+      ReadAllPriceForAllRoom(Filename, DateTime.Now);
+      ReadPriceForMetroByRoom(Filename, DateTime.Now);
+      ReadPriceForDistrictByRoom(Filename, DateTime.Now);
+    }
+    private void ReadAllPriceForAllRoom(string path, DateTime date)
+    {
+      using (var sr = new StreamReader(path))
+      {
+        var dic = new Dictionary<string, List<double>>();
+        string line = sr.ReadLine();
+        while ((line = sr.ReadLine()) != null)
+        {
+          var arr = line.Split(';');
+          var typeRoom = arr[5];
+          List<double> list = null;
+          if (!dic.ContainsKey(typeRoom))
+          {
+            list = new List<double>();
+            dic.Add(typeRoom, list);
+          }
+          else
+          {
+            list = dic[typeRoom];
+          }
+          list.Add(double.Parse(arr[9]) / double.Parse(arr[6]));
+        }
+        var con = ConnetionToSqlServer.Default();
+        var insert = $@"insert into dbo.AverPriceForTypeRoom (TypeRoom, AverPrice, Date) values ";
+        var countDic = dic.Count;
+        int i = 1;
+        foreach (var item in dic)
+        {
+          insert += $@"('{item.Key}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}, '{date}')";
+          if (i != countDic)
+          {
+            insert += ", ";
+            i++;
+          }
+        }
+        con.ExecuteNonQuery(insert);
+      }
+    }
+
+    private void ReadPriceForMetroByRoom(string path, DateTime date)
+    {
+      var dic = new Dictionary<string, Dictionary<Metro, List<double>>>();
+      using (var sr = new StreamReader(path))
+      {
+        string line = sr.ReadLine();
+        while ((line = sr.ReadLine()) != null)
+        {
+          var arr = line.Split(';');
+          var typeRoom = arr[5];
+          Dictionary<Metro, List<double>> selectedDic;
+          if (!dic.ContainsKey(typeRoom))
+          {
+            selectedDic = new Dictionary<Metro, List<double>>();
+            dic.Add(typeRoom, selectedDic);
+            foreach (var met in ListMetros)
+            {
+              selectedDic.Add(met, new List<double>());
+            }
+          }
+          else
+          {
+            selectedDic = dic[typeRoom];
+          }
+          var metros = ListMetros.Where(x => x.Name == arr[10].Trim());
+          if (metros.Count() > 0)
+          {
+            var metro = metros.First();
+            if (selectedDic.ContainsKey(metro))
+            {
+              selectedDic[metro].Add(double.Parse(arr[9]) / double.Parse(arr[6]));
+            }
+          }
+        }
+      }
+
+      var con = ConnetionToSqlServer.Default();
+      foreach (var d in dic)
+      {
+        var insert = $@"insert into dbo.AverPriceForTypeRoomByMetro (TypeRoom, Metro, Date, AverPrice) values ";
+        var count = d.Value.Count();
+        int i = 1;
+        foreach (var item in d.Value)
+        {
+          if (item.Value.Count > 0)
+          {
+            insert += $@"('{d.Key}', '{item.Key.Id}', '{date}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
+            if (i != count)
+              insert += ", ";
+          }
+          i++;
+        }
+        if (insert[insert.Length - 2] == ',')
+          insert = insert.Remove(insert.Length - 2, 2);
+        con.ExecuteNonQuery(insert);
+      }
+    }
+
+    private void ReadPriceForDistrictByRoom(string path, DateTime date)
+    {
+      var dic = new Dictionary<string, Dictionary<District, List<double>>>();
+      using (var sr = new StreamReader(path))
+      {
+        string line = sr.ReadLine();
+        while ((line = sr.ReadLine()) != null)
+        {
+          var arr = line.Split(';');
+          var typeRoom = arr[5];
+          Dictionary<District, List<double>> selectedDic;
+          if (!dic.ContainsKey(typeRoom))
+          {
+            selectedDic = new Dictionary<District, List<double>>();
+            dic.Add(typeRoom, selectedDic);
+            foreach (var dis in ListDistricts)
+            {
+              selectedDic.Add(dis, new List<double>());
+            }
+          }
+          else
+            selectedDic = dic[typeRoom];
+
+          var dist = ListDistricts.Where(x => x.Name == arr[0].Trim());
+          if (dist.Count() > 0)
+          {
+            var dis = dist.First();
+            if (selectedDic.ContainsKey(dis))
+            {
+              selectedDic[dis].Add(double.Parse(arr[9]) / double.Parse(arr[6]));
+            }
+          }
+        }
+      }
+
+      var con = ConnetionToSqlServer.Default();
+      foreach (var d in dic)
+      {
+        var insert = @"insert into [ParseBulding].[dbo].[AverPriceForTypeRoomByDistrict] (TypeRoom, District, Date, AverPrice)
+values";
+        var count = d.Value.Count();
+        int i = 1;
+        foreach (var item in d.Value)
+        {
+          if (item.Value.Count > 0)
+          {
+            insert += $@"('{d.Key}', '{item.Key.Id}', '{date}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
+            if (i != count)
+              insert += ", ";
+          }
+          i++;
+        }
+        if (insert[insert.Length - 2] == ',')
+          insert = insert.Remove(insert.Length - 2, 2);
+        con.ExecuteNonQuery(insert);
       }
     }
 
@@ -298,6 +457,11 @@ namespace Core.Sites
       elmsThread.Start();
       WaitUntilWorkThread(elmsThread);
       UnionFiles();
+    }
+
+    protected override void CalcAverPrice()
+    {
+      throw new NotImplementedException();
     }
   }
 }
