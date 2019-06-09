@@ -154,7 +154,7 @@ namespace Core.Sites
         int i = 1;
         foreach (var item in dic)
         {
-          insert += $@"('{item.Key}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}, '{date}')";
+          insert += $@"('{item.Key}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}, '{date.Year}-{date.Month}-{date.Day}')";
           if (i != countDic)
           {
             insert += ", ";
@@ -211,7 +211,7 @@ namespace Core.Sites
         {
           if (item.Value.Count > 0)
           {
-            insert += $@"('{d.Key}', '{item.Key.Id}', '{date}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
+            insert += $@"('{d.Key}', '{item.Key.Id}', '{date.Year}-{date.Month}-{date.Day}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
             if (i != count)
               insert += ", ";
           }
@@ -269,7 +269,7 @@ values";
         {
           if (item.Value.Count > 0)
           {
-            insert += $@"('{d.Key}', '{item.Key.Id}', '{date}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
+            insert += $@"('{d.Key}', '{item.Key.Id}', '{date.Year}-{date.Month}-{date.Day}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
             if (i != count)
               insert += ", ";
           }

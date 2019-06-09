@@ -3,7 +3,6 @@ using System.Reflection;
 using Core.Enum;
 using Core.MainClasses;
 using log4net;
-using Core.Enum;
 using Core.Proxy;
 
 namespace Core.Sites
