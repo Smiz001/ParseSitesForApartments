@@ -34,6 +34,10 @@
       this.дополениеБазыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.tsmUpdateTypeBuilding = new System.Windows.Forms.ToolStripMenuItem();
       this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.поToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.анализФайлаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.графикToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.поТипуКвартирToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.lblChooseParse = new System.Windows.Forms.Label();
       this.cbChooseParse = new System.Windows.Forms.ComboBox();
       this.lblTypeRoom = new System.Windows.Forms.Label();
@@ -45,10 +49,6 @@
       this.sfdParseFile = new System.Windows.Forms.SaveFileDialog();
       this.lblTypeSell = new System.Windows.Forms.Label();
       this.cbTypeSell = new System.Windows.Forms.ComboBox();
-      this.поToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.анализФайлаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.графикToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.поТипуКвартирToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
       // 
@@ -75,7 +75,7 @@
       // tspmExit
       // 
       this.tspmExit.Name = "tspmExit";
-      this.tspmExit.Size = new System.Drawing.Size(180, 22);
+      this.tspmExit.Size = new System.Drawing.Size(108, 22);
       this.tspmExit.Text = "Выход";
       this.tspmExit.Click += new System.EventHandler(this.tspmExit_Click);
       // 
@@ -101,6 +101,37 @@
       this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem.Size = new System.Drawing.Size(299, 22);
       this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem.Text = "Загрузить данные по средней стоимости";
       this.загрузитьДанныеПоСреднейСтоимостиToolStripMenuItem.Click += new System.EventHandler(this.ЗагрузитьДанныеПоСреднейСтоимостиToolStripMenuItem_Click);
+      // 
+      // поToolStripMenuItem
+      // 
+      this.поToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.анализФайлаToolStripMenuItem,
+            this.графикToolStripMenuItem});
+      this.поToolStripMenuItem.Name = "поToolStripMenuItem";
+      this.поToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
+      this.поToolStripMenuItem.Text = "Анализ";
+      // 
+      // анализФайлаToolStripMenuItem
+      // 
+      this.анализФайлаToolStripMenuItem.Name = "анализФайлаToolStripMenuItem";
+      this.анализФайлаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.анализФайлаToolStripMenuItem.Text = "Файла";
+      this.анализФайлаToolStripMenuItem.Click += new System.EventHandler(this.AnalysisResaltToolStripMenuItem_Click);
+      // 
+      // графикToolStripMenuItem
+      // 
+      this.графикToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.поТипуКвартирToolStripMenuItem});
+      this.графикToolStripMenuItem.Name = "графикToolStripMenuItem";
+      this.графикToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.графикToolStripMenuItem.Text = "График";
+      // 
+      // поТипуКвартирToolStripMenuItem
+      // 
+      this.поТипуКвартирToolStripMenuItem.Name = "поТипуКвартирToolStripMenuItem";
+      this.поТипуКвартирToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+      this.поТипуКвартирToolStripMenuItem.Text = "По типу квартир";
+      this.поТипуКвартирToolStripMenuItem.Click += new System.EventHandler(this.ПоТипуКвартирToolStripMenuItem_Click);
       // 
       // lblChooseParse
       // 
@@ -210,36 +241,6 @@
       this.cbTypeSell.Name = "cbTypeSell";
       this.cbTypeSell.Size = new System.Drawing.Size(121, 21);
       this.cbTypeSell.TabIndex = 35;
-      // 
-      // поToolStripMenuItem
-      // 
-      this.поToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.анализФайлаToolStripMenuItem,
-            this.графикToolStripMenuItem});
-      this.поToolStripMenuItem.Name = "поToolStripMenuItem";
-      this.поToolStripMenuItem.Size = new System.Drawing.Size(59, 20);
-      this.поToolStripMenuItem.Text = "Анализ";
-      // 
-      // анализФайлаToolStripMenuItem
-      // 
-      this.анализФайлаToolStripMenuItem.Name = "анализФайлаToolStripMenuItem";
-      this.анализФайлаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-      this.анализФайлаToolStripMenuItem.Text = "Файла";
-      this.анализФайлаToolStripMenuItem.Click += new System.EventHandler(this.AnalysisResaltToolStripMenuItem_Click);
-      // 
-      // графикToolStripMenuItem
-      // 
-      this.графикToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.поТипуКвартирToolStripMenuItem});
-      this.графикToolStripMenuItem.Name = "графикToolStripMenuItem";
-      this.графикToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-      this.графикToolStripMenuItem.Text = "График";
-      // 
-      // поТипуКвартирToolStripMenuItem
-      // 
-      this.поТипуКвартирToolStripMenuItem.Name = "поТипуКвартирToolStripMenuItem";
-      this.поТипуКвартирToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-      this.поТипуКвартирToolStripMenuItem.Text = "По типу квартир";
       // 
       // MainForm
       // 

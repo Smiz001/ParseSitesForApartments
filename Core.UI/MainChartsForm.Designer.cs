@@ -35,6 +35,7 @@
       this.cmbStartDate = new System.Windows.Forms.ComboBox();
       this.cmbEndDate = new System.Windows.Forms.ComboBox();
       this.label3 = new System.Windows.Forms.Label();
+      this.btnDownload = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // mainChart
@@ -102,11 +103,22 @@
       this.label3.TabIndex = 6;
       this.label3.Text = "Дата окончания:";
       // 
+      // btnDownload
+      // 
+      this.btnDownload.Location = new System.Drawing.Point(692, 10);
+      this.btnDownload.Name = "btnDownload";
+      this.btnDownload.Size = new System.Drawing.Size(75, 23);
+      this.btnDownload.TabIndex = 7;
+      this.btnDownload.Text = "Загрузить";
+      this.btnDownload.UseVisualStyleBackColor = true;
+      this.btnDownload.Click += new System.EventHandler(this.BtnDownload_Click);
+      // 
       // MainChartsForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(884, 547);
+      this.Controls.Add(this.btnDownload);
       this.Controls.Add(this.label3);
       this.Controls.Add(this.cmbEndDate);
       this.Controls.Add(this.cmbStartDate);
@@ -130,5 +142,6 @@
     private System.Windows.Forms.ComboBox cmbStartDate;
     private System.Windows.Forms.ComboBox cmbEndDate;
     private System.Windows.Forms.Label label3;
+    private System.Windows.Forms.Button btnDownload;
   }
 }

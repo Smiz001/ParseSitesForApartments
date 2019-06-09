@@ -11,6 +11,7 @@ using Core.Enum;
 using Core.MainClasses;
 using Core.Proxy;
 using Core.Sites;
+using Core.UI;
 using CoreUI;
 using log4net;
 
@@ -638,6 +639,12 @@ values";
           insert = insert.Remove(insert.Length - 2, 2);
         con.ExecuteNonQuery(insert);
       }
+    }
+
+    private void ПоТипуКвартирToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      var chartFoem = new MainChartsForm();
+      chartFoem.ShowDialog();
     }
   }
 }

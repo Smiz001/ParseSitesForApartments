@@ -18,8 +18,8 @@ namespace Core.MainClasses.Chart
     #endregion
 
     #region Properties
-    public string Date { get; set; }
-    private double AverSum { get; set; }
+    public DateTime Date { get; set; }
+    public double AverSum { get; set; }
     #endregion
 
     #region Methods
