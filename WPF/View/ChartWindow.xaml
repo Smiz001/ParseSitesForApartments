@@ -6,9 +6,10 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:WPF.View"
         mc:Ignorable="d"
-        Title="ChartWindow"
+        Title="График"
         Height="450"
-        Width="802.688">
+        Width="850"
+        WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid Height="40"
               VerticalAlignment="Top">
@@ -34,17 +35,23 @@
                       HorizontalAlignment="Left"
                       Margin="95,13,0,0"
                       VerticalAlignment="Top"
-                      Width="180" />
+                      Width="180"
+                      ItemsSource="{Binding Path=TypeRooms}"
+                      SelectedItem="{Binding Path=SelectedTypeRoom}"/>
             <ComboBox x:Name="comboBox1"
                       HorizontalAlignment="Left"
                       Margin="358,13,0,0"
                       VerticalAlignment="Top"
-                      Width="120" />
+                      Width="120"
+                      ItemsSource="{Binding Path=DateStart}"
+                      SelectedItem="{Binding Path=SelectedDateStart}" />
             <ComboBox x:Name="comboBox1_Copy"
                       HorizontalAlignment="Left"
                       Margin="579,13,0,0"
                       VerticalAlignment="Top"
-                      Width="120" />
+                      Width="120"
+                      ItemsSource="{Binding Path=DateEnd}"
+                      SelectedItem="{Binding Path=SelectedDateEnd}" />
             <Button x:Name="button"
                     Content="Загрузить"
                     HorizontalAlignment="Left"
@@ -54,17 +61,15 @@
         </Grid>
         <Grid Margin="0,40,0,0">
             <lvc:CartesianChart Series="{Binding SeriesCollection}"
-                                LegendLocation="Right">
+                                LegendLocation="Right"
+                                Margin="10,0,10,10">
                 <lvc:CartesianChart.AxisY>
                     <lvc:Axis MaxValue="300000"
                               MinValue="50000"
                               Title="руб за кв.м"></lvc:Axis>
                 </lvc:CartesianChart.AxisY>
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis MaxValue="10"
-                              MinValue="0"
-                              Title="Дата"
-                              >
+                    <lvc:Axis Title="Дата">
                     </lvc:Axis>
                 </lvc:CartesianChart.AxisX>
             </lvc:CartesianChart>

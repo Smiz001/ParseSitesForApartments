@@ -22,7 +22,8 @@
                 <MenuItem Header="Файла">
                 </MenuItem>
                 <MenuItem Header="График">
-                    <MenuItem Header="По типу квартир">
+                    <MenuItem Header="По типу квартир"
+                              Command="{Binding Path=CallChartWindowCommand}">
                     </MenuItem>
                 </MenuItem>
             </MenuItem>

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using WPF.View;
+using WPF.ViewModel;
 
 namespace WPF
 {
@@ -12,11 +14,12 @@ namespace WPF
     private string selectedPath;
     private List<string> parseSites;
     private List<string> typeRooms;
+    private List<string> typeSale;
     private string selectedSites;
     private string selectedTypeRooms;
-    private List<string> typeSale;
     private string selectedTypeSale;
     private ICommand executeParseCommand;
+    private ICommand callChartWindowCommand;
     #endregion
 
     #region Constructors
@@ -92,7 +95,6 @@ namespace WPF
       }
     }
 
-
     private void SelectPathForSaveFile()
     {
       var save = new SaveFileDialog();
@@ -116,10 +118,27 @@ namespace WPF
       }
     }
 
-
     private void ExecuteParse()
     {
      
+    }
+
+    public ICommand CallChartWindowCommand
+    {
+      get
+      {
+        if (callChartWindowCommand == null)
+          callChartWindowCommand = new RelayCommand(() => CallChartWindow());
+        return callChartWindowCommand;
+      }
+    }
+
+    private void CallChartWindow()
+    {
+      var vm = new ChartWindowViewModel();
+      var view = new ChartWindow();
+      view.DataContext = vm;
+      view.ShowDialog();
     }
     #endregion
   }
