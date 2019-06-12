@@ -5,8 +5,95 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF"
         mc:Ignorable="d"
-        Title="Парсер сайтов" Height="450" Width="800">
+        Title="Парсер сайтов"
+        Height="450"
+        Width="800">
     <Grid Background="White">
-        
+        <Menu x:Name="menu"
+              Height="25"
+              VerticalAlignment="Top">
+            <MenuItem Header="Файл"
+                      Height="25">
+                <MenuItem Header="Выход">
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Анализ">
+                <MenuItem Header="Файла">
+                </MenuItem>
+                <MenuItem Header="График">
+                    <MenuItem Header="По типу квартир">
+                    </MenuItem>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <Grid Margin="0,25,0,0">
+            <ComboBox x:Name="comboBox"
+                      HorizontalAlignment="Left"
+                      Margin="89,10,0,0"
+                      VerticalAlignment="Top"
+                      Width="120"
+                      ItemsSource="{Binding Path=ParseSites}"
+                      SelectedItem="{Binding Path=SelectedSites}">
+            </ComboBox>
+            <TextBlock x:Name="textBlock"
+                       HorizontalAlignment="Left"
+                       Margin="15,15,0,0"
+                       TextWrapping="Wrap"
+                       Text="Что парсить:"
+                       VerticalAlignment="Top" />
+            <TextBlock x:Name="textBlock1"
+                       HorizontalAlignment="Left"
+                       Margin="214,15,0,0"
+                       TextWrapping="Wrap"
+                       Text="Кол-во комнат:"
+                       VerticalAlignment="Top" />
+            <ComboBox x:Name="comboBox1"
+                      HorizontalAlignment="Left"
+                      Margin="303,10,0,0"
+                      VerticalAlignment="Top"
+                      Width="120"
+                      ItemsSource="{Binding Path=TypeRooms}"
+                      SelectedItem="{Binding Path=SelectedTypeRooms}"/>
+            <TextBlock x:Name="textBlock2"
+                       HorizontalAlignment="Left"
+                       Margin="428,15,0,0"
+                       TextWrapping="Wrap"
+                       Text="Продажа или Сдать:"
+                       VerticalAlignment="Top" />
+            <ComboBox x:Name="comboBox2"
+                      HorizontalAlignment="Left"
+                      Margin="544,10,0,0"
+                      VerticalAlignment="Top"
+                      Width="120"
+                      SelectedItem="{Binding Path=SelectedTypeSale}"
+                      ItemsSource="{Binding Path=TypeSale}"/>
+            <TextBlock x:Name="textBlock3"
+                       HorizontalAlignment="Left"
+                       Margin="15,60,0,0"
+                       TextWrapping="Wrap"
+                       Text="Пусть сохранения файла:"
+                       VerticalAlignment="Top" />
+            <TextBox x:Name="textBox"
+                     HorizontalAlignment="Left"
+                     Height="23"
+                     Margin="158,59,0,0"
+                     TextWrapping="Wrap"
+                     Text="{Binding Path=SelectedPath}"
+                     VerticalAlignment="Top"
+                     Width="265"
+                     IsReadOnly="True" />
+            <Button x:Name="button"
+                    Content="..."
+                    HorizontalAlignment="Left"
+                    Margin="428,60,0,0"
+                    VerticalAlignment="Top"
+                    Width="30"
+                    Command="{Binding Path=SelectPathForSaveFileCommand}"/>
+            <Button Content="Выполнить"
+                    HorizontalAlignment="Left"
+                    Margin="464,60,0,0"
+                    VerticalAlignment="Top"
+                    Width="75" />
+        </Grid>
     </Grid>
 </Window>
