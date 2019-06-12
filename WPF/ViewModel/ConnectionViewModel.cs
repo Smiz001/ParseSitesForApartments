@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace WPF.ViewModel
 {
-  public class ConnectionViewModel:CoreViewModel
+  public class ConnectionViewModel:NotifyClass
   {
     #region Fields
     private ConnetionToSqlServer connection;

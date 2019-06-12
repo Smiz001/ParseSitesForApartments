@@ -7,7 +7,7 @@ using WPF.ViewModel;
 
 namespace WPF
 {
-  public class MainWindowViewModel: CoreViewModel
+  public class MainWindowViewModel: NotifyClass
   {
     #region Fields
     private ICommand selectPathForSaveFileCommand;

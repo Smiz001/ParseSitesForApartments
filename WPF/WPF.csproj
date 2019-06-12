@@ -62,9 +62,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\TypeRoomModel.cs" />
     <Compile Include="RelayCommand.cs" />
+    <Compile Include="ViewModel\ChartMetroWindowViewModel.cs" />
     <Compile Include="ViewModel\ChartWindowViewModel.cs" />
     <Compile Include="ViewModel\ConnectionViewModel.cs" />
+    <Compile Include="View\ChartMetroWindow.xaml.cs">
+      <DependentUpon>ChartMetroWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ChartWindow.xaml.cs">
       <DependentUpon>ChartWindow.xaml</DependentUpon>
     </Compile>
@@ -84,6 +89,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\ChartMetroWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ChartWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

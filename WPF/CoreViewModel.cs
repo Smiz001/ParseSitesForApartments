@@ -2,7 +2,7 @@
 
 namespace WPF
 {
-  public class CoreViewModel : INotifyPropertyChanged
+  public class NotifyClass : INotifyPropertyChanged
   {
     #region INotifyPropertyChanged Members
 
