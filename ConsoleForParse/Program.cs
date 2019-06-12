@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Core.Connections;
 using Core.Enum;
+using Core.Import;
 using Core.MainClasses;
 using Core.Proxy;
 using Core.Sites;

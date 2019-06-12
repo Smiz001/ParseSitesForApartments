@@ -2,7 +2,7 @@
 using System.Xml;
 using Core.Connections;
 
-namespace ParseSitesForApartments
+namespace Core.Import
 {
   public class ImportConfigDataBase
   {

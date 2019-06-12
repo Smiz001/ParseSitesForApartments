@@ -69,6 +69,8 @@
     <Compile Include="Export\Creators\CoreCreator.cs" />
     <Compile Include="Export\Creators\CsvExportCreator.cs" />
     <Compile Include="Export\CsvExport.cs" />
+    <Compile Include="Export\ExportConfigDataBase.cs" />
+    <Compile Include="Import\ImportConfigDataBase.cs" />
     <Compile Include="Import\ImportForChart.cs" />
     <Compile Include="MainClasses\Building.cs" />
     <Compile Include="MainClasses\Chart\DataForChart.cs" />

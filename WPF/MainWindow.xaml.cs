@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using WPF.View;
 
 namespace WPF
 {
@@ -9,9 +10,12 @@ namespace WPF
   {
     public MainWindow()
     {
+      ConnectionWindow conectionView = new ConnectionWindow();
+      if (conectionView.ShowDialog() == false)
+        this.Close();
+
       InitializeComponent();
-      var vm = new MainWindowViewModel();
-      DataContext = vm;
+      DataContext = new MainWindowViewModel();
     }
   }
 }

@@ -1,9 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace WPF
@@ -19,6 +16,7 @@ namespace WPF
     private string selectedTypeRooms;
     private List<string> typeSale;
     private string selectedTypeSale;
+    private ICommand executeParseCommand;
     #endregion
 
     #region Constructors
@@ -95,16 +93,33 @@ namespace WPF
     }
 
 
-    protected virtual void SelectPathForSaveFile()
+    private void SelectPathForSaveFile()
     {
       var save = new SaveFileDialog();
-      save.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+      save.Filter = "csv files (*.csv)|*.csv";
       save.FilterIndex = 1;
       save.RestoreDirectory = true;
+      save.FileName = $@"{SelectedSites}-{SelectedTypeRooms}-{SelectedTypeSale}-{DateTime.Now.ToShortDateString()}";
       if(save.ShowDialog() == true)
       {
         SelectedPath = save.FileName;
       }
+    }
+
+    public ICommand ExecuteParseCommand
+    {
+      get
+      {
+        if (executeParseCommand == null)
+          executeParseCommand = new RelayCommand(() => ExecuteParse());
+        return executeParseCommand;
+      }
+    }
+
+
+    private void ExecuteParse()
+    {
+     
     }
     #endregion
   }

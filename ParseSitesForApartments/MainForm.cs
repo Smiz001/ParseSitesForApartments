@@ -8,6 +8,8 @@ using System.Threading;
 using System.Windows.Forms;
 using Core.Connections;
 using Core.Enum;
+using Core.Export;
+using Core.Import;
 using Core.MainClasses;
 using Core.Proxy;
 using Core.Sites;

@@ -1,0 +1,140 @@
+﻿<Window x:Class="WPF.View.ConnectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF.View"
+        mc:Ignorable="d"
+        Title="Подключение к базе"
+        Height="245.312"
+        Width="330"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid Margin="0,0,0,40">
+            <Grid.Style>
+                <Style TargetType="{x:Type Grid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=rbServer}"
+                                     Value="True">
+                            <Setter Property="IsEnabled"
+                                    Value="True" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=rbServer}"
+                                     Value="False">
+                            <Setter Property="IsEnabled"
+                                    Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
+            <TextBox x:Name="tbNameServer"
+                     Height="23"
+                     Margin="86,10,10,0"
+                     TextWrapping="Wrap"
+                     VerticalAlignment="Top"
+                     Text="{Binding Path=Connection.Server}" />
+            <TextBlock x:Name="tblServerName"
+                       HorizontalAlignment="Left"
+                       Margin="10,13,0,0"
+                       TextWrapping="Wrap"
+                       Text="Имя сервера"
+                       VerticalAlignment="Top" />
+            <TextBlock x:Name="textBlock1"
+                       HorizontalAlignment="Left"
+                       Margin="10,43,0,0"
+                       TextWrapping="Wrap"
+                       Text="Имя базы"
+                       VerticalAlignment="Top" />
+            <TextBox x:Name="tbNameDataBase"
+                     Margin="86,40,10,0"
+                     VerticalAlignment="Top"
+                     Height="23"
+                     Text="{Binding Path=Connection.DataBase}" />
+            <CheckBox x:Name="chbSQLAuit"
+                      Content="Проверка подлинности SQL Server"
+                      HorizontalAlignment="Left"
+                      Margin="10,73,0,0"
+                      VerticalAlignment="Top"
+                      IsChecked="{Binding Path=Connection.SQLAuthentication}" />
+            <Grid Margin="10,94,10,0">
+                <Grid.Style>
+                    <Style TargetType="{x:Type Grid}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsChecked, ElementName=chbSQLAuit}"
+                                         Value="True">
+                                <Setter Property="IsEnabled"
+                                        Value="True" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsChecked, ElementName=chbSQLAuit}"
+                                         Value="False">
+                                <Setter Property="IsEnabled"
+                                        Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+                <TextBlock x:Name="textBlock2"
+                           HorizontalAlignment="Left"
+                           Margin="10,13,0,0"
+                           TextWrapping="Wrap"
+                           Text="Логин"
+                           VerticalAlignment="Top" />
+                <TextBlock x:Name="textBlock3"
+                           HorizontalAlignment="Left"
+                           Margin="10,43,0,0"
+                           TextWrapping="Wrap"
+                           Text="Пароль"
+                           VerticalAlignment="Top" />
+                <TextBox x:Name="tbLogin"
+                         Height="23"
+                         Margin="75,10,0,0"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Top">
+                    <TextBox.Text>
+                        <Binding Path="Connection.UserName"
+                                 UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <DataErrorValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+                <TextBox x:Name="tbPassword"
+                         Height="23"
+                         Margin="75,40,0,0"
+                         TextWrapping="Wrap"
+                         VerticalAlignment="Top">
+                    <TextBox.Text>
+                        <Binding Path="Connection.Password"
+                                 UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <DataErrorValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </Grid>
+        </Grid>
+        <Button x:Name="btnConnect"
+                Content="Соединить"
+                HorizontalAlignment="Right"
+                Margin="0,0,90,10"
+                VerticalAlignment="Bottom"
+                Width="75"
+                Height="24"
+                Grid.Row="1"
+                Command="{Binding ConnectCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
+        <Button x:Name="btnCancel"
+                Content="Отмена"
+                HorizontalAlignment="Right"
+                Margin="0,0,10,10"
+                VerticalAlignment="Bottom"
+                Width="75"
+                Height="24"
+                Grid.Row="1"
+                Command="{Binding CancelCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
+    </Grid>
+</Window>

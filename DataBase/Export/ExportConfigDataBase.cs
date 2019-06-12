@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using Core.Connections;
 
-namespace ParseSitesForApartments
+namespace Core.Export
 {
   public class ExportConfigDataBase
   {
