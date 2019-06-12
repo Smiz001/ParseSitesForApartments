@@ -57,19 +57,21 @@
                     HorizontalAlignment="Left"
                     Margin="710,13,0,0"
                     VerticalAlignment="Top"
-                    Width="75" />
+                    Width="75"
+                    Command="{Binding Path=DownoadDataByParametrsCommand}"/>
         </Grid>
         <Grid Margin="0,40,0,0">
-            <lvc:CartesianChart Series="{Binding SeriesCollection}"
+            <lvc:CartesianChart Series="{Binding Path=SeriesCollection}"
                                 LegendLocation="Right"
                                 Margin="10,0,10,10">
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis MaxValue="300000"
-                              MinValue="50000"
+                    <lvc:Axis MaxValue="{Binding Path=MaxValueY}"
+                              MinValue="{Binding Path=MinValueY}"
                               Title="руб за кв.м"></lvc:Axis>
                 </lvc:CartesianChart.AxisY>
                 <lvc:CartesianChart.AxisX>
-                    <lvc:Axis Title="Дата">
+                    <lvc:Axis Title="Дата"
+                              Labels="{Binding Path=ListLabelsForX}">
                     </lvc:Axis>
                 </lvc:CartesianChart.AxisX>
             </lvc:CartesianChart>
