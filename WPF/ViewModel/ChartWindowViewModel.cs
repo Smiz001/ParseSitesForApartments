@@ -21,8 +21,6 @@ namespace WPF.ViewModel
     private ICommand downoadDataByParametrsCommand;
     private List<string> listLabelsForX;
     private SeriesCollection seriesCollection;
-    private double maxValueY=100;
-    private double minValueY=10;
     #endregion
 
     #region Constructors
@@ -37,7 +35,7 @@ FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]";
       {
         while (reader.Read())
         {
-          typeRooms.Add(new TypeRoomModel { NameTypeRoom= reader.GetString(0) });
+          typeRooms.Add(new TypeRoomModel { NameTypeRoom = reader.GetString(0) });
         }
         reader.Close();
       }
@@ -106,27 +104,6 @@ order by Date";
         OnPropertyChanged("SelectedDateStart");
       }
     }
-
-    public double MaxValueY
-    {
-      get => maxValueY;
-      set
-      {
-        if (maxValueY == value) return;
-        maxValueY = value;
-        OnPropertyChanged("MaxValueY");
-      }
-    }
-    public double MinValueY
-    {
-      get => minValueY;
-      set
-      {
-        if (minValueY == value) return;
-        minValueY = value;
-        OnPropertyChanged("MinValueY");
-      }
-    }
     public DateTime SelectedDateEnd
     {
       get => selectedDateEnd;
@@ -155,42 +132,42 @@ order by Date";
 
     private void DownoadDataByParametrs()
     {
-
-      string select = $@"SELECT [Date]
+      var listSelected = typeRooms.Where(x => x.IsSelected == true);
+      var cnt = listSelected.Count();
+      if (cnt > 0)
+      {
+        var series = new SeriesCollection();
+        foreach (var item in listSelected)
+        {
+          string select = $@"SELECT [Date]
           ,[AverPrice]
       FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]
-      where date between '{selectedDateStart.Year}-{selectedDateStart.Month}-{selectedDateStart.Day}' and '{selectedDateEnd.Year}-{selectedDateEnd.Month}-{selectedDateEnd.Day}' and TypeRoom = '{selectedTypeRoom}'
+      where date between '{selectedDateStart.Year}-{selectedDateStart.Month}-{selectedDateStart.Day}' and '{selectedDateEnd.Year}-{selectedDateEnd.Month}-{selectedDateEnd.Day}' and TypeRoom = '{item.NameTypeRoom}'
       order by Date";
-      var con = ConnetionToSqlServer.Default();
-      var reader = con.ExecuteReader(select);
-      if (reader != null)
-      {
-        ChartValues<double> values = new ChartValues<double>();
-        while (reader.Read())
-        {
-          values.Add(reader.GetDouble(1));
-        }
-        reader.Close();
-        SeriesCollection = new SeriesCollection
-        {
-          new LineSeries
+          var con = ConnetionToSqlServer.Default();
+          var reader = con.ExecuteReader(select);
+          if (reader != null)
           {
-              Title = selectedTypeRoom.NameTypeRoom,
-              Values = values
+            ChartValues<double> values = new ChartValues<double>();
+            while (reader.Read())
+            {
+              values.Add(reader.GetDouble(1));
+            }
+            reader.Close();
+            var line = new LineSeries { Title = item.NameTypeRoom, Values = values };
+            series.Add(line);
           }
-        };
-        var aver = values.Average();
-        MaxValueY = aver + 10000;
-        MinValueY = aver - 10000;
-      }
+        }
 
-      var ls = new List<string>();
-      foreach (var item in datesStart)
-      {
-        if (item >= selectedDateStart && item <= selectedDateEnd)
-          ls.Add(item.ToShortDateString());
+        SeriesCollection = series;
+        var ls = new List<string>();
+        foreach (var date in datesStart)
+        {
+          if (date >= selectedDateStart && date <= selectedDateEnd)
+            ls.Add(date.ToShortDateString());
+        }
+        ListLabelsForX = ls;
       }
-      ListLabelsForX = ls;
     }
     #endregion
   }

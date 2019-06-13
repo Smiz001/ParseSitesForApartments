@@ -62,6 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\MetroModel.cs" />
     <Compile Include="Model\TypeRoomModel.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="ViewModel\ChartMetroWindowViewModel.cs" />

@@ -20,6 +20,7 @@ namespace WPF
     private string selectedTypeSale;
     private ICommand executeParseCommand;
     private ICommand callChartWindowCommand;
+    private ICommand callChartWithMetroWindowCommand;
     #endregion
 
     #region Constructors
@@ -137,6 +138,23 @@ namespace WPF
     {
       var vm = new ChartWindowViewModel();
       var view = new ChartWindow();
+      view.DataContext = vm;
+      view.ShowDialog();
+    }
+    public ICommand CallChartWithMetroWindowCommand
+    {
+      get
+      {
+        if (callChartWithMetroWindowCommand == null)
+          callChartWithMetroWindowCommand = new RelayCommand(() => CallChartWithMetroWindow());
+        return callChartWithMetroWindowCommand;
+      }
+    }
+
+    private void CallChartWithMetroWindow()
+    {
+      var vm = new ChartMetroWindowViewModel();
+      var view = new ChartMetroWindow();
       view.DataContext = vm;
       view.ShowDialog();
     }

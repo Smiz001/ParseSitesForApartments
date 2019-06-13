@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace WPF.Model
 {
-  public class TypeRoomModel:NotifyClass
+  public class MetroModel:NotifyClass
   {
     #region Fields
     private bool isSelected;
-    private string nameTypeRoom;
+    private Guid guid;
+    private string nameMetro;
     #endregion
 
     #region Constructors
-    public TypeRoomModel()
+    public MetroModel()
     {
     }
     #endregion
 
     #region Properties
-
     public bool IsSelected
     {
       get => isSelected;
@@ -31,14 +31,25 @@ namespace WPF.Model
         OnPropertyChanged("IsSelected");
       }
     }
-    public string NameTypeRoom
+    public string NameMetro
     {
-      get => nameTypeRoom;
+      get => nameMetro;
       set
       {
-        if (nameTypeRoom == value) return;
-        nameTypeRoom = value;
-        OnPropertyChanged("NameTypeRoom");
+        if (nameMetro == value) return;
+        nameMetro = value;
+        OnPropertyChanged("NameMetro");
+      }
+    }
+
+    public Guid Guid
+    {
+      get => guid;
+      set
+      {
+        if (guid == value) return;
+        guid = value;
+        OnPropertyChanged("Guid");
       }
     }
     #endregion

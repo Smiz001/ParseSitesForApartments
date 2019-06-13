@@ -1,37 +1,33 @@
 ﻿using Core.Connections;
-using Core.MainClasses;
 using LiveCharts;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
+using WPF.Model;
 
 namespace WPF.ViewModel
 {
   public class ChartMetroWindowViewModel:NotifyClass
   {
     #region Fields
-    private List<string> typeRooms;
+    private List<TypeRoomModel> typeRooms;
     private List<DateTime> datesStart;
     private List<DateTime> datesEnd;
-    private string selectedTypeRoom;
     private DateTime selectedDateStart;
     private DateTime selectedDateEnd;
     private ICommand downoadDataByParametrsCommand;
     private List<string> listLabelsForX;
     private SeriesCollection seriesCollection;
-    private double maxValueY = 100;
-    private double minValueY = 10;
-    private List<Metro> listMetro;
-    private Metro selectedMetro;
+    private List<MetroModel> listMetro;
     #endregion
 
     #region Constructors
     public ChartMetroWindowViewModel()
     {
       var con = ConnetionToSqlServer.Default();
-      typeRooms = new List<string>();
+      typeRooms = new List<TypeRoomModel>();
       string select = @"SELECT DISTINCT [TypeRoom]  
 FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]";
       var reader = con.ExecuteReader(select);
@@ -39,7 +35,7 @@ FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]";
       {
         while (reader.Read())
         {
-          typeRooms.Add(reader.GetString(0));
+          typeRooms.Add(new TypeRoomModel { NameTypeRoom = reader.GetString(0) });
         }
         reader.Close();
       }
@@ -58,7 +54,6 @@ order by Date";
         datesEnd = new List<DateTime>(datesStart);
         reader.Close();
       }
-      selectedTypeRoom = typeRooms.First();
       selectedDateStart = datesStart.First();
       selectedDateEnd = datesEnd.Last();
 
@@ -69,19 +64,19 @@ order by Date";
       reader = con.ExecuteReader(select);
       if (reader != null)
       {
-        listMetro = new List<Metro>();
+        listMetro = new List<MetroModel>();
         while (reader.Read())
         {
-          listMetro.Add(new Metro { Id = reader.GetGuid(0), Name = reader.GetString(1) });
+          listMetro.Add(new MetroModel { Guid = reader.GetGuid(0), NameMetro = reader.GetString(1) });
         }
         reader.Close();
-        selectedMetro = listMetro.First();
       }
     }
 
     #endregion
 
-    #region Properties    public List<string> TypeRooms { get => typeRooms; }
+    #region Properties    
+    public List<TypeRoomModel> TypeRooms { get => typeRooms; }
     public List<DateTime> DateStart { get => datesStart; }
     public List<DateTime> DateEnd { get => datesEnd; }
     public SeriesCollection SeriesCollection
@@ -94,7 +89,7 @@ order by Date";
         OnPropertyChanged("SeriesCollection");
       }
     }
-    public List<Metro> ListMetro { get => listMetro; }
+    public List<MetroModel> ListMetro { get => listMetro; }
     public List<string> ListLabelsForX
     {
       get => listLabelsForX;
@@ -103,16 +98,6 @@ order by Date";
         if (listLabelsForX == value) return;
         listLabelsForX = value;
         OnPropertyChanged("ListLabelsForX");
-      }
-    }
-    public string SelectedTypeRoom
-    {
-      get => selectedTypeRoom;
-      set
-      {
-        if (selectedTypeRoom == value) return;
-        selectedTypeRoom = value;
-        OnPropertyChanged("SelectedTypeRoom");
       }
     }
     public DateTime SelectedDateStart
@@ -125,27 +110,6 @@ order by Date";
         OnPropertyChanged("SelectedDateStart");
       }
     }
-
-    public double MaxValueY
-    {
-      get => maxValueY;
-      set
-      {
-        if (maxValueY == value) return;
-        maxValueY = value;
-        OnPropertyChanged("MaxValueY");
-      }
-    }
-    public double MinValueY
-    {
-      get => minValueY;
-      set
-      {
-        if (minValueY == value) return;
-        minValueY = value;
-        OnPropertyChanged("MinValueY");
-      }
-    }
     public DateTime SelectedDateEnd
     {
       get => selectedDateEnd;
@@ -156,19 +120,78 @@ order by Date";
         OnPropertyChanged("SelectedDateEnd");
       }
     }
-    public Metro SelectedMetro
-    {
-      get => selectedMetro;
-      set
-      {
-        if (selectedMetro == value) return;
-        selectedMetro = value;
-        OnPropertyChanged("SelectedMetro");
-      }
-    }
     #endregion
 
     #region Methods
+    #endregion
+
+    #region Commands
+
+    public ICommand DownoadDataByParametrsCommand
+    {
+      get
+      {
+        if (downoadDataByParametrsCommand == null)
+          downoadDataByParametrsCommand = new RelayCommand(() => DownoadDataByParametrs());
+        return downoadDataByParametrsCommand;
+      }
+    }
+
+    private void DownoadDataByParametrs()
+    {
+      var listSelected = typeRooms.Where(x => x.IsSelected == true);
+      var listSelectesMetro = listMetro.Where(x => x.IsSelected == true);
+      if (listSelected.Count() > 0)
+      {
+        var series = new SeriesCollection();
+        string dopStr = "";
+        var cnt = listSelectesMetro.Count();
+        if (cnt > 0)
+        {
+          var arr = listSelectesMetro.ToArray();
+          dopStr += "and (";
+          for (int i = 0; i < cnt; i++)
+          {
+            if (i == 0)
+              dopStr += $@"Metro = '{arr[i].Guid}'";
+            else
+              dopStr += $@"or Metro = '{arr[i].Guid}'";
+          }
+          dopStr += ")";
+        }
+        foreach (var item in listSelected)
+        {
+          string select = $@" SELECT [Date]
+,AVG([AverPrice])
+FROM [ParseBulding].[dbo].[AverPriceForTypeRoomByMetro]
+where date between '{selectedDateStart.Year}-{selectedDateStart.Month}-{selectedDateStart.Day}' and '{selectedDateEnd.Year}-{selectedDateEnd.Month}-{selectedDateEnd.Day}' and TypeRoom = '{item.NameTypeRoom}' {dopStr}
+Group by [Date]
+order by Date";
+          var con = ConnetionToSqlServer.Default();
+          var reader = con.ExecuteReader(select);
+          if (reader != null)
+          {
+            ChartValues<double> values = new ChartValues<double>();
+            while (reader.Read())
+            {
+              values.Add(reader.GetDouble(1));
+            }
+            reader.Close();
+            var line = new LineSeries { Title = item.NameTypeRoom, Values = values };
+            series.Add(line);
+          }
+        }
+
+        SeriesCollection = series;
+        var ls = new List<string>();
+        foreach (var date in datesStart)
+        {
+          if (date >= selectedDateStart && date <= selectedDateEnd)
+            ls.Add(date.ToShortDateString());
+        }
+        ListLabelsForX = ls;
+      } 
+    }
     #endregion
   }
 }

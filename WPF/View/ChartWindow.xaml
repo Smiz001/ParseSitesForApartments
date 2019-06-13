@@ -36,8 +36,7 @@
                       Margin="95,13,0,0"
                       VerticalAlignment="Top"
                       Width="180"
-                      ItemsSource="{Binding Path=TypeRooms}"
-                      SelectedItem="{Binding Path=SelectedTypeRoom}">
+                      ItemsSource="{Binding Path=TypeRooms}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -76,8 +75,7 @@
                                 LegendLocation="Right"
                                 Margin="10,0,10,10">
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis MaxValue="{Binding Path=MaxValueY}"
-                              MinValue="{Binding Path=MinValueY}"
+                    <lvc:Axis 
                               Title="руб за кв.м"></lvc:Axis>
                 </lvc:CartesianChart.AxisY>
                 <lvc:CartesianChart.AxisX>
