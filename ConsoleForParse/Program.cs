@@ -7,7 +7,8 @@ using Core.Import;
 using Core.MainClasses;
 using Core.Proxy;
 using Core.Sites;
-using ParseSitesForApartments;
+using log4net;
+using log4net.Config;
 
 namespace ConsoleForParse
 {
@@ -18,22 +19,9 @@ namespace ConsoleForParse
     private static List<ProxyInfo> listProxy = new List<ProxyInfo>();
     static void Main(string[] args)
     {
+      XmlConfigurator.Configure();
       ReadConfig();
       ReadMetroAndDistric();
-      listProxy.Add(new ProxyInfo
-      {
-        Address = "185.233.202.204",
-        Port = 9975,
-        User = "BGXDdU",
-        Password = "vy4ubS"
-      });
-      listProxy.Add(new ProxyInfo
-      {
-        Address = "185.233.201.211",
-        Port = 9312,
-        User = "BGXDdU",
-        Password = "vy4ubS"
-      });
 
       BaseParse parser = null;
       if (args.Length == 4)
@@ -100,6 +88,7 @@ namespace ConsoleForParse
           }
         }
       }
+      LogManager.Shutdown();
     }
     private static void ReadConfig()
     {
