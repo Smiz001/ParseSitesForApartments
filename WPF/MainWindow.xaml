@@ -8,7 +8,8 @@
         Title="Парсер сайтов"
         Height="450"
         Width="800"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
     <Grid Background="White">
         <Menu x:Name="menu"
               Height="25"
@@ -98,7 +99,8 @@
                     HorizontalAlignment="Left"
                     Margin="464,60,0,0"
                     VerticalAlignment="Top"
-                    Width="75" />
+                    Width="75"
+                    Command="{Binding Path=ExecuteParseCommand}"/>
         </Grid>
     </Grid>
 </Window>

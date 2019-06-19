@@ -17,5 +17,12 @@ namespace WPF
       InitializeComponent();
       DataContext = new MainWindowViewModel();
     }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+      comboBox.SelectedIndex = 0;
+      comboBox1.SelectedIndex = 0;
+      comboBox2.SelectedIndex = 0;
+    }
   }
 }

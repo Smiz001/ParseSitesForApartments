@@ -1,4 +1,8 @@
-﻿using Microsoft.Win32;
+﻿using Core.Connections;
+using Core.Enum;
+using Core.MainClasses;
+using Core.Sites;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
@@ -21,6 +25,8 @@ namespace WPF
     private ICommand executeParseCommand;
     private ICommand callChartWindowCommand;
     private ICommand callChartWithMetroWindowCommand;
+    private List<District> listDistricts = new List<District>();
+    private List<Metro> listMetros = new List<Metro>();
     #endregion
 
     #region Constructors
@@ -29,6 +35,43 @@ namespace WPF
       parseSites = new List<string> {"Все сайты", "ELMS", "BKN", "BN"};
       typeRooms = new List<string> { "Все", "Студии", "1 ком. кв.","2 ком. кв.","3 ком. кв.","4 ком. кв.","Более 4 ком. кв."};
       typeSale = new List<string> { "Продажа", "Сдача" };
+
+      var connection = ConnetionToSqlServer.Default();
+
+      string select = "SELECT [ID],[Name] FROM [ParseBulding].[dbo].[District]";
+      var reader = connection.ExecuteReader(select);
+      if (reader != null)
+      {
+        while (reader.Read())
+        {
+          listDistricts.Add(new District { Id = reader.GetGuid(0), Name = reader.GetString(1) });
+        }
+        reader.Close();
+        foreach (var district in listDistricts)
+        {
+          select = $@"SELECT [Id]
+              ,[Name]
+              ,[XCoor]
+              ,[YCoor]
+              ,[IdRegion]
+            FROM[ParseBulding].[dbo].[Metro]
+            where IdRegion = '{district.Id}'";
+          reader = connection.ExecuteReader(select);
+          while (reader.Read())
+          {
+            var metro = new Metro
+            {
+              Id = reader.GetGuid(0),
+              Name = reader.GetString(1),
+              XCoor = (float)reader.GetDouble(2),
+              YCoor = (float)reader.GetDouble(3)
+            };
+            district.Metros.Add(metro);
+            listMetros.Add(metro);
+          }
+          reader.Close();
+        }
+      }
     }
     #endregion
 
@@ -121,7 +164,61 @@ namespace WPF
 
     private void ExecuteParse()
     {
-     
+      BaseParse parser = null;
+      switch (selectedSites)
+      {
+        case "Все сайты":
+          parser = new AllSites(listDistricts, listMetros, null);
+          break;
+        case "ELMS":
+          parser = new ELMS(listDistricts, listMetros, null);
+          break;
+        case "BN":
+          parser = new BN(listDistricts, listMetros, null);
+          break;
+        case "BKN":
+          parser = new BKN(listDistricts, listMetros, null);
+          break;
+        //case "":
+        //  parser = new Avito(listDistricts, listMetros, listProxy);
+        //  break;
+      }
+      parser.Filename = selectedPath;
+
+      switch (selectedTypeSale)
+      {
+        case "Продажа":
+          parser.TypeParseFlat = TypeParseFlat.Sale;
+          break;
+        case "Сдача":
+          parser.TypeParseFlat = TypeParseFlat.Rent;
+          break;
+      }
+
+      switch (selectedTypeRooms)
+      {
+        case "Все":
+          parser.ParsingAll();
+          break;
+        case "Студии":
+          parser.ParsingStudii();
+          break;
+        case "1 ком. кв.":
+          parser.ParsingOne();
+          break;
+        case "2 ком. кв.":
+          parser.ParsingTwo();
+          break;
+        case "3 ком. кв.":
+          parser.ParsingThree();
+          break;
+        case "4 ком. кв.":
+          parser.ParsingFour();
+          break;
+        case "Более 4 ком. кв.":
+          parser.ParsingMoreFour();
+          break;
+      }
     }
 
     public ICommand CallChartWindowCommand

@@ -17,7 +17,8 @@ namespace Core.Sites
     {
       ListDistricts = new List<District>(listDistricts);
       ListMetros = new List<Metro>(listMetros);
-      ListProxy = new List<ProxyInfo>(listProxy);
+      if(listProxy != null)
+        ListProxy = new List<ProxyInfo>(listProxy);
     }
 
     protected static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
