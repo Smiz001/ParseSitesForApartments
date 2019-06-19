@@ -507,7 +507,6 @@ namespace CoreUI
 
         return Math.Round(Math.Sqrt(sum / dev), 2);
       }
-
       return 0;
     }
 

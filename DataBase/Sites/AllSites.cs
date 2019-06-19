@@ -154,7 +154,22 @@ namespace Core.Sites
         int i = 1;
         foreach (var item in dic)
         {
-          insert += $@"('{item.Key}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}, '{date.Year}-{date.Month}-{date.Day}')";
+
+          var aver = item.Value.Average();
+          var otkl = CalculateAverageDeviation(item.Value);
+          var newList = new List<double>();
+
+          if (item.Value.Count == 1)
+            newList.Add(item.Value[0]);
+          else
+          {
+            item.Value.ForEach(x =>
+            {
+              if ((x >= aver - otkl) && (x <= aver + otkl))
+                newList.Add(x);
+            });
+          }
+          insert += $@"('{item.Key}', {newList.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))}, '{date.Year}-{date.Month}-{date.Day}')";
           if (i != countDic)
           {
             insert += ", ";
@@ -211,7 +226,31 @@ namespace Core.Sites
         {
           if (item.Value.Count > 0)
           {
-            insert += $@"('{d.Key}', '{item.Key.Id}', '{date.Year}-{date.Month}-{date.Day}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
+            var aver = item.Value.Average();
+            var otkl = CalculateAverageDeviation(item.Value);
+            var newList = new List<double>();
+            if (item.Value.Count == 1)
+              newList.Add(item.Value[0]);
+            else
+            {
+              if (otkl == 0)
+              {
+                item.Value.ForEach(x =>
+                {
+                  newList.Add(x);
+                });
+              }
+              else
+              {
+                item.Value.ForEach(x =>
+                {
+                  if ((x >= aver - otkl) && (x <= aver + otkl))
+                    newList.Add(x);
+                });
+              }
+            }
+
+            insert += $@"('{d.Key}', '{item.Key.Id}', '{date.Year}-{date.Month}-{date.Day}', {newList.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
             if (i != count)
               insert += ", ";
           }
@@ -223,6 +262,7 @@ namespace Core.Sites
       }
     }
 
+    //TODO На сервере некоторые районы записывается почему-то с другими буквами
     private void ReadPriceForDistrictByRoom(string path, DateTime date)
     {
       var dic = new Dictionary<string, Dictionary<District, List<double>>>();
@@ -269,7 +309,22 @@ values";
         {
           if (item.Value.Count > 0)
           {
-            insert += $@"('{d.Key}', '{item.Key.Id}', '{date.Year}-{date.Month}-{date.Day}', {item.Value.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
+            var aver = item.Value.Average();
+            var otkl = CalculateAverageDeviation(item.Value);
+            var newList = new List<double>();
+
+            if (item.Value.Count == 1)
+              newList.Add(item.Value[0]);
+            else
+            {
+              item.Value.ForEach(x =>
+              {
+                if ((x >= aver - otkl) && (x <= aver + otkl))
+                  newList.Add(x);
+              });
+            }
+
+            insert += $@"('{d.Key}', '{item.Key.Id}', '{date.Year}-{date.Month}-{date.Day}', {newList.Average().ToString(System.Globalization.CultureInfo.GetCultureInfo("en-US"))})";
             if (i != count)
               insert += ", ";
           }
@@ -279,6 +334,28 @@ values";
           insert = insert.Remove(insert.Length - 2, 2);
         con.ExecuteNonQuery(insert);
       }
+    }
+
+    /// <summary>
+    /// Нахождение среднего отклонения в списке
+    /// </summary>
+    /// <param name="listValue"></param>
+    /// <returns></returns>
+    private double CalculateAverageDeviation(List<double> listValue)
+    {
+      if (listValue.Count > 0)
+      {
+        double sum = 0;
+        var aver = listValue.Average();
+        var dev = listValue.Count - 1;
+        foreach (var item in listValue)
+        {
+          sum += Math.Pow(item - aver, 2);
+        }
+
+        return Math.Round(Math.Sqrt(sum / dev), 2);
+      }
+      return 0;
     }
 
     public override void ParsingAll()
