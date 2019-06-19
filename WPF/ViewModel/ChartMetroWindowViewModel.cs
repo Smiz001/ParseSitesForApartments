@@ -151,8 +151,8 @@ order by Date";
         string select = $@"SELECT [Date]
 ,ROUND(AVG([AverPrice]),3)
 FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]
-where date between '{selectedDateStart.Year}-{selectedDateStart.Month}-{selectedDateStart.Day}' and '{selectedDateEnd.Year}-{selectedDateEnd.Month}-{selectedDateEnd.Day}'
-Group by [Date]
+where Date between '{selectedDateStart.Year}-{selectedDateStart.Month}-{selectedDateStart.Day}' and '{selectedDateEnd.Year}-{selectedDateEnd.Month}-{selectedDateEnd.Day}'
+Group by Date
 order by Date";
         var reader = con.ExecuteReader(select);
         if (reader != null)
@@ -204,6 +204,24 @@ order by Date";
             }
             reader.Close();
             var line = new LineSeries { Title = $"{item.NameTypeRoom} в {enumMetros}", Values = values };
+            series.Add(line);
+          }
+          select = $@" SELECT [Date]
+,ROUND(AVG([AverPrice]),3)
+FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]
+where date between '{selectedDateStart.Year}-{selectedDateStart.Month}-{selectedDateStart.Day}' and '{selectedDateEnd.Year}-{selectedDateEnd.Month}-{selectedDateEnd.Day}' and TypeRoom = '{item.NameTypeRoom}'
+Group by [Date]
+order by Date";
+          reader = con.ExecuteReader(select);
+          if (reader != null)
+          {
+            ChartValues<double> values = new ChartValues<double>();
+            while (reader.Read())
+            {
+              values.Add(reader.GetDouble(1));
+            }
+            reader.Close();
+            var line = new LineSeries { Title = $"Средняя цена по городу для { item.NameTypeRoom}", Values = values };
             series.Add(line);
           }
         }
