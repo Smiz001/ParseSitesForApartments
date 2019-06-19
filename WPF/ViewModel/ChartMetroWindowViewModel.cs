@@ -9,7 +9,7 @@ using WPF.Model;
 
 namespace WPF.ViewModel
 {
-  public class ChartMetroWindowViewModel:NotifyClass
+  public class ChartMetroWindowViewModel : NotifyClass
   {
     #region Fields
     private List<TypeRoomModel> typeRooms;
@@ -139,36 +139,62 @@ order by Date";
 
     private void DownoadDataByParametrs()
     {
-      var listSelected = typeRooms.Where(x => x.IsSelected == true);
-      var listSelectesMetro = listMetro.Where(x => x.IsSelected == true);
-      if (listSelected.Count() > 0)
+      var listSelectedRooms = typeRooms.Where(x => x.IsSelected == true);
+      var listSelectedMetro = listMetro.Where(x => x.IsSelected == true);
+      var con = ConnetionToSqlServer.Default();
+      if (listSelectedRooms.Count() > 0)
       {
         var series = new SeriesCollection();
         string dopStr = "";
-        var cnt = listSelectesMetro.Count();
+        string enumMetros = string.Empty;
+        var cnt = listSelectedMetro.Count();
+        string select = $@"SELECT [Date]
+,ROUND(AVG([AverPrice]),3)
+FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]
+where date between '{selectedDateStart.Year}-{selectedDateStart.Month}-{selectedDateStart.Day}' and '{selectedDateEnd.Year}-{selectedDateEnd.Month}-{selectedDateEnd.Day}'
+Group by [Date]
+order by Date";
+        var reader = con.ExecuteReader(select);
+        if (reader != null)
+        {
+          ChartValues<double> values = new ChartValues<double>();
+          while (reader.Read())
+          {
+            values.Add(reader.GetDouble(1));
+          }
+          reader.Close();
+          var line = new LineSeries { Title = "Средняя цена по городу", Values = values };
+          series.Add(line);
+        }
+
         if (cnt > 0)
         {
-          var arr = listSelectesMetro.ToArray();
+          var arr = listSelectedMetro.ToArray();
           dopStr += "and (";
           for (int i = 0; i < cnt; i++)
           {
             if (i == 0)
+            {
+              enumMetros = arr[i].NameMetro;
               dopStr += $@"Metro = '{arr[i].Guid}'";
+            }
             else
+            {
               dopStr += $@"or Metro = '{arr[i].Guid}'";
+              enumMetros += $" {arr[i].NameMetro}";
+            }
           }
           dopStr += ")";
         }
-        foreach (var item in listSelected)
+        foreach (var item in listSelectedRooms)
         {
-          string select = $@" SELECT [Date]
-,AVG([AverPrice])
+          select = $@" SELECT [Date]
+,ROUND(AVG([AverPrice]),3)
 FROM [ParseBulding].[dbo].[AverPriceForTypeRoomByMetro]
 where date between '{selectedDateStart.Year}-{selectedDateStart.Month}-{selectedDateStart.Day}' and '{selectedDateEnd.Year}-{selectedDateEnd.Month}-{selectedDateEnd.Day}' and TypeRoom = '{item.NameTypeRoom}' {dopStr}
 Group by [Date]
 order by Date";
-          var con = ConnetionToSqlServer.Default();
-          var reader = con.ExecuteReader(select);
+          reader = con.ExecuteReader(select);
           if (reader != null)
           {
             ChartValues<double> values = new ChartValues<double>();
@@ -177,7 +203,7 @@ order by Date";
               values.Add(reader.GetDouble(1));
             }
             reader.Close();
-            var line = new LineSeries { Title = item.NameTypeRoom, Values = values };
+            var line = new LineSeries { Title = $"{item.NameTypeRoom} в {enumMetros}", Values = values };
             series.Add(line);
           }
         }
@@ -190,7 +216,7 @@ order by Date";
             ls.Add(date.ToShortDateString());
         }
         ListLabelsForX = ls;
-      } 
+      }
     }
     #endregion
   }

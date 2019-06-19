@@ -8,7 +8,9 @@
         mc:Ignorable="d"
         Title="График по типу метро"
         Height="450"
-        Width="850">
+        Width="850"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
     <Grid>
         <Grid Height="71"
               VerticalAlignment="Top">

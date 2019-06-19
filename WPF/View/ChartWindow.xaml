@@ -9,7 +9,8 @@
         Title="График по типу квартир"
         Height="450"
         Width="850"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized">
     <Grid>
         <Grid Height="40"
               VerticalAlignment="Top">
