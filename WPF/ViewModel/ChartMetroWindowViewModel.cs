@@ -29,7 +29,8 @@ namespace WPF.ViewModel
       var con = ConnetionToSqlServer.Default();
       typeRooms = new List<TypeRoomModel>();
       string select = @"SELECT DISTINCT [TypeRoom]  
-FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]";
+FROM [ParseBulding].[dbo].[AverPriceForTypeRoom]
+order by TypeRoom";
       var reader = con.ExecuteReader(select);
       if (reader != null)
       {
