@@ -172,9 +172,11 @@ order by Date";
     {
       using (var fbd = new FolderBrowserDialog())
       {
+        fbd.ShowNewFolderButton = false;
         if (fbd.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
         {
-          files = Directory.GetFiles(fbd.SelectedPath).ToList();
+          PathFiles = fbd.SelectedPath;
+          files = Directory.GetFiles(PathFiles).ToList();
         }
       }
     }

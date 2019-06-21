@@ -8,97 +8,23 @@
         mc:Ignorable="d"
         Title="График стоимости картир"
         Height="450"
-        Width="850"
+        Width="1100"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="71*" />
-            <RowDefinition Height="348*" />
+            <RowDefinition Height="126*" />
+            <RowDefinition Height="293*" />
         </Grid.RowDefinitions>
-        <Grid Height="71"
-              VerticalAlignment="Top">
-            <TextBlock x:Name="textBlock"
-                       HorizontalAlignment="Left"
-                       Margin="15,40,0,0"
-                       TextWrapping="Wrap"
-                       Text="Тип квартир:"
-                       VerticalAlignment="Top" />
-            <TextBlock x:Name="textBlock1"
-                       HorizontalAlignment="Left"
-                       Margin="376,40,0,0"
-                       TextWrapping="Wrap"
-                       Text="Дата начала:"
-                       VerticalAlignment="Top" />
-            <TextBlock x:Name="textBlock2"
-                       HorizontalAlignment="Left"
-                       Margin="556,40,0,0"
-                       TextWrapping="Wrap"
-                       Text="Дата окончания:"
-                       VerticalAlignment="Top" />
-            <ComboBox x:Name="comboBox"
-                      HorizontalAlignment="Left"
-                      Margin="95,40,0,0"
-                      VerticalAlignment="Top"
-                      Width="100"
-                      ItemsSource="{Binding Path=TypeRooms}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsSelected}"
-                                      Width="20" />
-                            <TextBlock Text="{Binding NameTypeRoom}"
-                                       Width="100" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-            <ComboBox x:Name="comboBox1"
-                      HorizontalAlignment="Left"
-                      Margin="451,40,0,0"
-                      VerticalAlignment="Top"
-                      Width="100"
-                      ItemsSource="{Binding Path=DateStart}"
-                      SelectedItem="{Binding Path=SelectedDateStart}" />
-            <ComboBox x:Name="comboBox1_Copy"
-                      HorizontalAlignment="Left"
-                      Margin="652,40,0,0"
-                      VerticalAlignment="Top"
-                      Width="100"
-                      ItemsSource="{Binding Path=DateEnd}"
-                      SelectedItem="{Binding Path=SelectedDateEnd}" />
+        <Grid>
             <Button x:Name="button"
                     Content="Загрузить"
                     HorizontalAlignment="Left"
-                    Margin="757,40,0,0"
+                    Margin="15,99,0,0"
                     VerticalAlignment="Top"
                     Width="75"
                     Command="{Binding Path=DownoadDataByParametrsCommand}"
                     Height="22" />
-            <TextBlock x:Name="textBlock3"
-                       HorizontalAlignment="Left"
-                       Margin="210,40,0,0"
-                       TextWrapping="Wrap"
-                       Text="Метро:"
-                       VerticalAlignment="Top" />
-            <ComboBox x:Name="comboBox2"
-                      HorizontalAlignment="Left"
-                      Margin="256,40,0,0"
-                      VerticalAlignment="Top"
-                      Width="115"
-                      ItemsSource="{Binding Path=ListMetro}"
-                      SelectedItem="{Binding Path=SelectedMetro}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <CheckBox IsChecked="{Binding IsSelected}"
-                                      Width="20" />
-                            <TextBlock Text="{Binding NameMetro}"
-                                       Width="100" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
             <TextBlock x:Name="textBlock4"
                        HorizontalAlignment="Left"
                        Margin="15,10,0,0"
@@ -110,7 +36,7 @@
                      Height="23"
                      Margin="174,10,0,0"
                      TextWrapping="Wrap"
-                     Text="{Binding Path=Prop}"
+                     Text="{Binding Path=PathFiles}"
                      VerticalAlignment="Top"
                      Width="377"
                      IsReadOnly="True" />
@@ -120,7 +46,88 @@
                     VerticalAlignment="Top"
                     Width="30"
                     Height="23"
-                    Command="{Binding Path=}" />
+                    Command="{Binding Path=SelectFolderFileCommand}" />
+            <GroupBox x:Name="groupBox"
+                      Header="Настройка фильтров"
+                      Height="54"
+                      Margin="10,40,10,0"
+                      VerticalAlignment="Top">
+                <Grid>
+                    <TextBlock x:Name="textBlock"
+                               HorizontalAlignment="Left"
+                               Margin="10,10,0,0"
+                               TextWrapping="Wrap"
+                               Text="Тип квартир:"
+                               VerticalAlignment="Top" />
+                    <TextBlock x:Name="textBlock1"
+                               HorizontalAlignment="Left"
+                               Margin="376,10,0,0"
+                               TextWrapping="Wrap"
+                               Text="Дата начала:"
+                               VerticalAlignment="Top" />
+                    <TextBlock x:Name="textBlock2"
+                               HorizontalAlignment="Left"
+                               Margin="556,10,0,0"
+                               TextWrapping="Wrap"
+                               Text="Дата окончания:"
+                               VerticalAlignment="Top" />
+                    <ComboBox x:Name="comboBox"
+                              HorizontalAlignment="Left"
+                              Margin="95,10,0,0"
+                              VerticalAlignment="Top"
+                              Width="100"
+                              ItemsSource="{Binding Path=TypeRooms}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected}"
+                                              Width="20" />
+                                    <TextBlock Text="{Binding NameTypeRoom}"
+                                               Width="100" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <ComboBox x:Name="comboBox1"
+                              HorizontalAlignment="Left"
+                              Margin="451,10,0,0"
+                              VerticalAlignment="Top"
+                              Width="100"
+                              ItemsSource="{Binding Path=DateStart}"
+                              SelectedItem="{Binding Path=SelectedDateStart}" />
+                    <ComboBox x:Name="comboBox1_Copy"
+                              HorizontalAlignment="Left"
+                              Margin="652,10,0,0"
+                              VerticalAlignment="Top"
+                              Width="100"
+                              ItemsSource="{Binding Path=DateEnd}"
+                              SelectedItem="{Binding Path=SelectedDateEnd}" />
+                    <TextBlock x:Name="textBlock3"
+                               HorizontalAlignment="Left"
+                               Margin="210,10,0,0"
+                               TextWrapping="Wrap"
+                               Text="Метро:"
+                               VerticalAlignment="Top" />
+                    <ComboBox x:Name="comboBox2"
+                              HorizontalAlignment="Left"
+                              Margin="256,10,0,0"
+                              VerticalAlignment="Top"
+                              Width="115"
+                              ItemsSource="{Binding Path=ListMetro}"
+                              SelectedItem="{Binding Path=SelectedMetro}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding IsSelected}"
+                                              Width="20" />
+                                    <TextBlock Text="{Binding NameMetro}"
+                                               Width="100" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+            </GroupBox>
         </Grid>
 
         <Grid Margin="0,5,0,0"

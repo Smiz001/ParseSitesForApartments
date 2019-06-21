@@ -10,7 +10,7 @@
         Width="330"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid FocusManager.FocusedElement="{Binding ElementName=btnConnect}">
         <Grid Margin="0,0,0,40">
             <Grid.Style>
                 <Style TargetType="{x:Type Grid}">

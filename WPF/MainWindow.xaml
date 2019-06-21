@@ -30,7 +30,7 @@
                               Command="{Binding Path=CallChartWithMetroWindowCommand}">
                     </MenuItem>
                     <MenuItem Header="Стоимости квартир"
-                              Command="{Binding Path=}">
+                              Command="{Binding Path=CallChartWithMetroByFilesWindowCommand}">
                     </MenuItem>
                 </MenuItem>
             </MenuItem>
