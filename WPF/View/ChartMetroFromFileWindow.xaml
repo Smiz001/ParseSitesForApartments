@@ -1,10 +1,11 @@
-﻿<Window x:Class="WPF.View.ChartMetroFromFileWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:WPF.View"
+        xmlns:Controls="clr-namespace:WPF.Controls"
+        x:Class="WPF.View.ChartMetroFromFileWindow"
         mc:Ignorable="d"
         Title="График стоимости картир"
         Height="450"
@@ -13,17 +14,17 @@
         WindowState="Maximized">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="126*" />
-            <RowDefinition Height="293*" />
+            <RowDefinition Height="136" />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid>
             <Button x:Name="button"
                     Content="Загрузить"
                     HorizontalAlignment="Left"
-                    Margin="15,99,0,0"
+                    Margin="15,104,0,0"
                     VerticalAlignment="Top"
                     Width="75"
-                    Command="{Binding Path=DownoadDataByParametrsCommand}"
+                    Command="{Binding DownoadDataByParametrsCommand}"
                     Height="22" />
             <TextBlock x:Name="textBlock4"
                        HorizontalAlignment="Left"
@@ -36,7 +37,7 @@
                      Height="23"
                      Margin="174,10,0,0"
                      TextWrapping="Wrap"
-                     Text="{Binding Path=PathFiles}"
+                     Text="{Binding PathFiles}"
                      VerticalAlignment="Top"
                      Width="377"
                      IsReadOnly="True" />
@@ -46,12 +47,14 @@
                     VerticalAlignment="Top"
                     Width="30"
                     Height="23"
-                    Command="{Binding Path=SelectFolderFileCommand}" />
+                    Command="{Binding SelectFolderFileCommand}" />
             <GroupBox x:Name="groupBox"
                       Header="Настройка фильтров"
-                      Height="54"
-                      Margin="10,40,10,0"
-                      VerticalAlignment="Top">
+                      Height="59"
+                      Margin="10,40,0,0"
+                      VerticalAlignment="Top"
+                      HorizontalAlignment="Left"
+                      Width="1072">
                 <Grid>
                     <TextBlock x:Name="textBlock"
                                HorizontalAlignment="Left"
@@ -76,7 +79,7 @@
                               Margin="95,10,0,0"
                               VerticalAlignment="Top"
                               Width="100"
-                              ItemsSource="{Binding Path=TypeRooms}">
+                              ItemsSource="{Binding TypeRooms}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -93,15 +96,15 @@
                               Margin="451,10,0,0"
                               VerticalAlignment="Top"
                               Width="100"
-                              ItemsSource="{Binding Path=DateStart}"
-                              SelectedItem="{Binding Path=SelectedDateStart}" />
+                              ItemsSource="{Binding DateStart}"
+                              SelectedItem="{Binding SelectedDateStart}" />
                     <ComboBox x:Name="comboBox1_Copy"
                               HorizontalAlignment="Left"
                               Margin="652,10,0,0"
                               VerticalAlignment="Top"
                               Width="100"
-                              ItemsSource="{Binding Path=DateEnd}"
-                              SelectedItem="{Binding Path=SelectedDateEnd}" />
+                              ItemsSource="{Binding DateEnd}"
+                              SelectedItem="{Binding SelectedDateEnd}" />
                     <TextBlock x:Name="textBlock3"
                                HorizontalAlignment="Left"
                                Margin="210,10,0,0"
@@ -113,8 +116,8 @@
                               Margin="256,10,0,0"
                               VerticalAlignment="Top"
                               Width="115"
-                              ItemsSource="{Binding Path=ListMetro}"
-                              SelectedItem="{Binding Path=SelectedMetro}">
+                              ItemsSource="{Binding ListMetro}"
+                              SelectedItem="{Binding SelectedMetro}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -126,22 +129,45 @@
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
+                    <TextBlock x:Name="textBlock5"
+                               HorizontalAlignment="Left"
+                               Margin="757,10,0,0"
+                               TextWrapping="Wrap"
+                               Text="кв.м с"
+                               VerticalAlignment="Top" />
+                    <Controls:DoubleUpDown HorizontalAlignment="Left"
+                                           Margin="795,10,0,0"
+                                           VerticalAlignment="Top"
+                                           MinValue="10"
+                                           MaxValue="1000"
+                                           Value="{Binding Path=Prop}"/>
+                    <TextBlock x:Name="textBlock6"
+                               HorizontalAlignment="Left"
+                               Margin="900,10,0,0"
+                               TextWrapping="Wrap"
+                               Text="кв.м до"
+                               VerticalAlignment="Top" />
+                    <Controls:DoubleUpDown HorizontalAlignment="Left"
+                                           Margin="945,10,0,0"
+                                           VerticalAlignment="Top" 
+                                           MinValue="11"
+                                           MaxValue="1000"
+                                           Value="{Binding Path=Prop}"/>
                 </Grid>
             </GroupBox>
         </Grid>
 
         <Grid Margin="0,5,0,0"
               Grid.Row="1">
-            <lvc:CartesianChart Series="{Binding Path=SeriesCollection}"
+            <lvc:CartesianChart Series="{Binding SeriesCollection}"
                                 LegendLocation="Right"
                                 Margin="10,0,10,10">
                 <lvc:CartesianChart.AxisY>
-                    <lvc:Axis Title="руб за кв.м"></lvc:Axis>
+                    <lvc:Axis Title="руб за кв.м" />
                 </lvc:CartesianChart.AxisY>
                 <lvc:CartesianChart.AxisX>
                     <lvc:Axis Title="Дата"
-                              Labels="{Binding Path=ListLabelsForX}">
-                    </lvc:Axis>
+                              Labels="{Binding ListLabelsForX}" />
                 </lvc:CartesianChart.AxisX>
             </lvc:CartesianChart>
         </Grid>
