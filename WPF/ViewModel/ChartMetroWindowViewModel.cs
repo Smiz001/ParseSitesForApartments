@@ -3,7 +3,9 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Input;
 using WPF.Model;
 
@@ -121,6 +123,8 @@ order by Date";
         OnPropertyChanged("SelectedDateEnd");
       }
     }
+
+
     #endregion
 
     #region Methods
@@ -137,6 +141,7 @@ order by Date";
         return downoadDataByParametrsCommand;
       }
     }
+
 
     private void DownoadDataByParametrs()
     {
@@ -237,6 +242,7 @@ order by Date";
         ListLabelsForX = ls;
       }
     }
+
     #endregion
   }
 }

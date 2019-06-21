@@ -25,6 +25,7 @@ namespace WPF
     private ICommand executeParseCommand;
     private ICommand callChartWindowCommand;
     private ICommand callChartWithMetroWindowCommand;
+    private ICommand callChartWithMetroByFilesWindowCommand;
     private List<District> listDistricts = new List<District>();
     private List<Metro> listMetros = new List<Metro>();
     #endregion
@@ -252,6 +253,24 @@ namespace WPF
     {
       var vm = new ChartMetroWindowViewModel();
       var view = new ChartMetroWindow();
+      view.DataContext = vm;
+      view.ShowDialog();
+    }
+
+    public ICommand CallChartWithMetroByFilesWindowCommand
+    {
+      get
+      {
+        if (callChartWithMetroByFilesWindowCommand == null)
+          callChartWithMetroByFilesWindowCommand = new RelayCommand(() => CallChartWithMetroByFilesWindow());
+        return callChartWithMetroByFilesWindowCommand;
+      }
+    }
+
+    private void CallChartWithMetroByFilesWindow()
+    {
+      var vm = new ChartMetroFromFileViewModel();
+      var view = new ChartMetroFromFileWindow();
       view.DataContext = vm;
       view.ShowDialog();
     }

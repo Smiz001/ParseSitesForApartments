@@ -1,4 +1,4 @@
-﻿<Window x:Class="WPF.View.ChartMetroWindow"
+﻿<Window x:Class="WPF.View.ChartMetroFromFileWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,35 +6,39 @@
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:WPF.View"
         mc:Ignorable="d"
-        Title="График по типу метро"
+        Title="График стоимости картир"
         Height="450"
         Width="850"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="71*" />
+            <RowDefinition Height="348*" />
+        </Grid.RowDefinitions>
         <Grid Height="71"
               VerticalAlignment="Top">
             <TextBlock x:Name="textBlock"
                        HorizontalAlignment="Left"
-                       Margin="15,15,0,0"
+                       Margin="15,40,0,0"
                        TextWrapping="Wrap"
                        Text="Тип квартир:"
                        VerticalAlignment="Top" />
             <TextBlock x:Name="textBlock1"
                        HorizontalAlignment="Left"
-                       Margin="376,15,0,0"
+                       Margin="376,40,0,0"
                        TextWrapping="Wrap"
                        Text="Дата начала:"
                        VerticalAlignment="Top" />
             <TextBlock x:Name="textBlock2"
                        HorizontalAlignment="Left"
-                       Margin="556,15,0,0"
+                       Margin="556,40,0,0"
                        TextWrapping="Wrap"
                        Text="Дата окончания:"
                        VerticalAlignment="Top" />
             <ComboBox x:Name="comboBox"
                       HorizontalAlignment="Left"
-                      Margin="95,13,0,0"
+                      Margin="95,40,0,0"
                       VerticalAlignment="Top"
                       Width="100"
                       ItemsSource="{Binding Path=TypeRooms}">
@@ -51,14 +55,14 @@
             </ComboBox>
             <ComboBox x:Name="comboBox1"
                       HorizontalAlignment="Left"
-                      Margin="451,13,0,0"
+                      Margin="451,40,0,0"
                       VerticalAlignment="Top"
                       Width="100"
                       ItemsSource="{Binding Path=DateStart}"
                       SelectedItem="{Binding Path=SelectedDateStart}" />
             <ComboBox x:Name="comboBox1_Copy"
                       HorizontalAlignment="Left"
-                      Margin="652,13,0,0"
+                      Margin="652,40,0,0"
                       VerticalAlignment="Top"
                       Width="100"
                       ItemsSource="{Binding Path=DateEnd}"
@@ -66,19 +70,20 @@
             <Button x:Name="button"
                     Content="Загрузить"
                     HorizontalAlignment="Left"
-                    Margin="757,13,0,0"
+                    Margin="757,40,0,0"
                     VerticalAlignment="Top"
                     Width="75"
-                    Command="{Binding Path=DownoadDataByParametrsCommand}" />
+                    Command="{Binding Path=DownoadDataByParametrsCommand}"
+                    Height="22" />
             <TextBlock x:Name="textBlock3"
                        HorizontalAlignment="Left"
-                       Margin="210,15,0,0"
+                       Margin="210,40,0,0"
                        TextWrapping="Wrap"
                        Text="Метро:"
                        VerticalAlignment="Top" />
             <ComboBox x:Name="comboBox2"
                       HorizontalAlignment="Left"
-                      Margin="256,13,0,0"
+                      Margin="256,40,0,0"
                       VerticalAlignment="Top"
                       Width="115"
                       ItemsSource="{Binding Path=ListMetro}"
@@ -94,9 +99,32 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+            <TextBlock x:Name="textBlock4"
+                       HorizontalAlignment="Left"
+                       Margin="15,10,0,0"
+                       TextWrapping="Wrap"
+                       Text="Путь расположения файлов"
+                       VerticalAlignment="Top" />
+            <TextBox x:Name="textBox"
+                     HorizontalAlignment="Left"
+                     Height="23"
+                     Margin="174,10,0,0"
+                     TextWrapping="Wrap"
+                     Text="{Binding Path=Prop}"
+                     VerticalAlignment="Top"
+                     Width="377"
+                     IsReadOnly="True" />
+            <Button Content="..."
+                    HorizontalAlignment="Left"
+                    Margin="556,10,0,0"
+                    VerticalAlignment="Top"
+                    Width="30"
+                    Height="23"
+                    Command="{Binding Path=}" />
         </Grid>
 
-        <Grid Margin="0,76,0,0">
+        <Grid Margin="0,5,0,0"
+              Grid.Row="1">
             <lvc:CartesianChart Series="{Binding Path=SeriesCollection}"
                                 LegendLocation="Right"
                                 Margin="10,0,10,10">

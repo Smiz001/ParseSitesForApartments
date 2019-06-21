@@ -29,6 +29,9 @@
                     <MenuItem Header="По типу квартир и метро"
                               Command="{Binding Path=CallChartWithMetroWindowCommand}">
                     </MenuItem>
+                    <MenuItem Header="Стоимости квартир"
+                              Command="{Binding Path=}">
+                    </MenuItem>
                 </MenuItem>
             </MenuItem>
         </Menu>
