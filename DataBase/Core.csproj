@@ -94,7 +94,6 @@
     <Compile Include="Sites\BaseParse.cs" />
     <Compile Include="Sites\BKN.cs" />
     <Compile Include="Sites\BN.cs" />
-    <Compile Include="Sites\CIAN.cs" />
     <Compile Include="Sites\ELMS.cs" />
     <Compile Include="UnionWithBase\UnionFlatEventArgs.cs" />
     <Compile Include="UnionWithBase\UnionParseInfoWithDataBase.cs" />
