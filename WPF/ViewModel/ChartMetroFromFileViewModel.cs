@@ -28,6 +28,7 @@ namespace WPF.ViewModel
     private ICommand selectFolderFileCommand;
     private List<string> files;
     private double squareBefore, squareAfter;
+    private string averPriceInCityName = "по городу";
     #endregion
 
     #region Constructors
@@ -137,7 +138,6 @@ order by Date";
         OnPropertyChanged("PathFiles");
       }
     }
-
     public double SquareBefore
     {
       get => squareBefore;
@@ -178,12 +178,28 @@ order by Date";
 
     private void DownoadDataByParametrs()
     {
+      Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
       var listSelectedRooms = typeRooms.Where(x => x.IsSelected == true).ToList();
       var listSelectedMetro = listMetro.Where(x => x.IsSelected == true).ToList();
       var dictRooms = new Dictionary<string, SortedDictionary<DateTime, double>>();
       foreach (var item in listSelectedRooms)
       {
         dictRooms.Add(item.NameTypeRoom, new SortedDictionary<DateTime, double>());
+      }
+      dictRooms.Add(averPriceInCityName, new SortedDictionary<DateTime, double>());
+
+      string enumMetroStr = string.Empty;
+      var cnt = listSelectedMetro.Count;
+      for (int i = 0; i < cnt; i++)
+      {
+        if (i == 0)
+        {
+          enumMetroStr = listSelectedMetro[i].NameMetro;
+        }
+        else
+        {
+          enumMetroStr += $", {listSelectedMetro[i].NameMetro}";
+        }
       }
 
       foreach (var item in files)
@@ -211,11 +227,14 @@ order by Date";
         {
           values.Add(item.Value);
         }
-        var line = new LineSeries { Title = $"Средняя цена за кв.м для {dic.Key}", Values = values };
+        LineSeries line = null;
+        if (dic.Key != averPriceInCityName)
+           line = new LineSeries { Title = $"Средняя цена за кв.м {dic.Key} в {enumMetroStr}", Values = values };
+        else
+          line = new LineSeries { Title = $"Средняя цена за кв.м {dic.Key}", Values = values };
         series.Add(line);
       }
       SeriesCollection = series;
-
       var ls = new List<string>();
       foreach (var date in datesStart)
       {
@@ -223,6 +242,7 @@ order by Date";
           ls.Add(date.ToShortDateString());
       }
       ListLabelsForX = ls;
+      Mouse.OverrideCursor = null;
     }
 
     
@@ -268,21 +288,23 @@ order by Date";
         {
           var arr = line.Split(';');
           string typeRoom = arr[5];
+          var value = double.Parse(arr[9]);
+          var square = double.Parse(arr[6]);
           if (typeRooms.ContainsKey(typeRoom))
           {
             var metro = arr[10];
             if (metros.Where(x => x.NameMetro == arr[10]).Count() > 0)
             {
-              var square = double.Parse(arr[6]);
               if (square >= SquareBefore && square <= SquareAfter)
               {
-                var value = double.Parse(arr[9]);
-                dict[typeRoom].Add(value);
+                dict[typeRoom].Add(Math.Round(value / square,3));
               }
             }
           }
+          dict[averPriceInCityName].Add(Math.Round(value / square, 3));
         }
       }
+
       foreach (var item in dict)
       {
         if (item.Value.Count > 0)
