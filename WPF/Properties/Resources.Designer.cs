@@ -59,5 +59,15 @@ namespace WPF.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon cottage26 {
+            get {
+                object obj = ResourceManager.GetObject("cottage26", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }
