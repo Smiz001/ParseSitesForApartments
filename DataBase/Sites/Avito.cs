@@ -99,23 +99,6 @@ namespace Core.Sites
       }
     }
 
-    private string CreateExportForRoom(string typeRoom)
-    {
-      var path = ExctractPath();
-      path = $@"{path}{typeRoom}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
-      if (!File.Exists(Filename))
-      {
-        File.Delete(path);
-      }
-
-      using (var sw = new StreamWriter(new FileStream(path, FileMode.Create), Encoding.UTF8))
-      {
-        sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Цена;Метро;Откуда взято");
-      }
-
-      return path;
-    }
-
     public override void ParsingAll()
     {
       CreateExport();
@@ -1463,13 +1446,6 @@ namespace Core.Sites
       throw new NotImplementedException();
     }
 
-    private string ExctractPath()
-    {
-      string path = string.Empty;
-      var arr = Filename.Split('\\');
-      path = Filename.Replace(arr[arr.Length - 1], "");
-      return path;
-    }
     //TODO добавить список домов
     private List<Building> listBuildings = new List<Building>();
     private void UnionFlats(object type)

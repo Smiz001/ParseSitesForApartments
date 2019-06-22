@@ -4,6 +4,9 @@ using Core.Enum;
 using Core.MainClasses;
 using log4net;
 using Core.Proxy;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Core.Sites
 {
@@ -43,5 +46,30 @@ namespace Core.Sites
 
     protected abstract void CalcAverPrice();
     public abstract void ParsingSdamAll();
+
+    protected string ExctractPath()
+    {
+      string path = string.Empty;
+      var arr = Filename.Split('\\');
+      path = Filename.Replace(arr[arr.Length - 1], "");
+      return path;
+    }
+
+    protected string CreateExportForRoom(string typeRoom)
+    {
+      var path = ExctractPath();
+      path = $@"{path}{typeRoom}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
+      if (!File.Exists(Filename))
+      {
+        File.Delete(path);
+      }
+
+      using (var sw = new StreamWriter(new FileStream(path, FileMode.Create), Encoding.UTF8))
+      {
+        sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Цена;Метро;Откуда взято");
+      }
+
+      return path;
+    }
   }
 }

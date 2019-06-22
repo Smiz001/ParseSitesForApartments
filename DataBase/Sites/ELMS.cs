@@ -21,38 +21,23 @@ namespace Core.Sites
 {
   public class ELMS : BaseParse
   {
-
+    #region Fields
+    private List<Flat> listFlat = new List<Flat>();
+    private static object locker = new object();
+    private static object lockerUnion = new object();
+    private static object lockerDistrict = new object();
     private Dictionary<int, string> district = new Dictionary<int, string>()
     {
       {38, "Адмиралтейский"}, {43, "Василеостровский"}, {4, "Выборгский"}, {6, "Калининский"}, {7, "Кировский"},
       {9, "Красногвардейский"}, {8, "Красносельский"}, {12, "Московский"}, {13, "Невский"}, {20, "Петроградский"},
       {14, "Приморский"}, {15, "Фрунзенский"}, {39, "Центральный"},
     };
-
-    private List<Flat> listFlat = new List<Flat>();
-    private static object locker = new object();
-    private static object lockerUnion = new object();
-    private static object lockerDistrict = new object();
-
     private int minPage = 1;
     private int maxPage = 20;
     private string filename = @"d:\ParserInfo\Appartament\ElmsProdam.csv";
-
-    public override string Filename
-    {
-      get => filename;
-      set => filename = value;
-    }
-
-    public override string FilenameSdam => @"d:\ParserInfo\Appartament\ElmsSdam.csv";
-    public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\ElmsProdamWithInfo.csv";
-    public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\ElmsSdamWithInfo.csv";
-    public override string NameSite => "ELMS";
-
     public delegate void Append(object sender, AppendFlatEventArgs e);
     public event Append OnAppend;
     private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
-
     private Thread studiiThread;
     private Thread oneThread;
     private Thread twoThread;
@@ -78,15 +63,32 @@ namespace Core.Sites
     private ProgressForm progress;
     private int count = 1;
     private int allcount = 1;
+    #endregion
 
+    #region Constructors 
     public ELMS(List<District> listDistricts, List<Metro> listMetros, List<ProxyInfo> listProxy) : base(listDistricts,
-      listMetros, listProxy)
+  listMetros, listProxy)
     {
       //CoreCreator creator = new CsvExportCreator();
       //export = creator.FactoryCreate(Filename);
       //OnAppend += export.AddFlatInList;
     }
+    #endregion
 
+    #region Properties
+    public override string Filename
+    {
+      get => filename;
+      set => filename = value;
+    }
+
+    public override string FilenameSdam => @"d:\ParserInfo\Appartament\ElmsSdam.csv";
+    public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\ElmsProdamWithInfo.csv";
+    public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\ElmsSdamWithInfo.csv";
+    public override string NameSite => "ELMS";
+    #endregion
+
+    #region Methods
     private void CreateExport()
     {
       CoreCreator creator = new CsvExportCreator();
@@ -105,31 +107,6 @@ namespace Core.Sites
       }
     }
 
-    private string ExctractPath()
-    {
-      string path = string.Empty;
-      var arr = Filename.Split('\\');
-      path = Filename.Replace(arr[arr.Length - 1], "");
-      return path;
-    }
-
-    private string CreateExportForRoom(string typeRoom)
-    {
-      var path = ExctractPath();
-      path = $@"{path}{typeRoom}-{DateTime.Now.ToShortDateString()}-{NameSite}.csv";
-      if (!File.Exists(Filename))
-      {
-        File.Delete(path);
-      }
-
-      using (var sw = new StreamWriter(new FileStream(path, FileMode.Create), Encoding.UTF8))
-      {
-        sw.WriteLine(@"Район;Улица;Номер;Корпус;Литер;Кол-во комнат;Площадь;Этаж;Цена;Метро;Откуда взято");
-      }
-
-      return path;
-    }
-
     public override void ParsingAll()
     {
       CreateExport();
@@ -138,114 +115,114 @@ namespace Core.Sites
         progress = new ProgressForm("ELMS Все квартиры Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
+          {
+            try
             {
-              try
+              studiiThread = new Thread(ChangeDistrictAndPage);
+              studiiThread.Start("Студия Н");
+              studiiThreadOld = new Thread(ChangeDistrictAndPage);
+              studiiThreadOld.Start("Студия");
+              oneThreadOld = new Thread(ChangeDistrictAndPage);
+              oneThreadOld.Start("1 км. кв.");
+              oneThread = new Thread(ChangeDistrictAndPage);
+              oneThread.Start("1 км. кв. Н");
+              twoThreadOld = new Thread(ChangeDistrictAndPage);
+              twoThreadOld.Start("2 км. кв.");
+              twoThread = new Thread(ChangeDistrictAndPage);
+              twoThread.Start("2 км. кв. Н");
+              threeThreadOld = new Thread(ChangeDistrictAndPage);
+              threeThreadOld.Start("3 км. кв.");
+              threeThread = new Thread(ChangeDistrictAndPage);
+              threeThread.Start("3 км. кв. Н");
+              fourThreadOld = new Thread(ChangeDistrictAndPage);
+              fourThreadOld.Start("4 км. кв.");
+              fourThread = new Thread(ChangeDistrictAndPage);
+              fourThread.Start("4 км. кв. Н");
+              fiveThreadOld = new Thread(ChangeDistrictAndPage);
+              fiveThreadOld.Start("5 км. кв.");
+              fiveThread = new Thread(ChangeDistrictAndPage);
+              fiveThread.Start("5 км. кв. Н");
+              sixThreadOld = new Thread(ChangeDistrictAndPage);
+              sixThreadOld.Start("6 км. кв.");
+
+              while (true)
               {
-                studiiThread = new Thread(ChangeDistrictAndPage);
-                studiiThread.Start("Студия Н");
-                studiiThreadOld = new Thread(ChangeDistrictAndPage);
-                studiiThreadOld.Start("Студия");
-                oneThreadOld = new Thread(ChangeDistrictAndPage);
-                oneThreadOld.Start("1 км. кв.");
-                oneThread = new Thread(ChangeDistrictAndPage);
-                oneThread.Start("1 км. кв. Н");
-                twoThreadOld = new Thread(ChangeDistrictAndPage);
-                twoThreadOld.Start("2 км. кв.");
-                twoThread = new Thread(ChangeDistrictAndPage);
-                twoThread.Start("2 км. кв. Н");
-                threeThreadOld = new Thread(ChangeDistrictAndPage);
-                threeThreadOld.Start("3 км. кв.");
-                threeThread = new Thread(ChangeDistrictAndPage);
-                threeThread.Start("3 км. кв. Н");
-                fourThreadOld = new Thread(ChangeDistrictAndPage);
-                fourThreadOld.Start("4 км. кв.");
-                fourThread = new Thread(ChangeDistrictAndPage);
-                fourThread.Start("4 км. кв. Н");
-                fiveThreadOld = new Thread(ChangeDistrictAndPage);
-                fiveThreadOld.Start("5 км. кв.");
-                fiveThread = new Thread(ChangeDistrictAndPage);
-                fiveThread.Start("5 км. кв. Н");
-                sixThreadOld = new Thread(ChangeDistrictAndPage);
-                sixThreadOld.Start("6 км. кв.");
-
-                while (true)
-                {
-                  if (!studiiThreadOld.IsAlive)
-                    if (!studiiThread.IsAlive)
-                      if (!oneThreadOld.IsAlive)
-                        if (!twoThreadOld.IsAlive)
-                          if (!threeThreadOld.IsAlive)
-                            if (!fourThreadOld.IsAlive)
-                              if (!fiveThreadOld.IsAlive)
-                                if (!sixThreadOld.IsAlive)
-                                  if (!oneThread.IsAlive)
-                                    if (!twoThread.IsAlive)
-                                      if (!threeThread.IsAlive)
-                                        if (!fourThread.IsAlive)
-                                          if (!fiveThread.IsAlive)
-                                            break;
-                }
-
-                studiiThread = new Thread(UnionFlats);
-                studiiThread.Start("Студия Н");
-                studiiThreadOld = new Thread(UnionFlats);
-                studiiThreadOld.Start("Студия");
-                oneThreadOld = new Thread(UnionFlats);
-                oneThreadOld.Start("1 км. кв.");
-                oneThread = new Thread(UnionFlats);
-                oneThread.Start("1 км. кв. Н");
-                twoThreadOld = new Thread(UnionFlats);
-                twoThreadOld.Start("2 км. кв.");
-                twoThread = new Thread(UnionFlats);
-                twoThread.Start("2 км. кв. Н");
-                threeThreadOld = new Thread(UnionFlats);
-                threeThreadOld.Start("3 км. кв.");
-                threeThread = new Thread(UnionFlats);
-                threeThread.Start("3 км. кв. Н");
-                fourThreadOld = new Thread(UnionFlats);
-                fourThreadOld.Start("4 км. кв.");
-                fourThread = new Thread(UnionFlats);
-                fourThread.Start("4 км. кв. Н");
-                fiveThreadOld = new Thread(UnionFlats);
-                fiveThreadOld.Start("5 км. кв.");
-                fiveThread = new Thread(UnionFlats);
-                fiveThread.Start("5 км. кв. Н");
-                sixThreadOld = new Thread(UnionFlats);
-                sixThreadOld.Start("6 км. кв.");
-                while (true)
-                {
-                  if (!studiiThreadOld.IsAlive)
-                    if (!studiiThread.IsAlive)
-                      if (!oneThreadOld.IsAlive)
-                        if (!twoThreadOld.IsAlive)
-                          if (!threeThreadOld.IsAlive)
-                            if (!fourThreadOld.IsAlive)
-                              if (!fiveThreadOld.IsAlive)
-                                if (!sixThreadOld.IsAlive)
-                                  if (!oneThread.IsAlive)
-                                    if (!twoThread.IsAlive)
-                                      if (!threeThread.IsAlive)
-                                        if (!fourThread.IsAlive)
-                                          if (!fiveThread.IsAlive)
-                                            break;
-                }
-
-                IsFinished = true;
-                //var threadMessage = new Thread(
-                //  new ThreadStart(() =>
-                //    {
-                //      MessageBox.Show("Загрузка завершена");
-                //    }
-                //  )
-                //);
-                //threadMessage.Start();
-                progress.BeginInvoke(new Action(() => progress.Close()));
+                if (!studiiThreadOld.IsAlive)
+                  if (!studiiThread.IsAlive)
+                    if (!oneThreadOld.IsAlive)
+                      if (!twoThreadOld.IsAlive)
+                        if (!threeThreadOld.IsAlive)
+                          if (!fourThreadOld.IsAlive)
+                            if (!fiveThreadOld.IsAlive)
+                              if (!sixThreadOld.IsAlive)
+                                if (!oneThread.IsAlive)
+                                  if (!twoThread.IsAlive)
+                                    if (!threeThread.IsAlive)
+                                      if (!fourThread.IsAlive)
+                                        if (!fiveThread.IsAlive)
+                                          break;
               }
-              catch (Exception ex)
+
+              studiiThread = new Thread(UnionFlats);
+              studiiThread.Start("Студия Н");
+              studiiThreadOld = new Thread(UnionFlats);
+              studiiThreadOld.Start("Студия");
+              oneThreadOld = new Thread(UnionFlats);
+              oneThreadOld.Start("1 км. кв.");
+              oneThread = new Thread(UnionFlats);
+              oneThread.Start("1 км. кв. Н");
+              twoThreadOld = new Thread(UnionFlats);
+              twoThreadOld.Start("2 км. кв.");
+              twoThread = new Thread(UnionFlats);
+              twoThread.Start("2 км. кв. Н");
+              threeThreadOld = new Thread(UnionFlats);
+              threeThreadOld.Start("3 км. кв.");
+              threeThread = new Thread(UnionFlats);
+              threeThread.Start("3 км. кв. Н");
+              fourThreadOld = new Thread(UnionFlats);
+              fourThreadOld.Start("4 км. кв.");
+              fourThread = new Thread(UnionFlats);
+              fourThread.Start("4 км. кв. Н");
+              fiveThreadOld = new Thread(UnionFlats);
+              fiveThreadOld.Start("5 км. кв.");
+              fiveThread = new Thread(UnionFlats);
+              fiveThread.Start("5 км. кв. Н");
+              sixThreadOld = new Thread(UnionFlats);
+              sixThreadOld.Start("6 км. кв.");
+              while (true)
               {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!studiiThreadOld.IsAlive)
+                  if (!studiiThread.IsAlive)
+                    if (!oneThreadOld.IsAlive)
+                      if (!twoThreadOld.IsAlive)
+                        if (!threeThreadOld.IsAlive)
+                          if (!fourThreadOld.IsAlive)
+                            if (!fiveThreadOld.IsAlive)
+                              if (!sixThreadOld.IsAlive)
+                                if (!oneThread.IsAlive)
+                                  if (!twoThread.IsAlive)
+                                    if (!threeThread.IsAlive)
+                                      if (!fourThread.IsAlive)
+                                        if (!fiveThread.IsAlive)
+                                          break;
               }
+
+              IsFinished = true;
+              //var threadMessage = new Thread(
+              //  new ThreadStart(() =>
+              //    {
+              //      MessageBox.Show("Загрузка завершена");
+              //    }
+              //  )
+              //);
+              //threadMessage.Start();
+              progress.BeginInvoke(new Action(() => progress.Close()));
             }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
           ));
         threadbackground.Start();
         progress.Show();
@@ -343,54 +320,54 @@ namespace Core.Sites
         progress = new ProgressForm("ELMS Студии Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
+          {
+            try
             {
-              try
-              {
-                studiiThread = new Thread(ChangeDistrictAndPage);
-                studiiThread.Start("Студия Н");
-                studiiThreadOld = new Thread(ChangeDistrictAndPage);
-                studiiThreadOld.Start("Студия");
+              studiiThread = new Thread(ChangeDistrictAndPage);
+              studiiThread.Start("Студия Н");
+              studiiThreadOld = new Thread(ChangeDistrictAndPage);
+              studiiThreadOld.Start("Студия");
 
-                while (true)
+              while (true)
+              {
+                if (!studiiThreadOld.IsAlive)
                 {
-                  if (!studiiThreadOld.IsAlive)
+                  if (!studiiThread.IsAlive)
                   {
-                    if (!studiiThread.IsAlive)
-                    {
-                      break;
-                    }
+                    break;
                   }
                 }
-                listFlat.Clear();
-                foreach (var dis in ListDistricts)
-                {
-                  dis.Buildings.Clear();
-                }
-                Log.Debug("Start Union Studii");
-                studiiThread = new Thread(UnionFlats);
-                studiiThread.Start("Студия Н");
-                studiiThreadOld = new Thread(UnionFlats);
-                studiiThreadOld.Start("Студия");
+              }
+              listFlat.Clear();
+              foreach (var dis in ListDistricts)
+              {
+                dis.Buildings.Clear();
+              }
+              Log.Debug("Start Union Studii");
+              studiiThread = new Thread(UnionFlats);
+              studiiThread.Start("Студия Н");
+              studiiThreadOld = new Thread(UnionFlats);
+              studiiThreadOld.Start("Студия");
 
-                while (true)
+              while (true)
+              {
+                if (!studiiThreadOld.IsAlive)
                 {
-                  if (!studiiThreadOld.IsAlive)
+                  if (!studiiThread.IsAlive)
                   {
-                    if (!studiiThread.IsAlive)
-                    {
-                      break;
-                    }
+                    break;
                   }
                 }
+              }
 
-                MessageBox.Show("Загрузка завершена");
-                progress.BeginInvoke(new Action(() => progress.Close()));
-              }
-              catch (Exception ex)
-              {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-              }
+              MessageBox.Show("Загрузка завершена");
+              progress.BeginInvoke(new Action(() => progress.Close()));
             }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
           ));
         threadbackground.Start();
         progress.Show();
@@ -449,52 +426,52 @@ namespace Core.Sites
         progress = new ProgressForm("ELMS 1 км. кв. Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
+          {
+            try
             {
-              try
-              {
-                oneThreadOld = new Thread(ChangeDistrictAndPage);
-                oneThreadOld.Start("1 км. кв.");
-                oneThread = new Thread(ChangeDistrictAndPage);
-                oneThread.Start("1 км. кв. Н");
+              oneThreadOld = new Thread(ChangeDistrictAndPage);
+              oneThreadOld.Start("1 км. кв.");
+              oneThread = new Thread(ChangeDistrictAndPage);
+              oneThread.Start("1 км. кв. Н");
 
-                while (true)
+              while (true)
+              {
+                if (!oneThreadOld.IsAlive)
                 {
-                  if (!oneThreadOld.IsAlive)
+                  if (!oneThread.IsAlive)
+                    break;
+                }
+              }
+              listFlat.Clear();
+              foreach (var dis in ListDistricts)
+              {
+                dis.Buildings.Clear();
+              }
+              Log.Debug("Start Union 1");
+              oneThreadOld = new Thread(UnionFlats);
+              oneThreadOld.Start("1 км. кв.");
+              oneThread = new Thread(UnionFlats);
+              oneThread.Start("1 км. кв. Н");
+
+              while (true)
+              {
+                if (!oneThreadOld.IsAlive)
+                {
+                  if (!oneThread.IsAlive)
                   {
-                    if (!oneThread.IsAlive)
-                      break;
+                    break;
                   }
                 }
-                listFlat.Clear();
-                foreach (var dis in ListDistricts)
-                {
-                  dis.Buildings.Clear();
-                }
-                Log.Debug("Start Union 1");
-                oneThreadOld = new Thread(UnionFlats);
-                oneThreadOld.Start("1 км. кв.");
-                oneThread = new Thread(UnionFlats);
-                oneThread.Start("1 км. кв. Н");
-
-                while (true)
-                {
-                  if (!oneThreadOld.IsAlive)
-                  {
-                    if (!oneThread.IsAlive)
-                    {
-                      break;
-                    }
-                  }
-                }
-
-                MessageBox.Show("Загрузка завершена");
-                progress.BeginInvoke(new Action(() => progress.Close()));
               }
-              catch (Exception ex)
-              {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-              }
+
+              MessageBox.Show("Загрузка завершена");
+              progress.BeginInvoke(new Action(() => progress.Close()));
             }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
           ));
         threadbackground.Start();
         progress.Show();
@@ -552,50 +529,50 @@ namespace Core.Sites
         progress = new ProgressForm("ELMS 2 км. кв. Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
+          {
+            try
             {
-              try
+              twoThreadOld = new Thread(ChangeDistrictAndPage);
+              twoThreadOld.Start("2 км. кв.");
+              twoThread = new Thread(ChangeDistrictAndPage);
+              twoThread.Start("2 км. кв. Н");
+
+              while (true)
               {
-                twoThreadOld = new Thread(ChangeDistrictAndPage);
-                twoThreadOld.Start("2 км. кв.");
-                twoThread = new Thread(ChangeDistrictAndPage);
-                twoThread.Start("2 км. кв. Н");
-
-                while (true)
+                if (!twoThreadOld.IsAlive)
                 {
-                  if (!twoThreadOld.IsAlive)
-                  {
-                    if (!twoThread.IsAlive)
-                      break;
-                  }
+                  if (!twoThread.IsAlive)
+                    break;
                 }
-                listFlat.Clear();
-                foreach (var dis in ListDistricts)
-                {
-                  dis.Buildings.Clear();
-                }
-                Log.Debug("Start Union 2");
-                twoThreadOld = new Thread(UnionFlats);
-                twoThreadOld.Start("2 км. кв.");
-                twoThread = new Thread(UnionFlats);
-                twoThread.Start("2 км. кв. Н");
-
-                while (true)
-                {
-                  if (!twoThreadOld.IsAlive)
-                  {
-                    if (!twoThread.IsAlive)
-                      break;
-                  }
-                }
-
-                MessageBox.Show("Загрузка завершена");
-                progress.BeginInvoke(new Action(() => progress.Close()));
               }
-              catch (Exception ex)
+              listFlat.Clear();
+              foreach (var dis in ListDistricts)
               {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                dis.Buildings.Clear();
               }
+              Log.Debug("Start Union 2");
+              twoThreadOld = new Thread(UnionFlats);
+              twoThreadOld.Start("2 км. кв.");
+              twoThread = new Thread(UnionFlats);
+              twoThread.Start("2 км. кв. Н");
+
+              while (true)
+              {
+                if (!twoThreadOld.IsAlive)
+                {
+                  if (!twoThread.IsAlive)
+                    break;
+                }
+              }
+
+              MessageBox.Show("Загрузка завершена");
+              progress.BeginInvoke(new Action(() => progress.Close()));
             }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
           ));
         threadbackground.Start();
         progress.Show();
@@ -654,50 +631,50 @@ namespace Core.Sites
         progress = new ProgressForm("ELMS 3 км. кв. Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
+          {
+            try
             {
-              try
+              threeThreadOld = new Thread(ChangeDistrictAndPage);
+              threeThreadOld.Start("3 км. кв.");
+              threeThread = new Thread(ChangeDistrictAndPage);
+              threeThread.Start("3 км. кв. Н");
+
+              while (true)
               {
-                threeThreadOld = new Thread(ChangeDistrictAndPage);
-                threeThreadOld.Start("3 км. кв.");
-                threeThread = new Thread(ChangeDistrictAndPage);
-                threeThread.Start("3 км. кв. Н");
-
-                while (true)
+                if (!threeThreadOld.IsAlive)
                 {
-                  if (!threeThreadOld.IsAlive)
-                  {
-                    if (!threeThread.IsAlive)
-                      break;
-                  }
+                  if (!threeThread.IsAlive)
+                    break;
                 }
-                listFlat.Clear();
-                foreach (var dis in ListDistricts)
-                {
-                  dis.Buildings.Clear();
-                }
-                Log.Debug("Start Union 3");
-                threeThreadOld = new Thread(UnionFlats);
-                threeThreadOld.Start("3 км. кв.");
-                threeThread = new Thread(UnionFlats);
-                threeThread.Start("3 км. кв. Н");
-
-                while (true)
-                {
-                  if (!threeThreadOld.IsAlive)
-                  {
-                    if (!threeThread.IsAlive)
-                      break;
-                  }
-                }
-
-                MessageBox.Show("Загрузка завершена");
-                progress.BeginInvoke(new Action(() => progress.Close()));
               }
-              catch (Exception ex)
+              listFlat.Clear();
+              foreach (var dis in ListDistricts)
               {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                dis.Buildings.Clear();
               }
+              Log.Debug("Start Union 3");
+              threeThreadOld = new Thread(UnionFlats);
+              threeThreadOld.Start("3 км. кв.");
+              threeThread = new Thread(UnionFlats);
+              threeThread.Start("3 км. кв. Н");
+
+              while (true)
+              {
+                if (!threeThreadOld.IsAlive)
+                {
+                  if (!threeThread.IsAlive)
+                    break;
+                }
+              }
+
+              MessageBox.Show("Загрузка завершена");
+              progress.BeginInvoke(new Action(() => progress.Close()));
             }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
           ));
         threadbackground.Start();
         progress.Show();
@@ -756,50 +733,50 @@ namespace Core.Sites
         progress = new ProgressForm("ELMS 4 км. кв. Продажа");
         var threadbackground = new Thread(
           new ThreadStart(() =>
+          {
+            try
             {
-              try
+              fourThreadOld = new Thread(ChangeDistrictAndPage);
+              fourThreadOld.Start("4 км. кв.");
+              fourThread = new Thread(ChangeDistrictAndPage);
+              fourThread.Start("4 км. кв. Н");
+
+              while (true)
               {
-                fourThreadOld = new Thread(ChangeDistrictAndPage);
-                fourThreadOld.Start("4 км. кв.");
-                fourThread = new Thread(ChangeDistrictAndPage);
-                fourThread.Start("4 км. кв. Н");
-
-                while (true)
+                if (!fourThreadOld.IsAlive)
                 {
-                  if (!fourThreadOld.IsAlive)
-                  {
-                    if (!fourThread.IsAlive)
-                      break;
-                  }
+                  if (!fourThread.IsAlive)
+                    break;
                 }
-                listFlat.Clear();
-                foreach (var dis in ListDistricts)
-                {
-                  dis.Buildings.Clear();
-                }
-                Log.Debug("Start Union 4");
-                fourThreadOld = new Thread(UnionFlats);
-                fourThreadOld.Start("4 км. кв.");
-                fourThread = new Thread(UnionFlats);
-                fourThread.Start("4 км. кв. Н");
-
-                while (true)
-                {
-                  if (!fourThreadOld.IsAlive)
-                  {
-                    if (!fourThread.IsAlive)
-                      break;
-                  }
-                }
-
-                MessageBox.Show("Загрузка завершена");
-                progress.BeginInvoke(new Action(() => progress.Close()));
               }
-              catch (Exception ex)
+              listFlat.Clear();
+              foreach (var dis in ListDistricts)
               {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                dis.Buildings.Clear();
               }
+              Log.Debug("Start Union 4");
+              fourThreadOld = new Thread(UnionFlats);
+              fourThreadOld.Start("4 км. кв.");
+              fourThread = new Thread(UnionFlats);
+              fourThread.Start("4 км. кв. Н");
+
+              while (true)
+              {
+                if (!fourThreadOld.IsAlive)
+                {
+                  if (!fourThread.IsAlive)
+                    break;
+                }
+              }
+
+              MessageBox.Show("Загрузка завершена");
+              progress.BeginInvoke(new Action(() => progress.Close()));
             }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
           ));
         threadbackground.Start();
         progress.Show();
@@ -858,50 +835,50 @@ namespace Core.Sites
         progress = new ProgressForm("ELMS 5+ км. кв.");
         var threadbackground = new Thread(
           new ThreadStart(() =>
+          {
+            try
             {
-              try
+              fiveThreadOld = new Thread(ChangeDistrictAndPage);
+              fiveThreadOld.Start("5 км. кв.");
+              fiveThread = new Thread(ChangeDistrictAndPage);
+              fiveThread.Start("5 км. кв. Н");
+
+              while (true)
               {
-                fiveThreadOld = new Thread(ChangeDistrictAndPage);
-                fiveThreadOld.Start("5 км. кв.");
-                fiveThread = new Thread(ChangeDistrictAndPage);
-                fiveThread.Start("5 км. кв. Н");
-
-                while (true)
+                if (!fiveThreadOld.IsAlive)
                 {
-                  if (!fiveThreadOld.IsAlive)
-                  {
-                    if (!fiveThread.IsAlive)
-                      break;
-                  }
+                  if (!fiveThread.IsAlive)
+                    break;
                 }
-                listFlat.Clear();
-                foreach (var dis in ListDistricts)
-                {
-                  dis.Buildings.Clear();
-                }
-                Log.Debug("Start Union 5");
-                fiveThreadOld = new Thread(UnionFlats);
-                fiveThreadOld.Start("5 км. кв.");
-                fiveThread = new Thread(UnionFlats);
-                fiveThread.Start("5 км. кв. Н");
-
-                while (true)
-                {
-                  if (!fiveThreadOld.IsAlive)
-                  {
-                    if (!fiveThread.IsAlive)
-                      break;
-                  }
-                }
-
-                MessageBox.Show("Загрузка завершена");
-                progress.BeginInvoke(new Action(() => progress.Close()));
               }
-              catch (Exception ex)
+              listFlat.Clear();
+              foreach (var dis in ListDistricts)
               {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                dis.Buildings.Clear();
               }
+              Log.Debug("Start Union 5");
+              fiveThreadOld = new Thread(UnionFlats);
+              fiveThreadOld.Start("5 км. кв.");
+              fiveThread = new Thread(UnionFlats);
+              fiveThread.Start("5 км. кв. Н");
+
+              while (true)
+              {
+                if (!fiveThreadOld.IsAlive)
+                {
+                  if (!fiveThread.IsAlive)
+                    break;
+                }
+              }
+
+              MessageBox.Show("Загрузка завершена");
+              progress.BeginInvoke(new Action(() => progress.Close()));
             }
+            catch (Exception ex)
+            {
+              MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+          }
           ));
         threadbackground.Start();
         progress.Show();
@@ -1722,5 +1699,6 @@ namespace Core.Sites
     {
       throw new NotImplementedException();
     }
+    #endregion
   }
 }
