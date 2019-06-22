@@ -44,14 +44,12 @@ namespace Core.Sites
       set => filename = value;
     }
 
-
     public override string FilenameSdam => @"d:\ParserInfo\Appartament\ElmsSdam.csv";
     public override string FilenameWithinfo => @"d:\ParserInfo\Appartament\ElmsProdamWithInfo.csv";
     public override string FilenameWithinfoSdam => @"d:\ParserInfo\Appartament\ElmsSdamWithInfo.csv";
     public override string NameSite => "ELMS";
 
     public delegate void Append(object sender, AppendFlatEventArgs e);
-
     public event Append OnAppend;
     private readonly UnionParseInfoWithDataBase unionInfo = new UnionParseInfoWithDataBase();
 
