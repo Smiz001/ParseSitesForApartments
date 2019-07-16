@@ -189,7 +189,7 @@ namespace WPF.Controls
       else if (result < MaxValue && result > MinValue)
       {
         Value = result;
-        PART_TextBox.CaretIndex = PART_TextBox.Text.Length;
+       // PART_TextBox.CaretIndex = PART_TextBox.Text.Length;
       }
       else
       {

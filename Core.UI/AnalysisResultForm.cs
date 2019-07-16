@@ -111,7 +111,7 @@ namespace CoreUI
         //Поиск номера колонок
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "РАЙОН")
+          if (string.Compare(ar[i], "РАЙОН", StringComparison.OrdinalIgnoreCase) == 0)
           {
             districtColumn = i;
             break;
@@ -119,7 +119,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "ЦЕНА")
+          if (string.Compare(ar[i], "ЦЕНА", StringComparison.OrdinalIgnoreCase) == 0)
           {
             priceColumn = i;
             break;
@@ -127,7 +127,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "ПЛОЩАДЬ")
+          if (string.Compare(ar[i], "ПЛОЩАДЬ", StringComparison.OrdinalIgnoreCase) == 0)
           {
             squareColumn = i;
             break;
@@ -135,7 +135,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "ЭТАЖ")
+          if (string.Compare(ar[i], "ЭТАЖ", StringComparison.OrdinalIgnoreCase) == 0 )
           {
             floorColumn = i;
             break;
@@ -143,7 +143,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "ДАТА ПОСТРОЙКИ")
+          if (string.Compare(ar[i], "ДАТА ПОСТРОЙКИ", StringComparison.OrdinalIgnoreCase) == 0)
           {
             dateBuildColumn = i;
             break;
@@ -151,7 +151,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "РАССТОЯНИЕ НА МАШИНЕ, М")
+          if (string.Compare(ar[i], "РАССТОЯНИЕ НА МАШИНЕ, М", StringComparison.OrdinalIgnoreCase) == 0)
           {
             distanceCarColumn = i;
             break;
@@ -159,7 +159,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "РАССТОЯНИЕ ПЕШКОМ, М")
+          if (string.Compare(ar[i], "РАССТОЯНИЕ ПЕШКОМ, М", StringComparison.OrdinalIgnoreCase) == 0)
           {
             distaneFootColumn = i;
             break;
@@ -167,7 +167,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "ОТКУДА ВЗЯТО")
+          if (string.Compare(ar[i], "ОТКУДА ВЗЯТО", StringComparison.OrdinalIgnoreCase) == 0)
           {
             urlColumn = i;
             break;
@@ -175,7 +175,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "КОЛ-ВО КОМНАТ")
+          if (string.Compare(ar[i], "КОЛ-ВО КОМНАТ", StringComparison.OrdinalIgnoreCase) == 0)
           {
             typeRoomColumn = i;
             break;
@@ -183,7 +183,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "МЕТРО")
+          if (string.Compare(ar[i], "МЕТРО", StringComparison.OrdinalIgnoreCase) == 0)
           {
             metroColum = i;
             break;
@@ -191,7 +191,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "ТИП ДОМА")
+          if (string.Compare(ar[i], "ТИП ДОМА", StringComparison.OrdinalIgnoreCase) == 0)
           {
             typeBuildColumn = i;
             break;
@@ -199,7 +199,7 @@ namespace CoreUI
         }
         for (short i = 0; i < ar.Length; i++)
         {
-          if (ar[i].ToUpper() == "ПРОВОДИЛСЯ КАП.РЕМОНТ")
+          if (string.Compare(ar[i], "ПРОВОДИЛСЯ КАП.РЕМОНТ", StringComparison.OrdinalIgnoreCase) == 0)
           {
             isRepairColumn = i;
             break;

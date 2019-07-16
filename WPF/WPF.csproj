@@ -15,6 +15,8 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -45,7 +47,11 @@
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -89,6 +95,9 @@
     <Compile Include="View\ConnectionWindow.xaml.cs">
       <DependentUpon>ConnectionWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\TestGoogleMaps.xaml.cs">
+      <DependentUpon>TestGoogleMaps.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -123,6 +132,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ConnectionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TestGoogleMaps.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -32,6 +32,9 @@
                     <MenuItem Header="Стоимости квартир"
                               Command="{Binding Path=CallChartWithMetroByFilesWindowCommand}">
                     </MenuItem>
+                    <!--<MenuItem Header="Карта"
+                              Command="{Binding Path=OpenMapCommand}">
+                    </MenuItem>-->
                 </MenuItem>
             </MenuItem>
         </Menu>

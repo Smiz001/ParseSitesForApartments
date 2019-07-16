@@ -1018,7 +1018,7 @@ namespace Core.Sites
 
         if (building.MetroObj == null)
         {
-          var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper() == metro.ToUpper());
+          var metroObjEnum = ListMetros.Where(x => string.Compare(x.Name, metro, StringComparison.OrdinalIgnoreCase) == 0);
           if (metroObjEnum.Count() > 0)
           {
             building.MetroObj = metroObjEnum.First();
@@ -1513,7 +1513,7 @@ namespace Core.Sites
               if (building == null)
               {
                 Metro metroObj = null;
-                var metroObjs = ListMetros.Where(x => x.Name.ToUpper() == metro.ToUpper());
+                var metroObjs = ListMetros.Where(x => string.Compare(x.Name, metro, StringComparison.OrdinalIgnoreCase) == 0 );
                 if (metroObjs.Count() > 0)
                   metroObj = metroObjs.First();
 

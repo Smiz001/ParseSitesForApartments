@@ -121,6 +121,9 @@ namespace Core.UnionWithBase
 
                 if (string.IsNullOrWhiteSpace(letter))
                 {
+                  if (letter.Length > 1)
+                    letter = letter.Substring(0, 1);
+
                   if (string.IsNullOrWhiteSpace(building))
                   {
                     select = $"EXEC dbo.MainInfoAboutBuldingByStreetAndNumber '{street}', '{number}'";
@@ -150,43 +153,45 @@ namespace Core.UnionWithBase
 
                 //var command = new SqlCommand(select, connection);
                 reader = connection.ExecuteReader(select);
-                while (reader.Read())
+                if(reader != null)
                 {
-                  if (string.IsNullOrEmpty(district))
-                    district = reader.GetString(0);
+                  while (reader.Read())
+                  {
+                    if (string.IsNullOrEmpty(district))
+                      district = reader.GetString(0);
 
-                  dateBuild = reader.GetString(1);
-                  dateRecon = reader.GetString(3);
-                  dateRepair = reader.GetString(4).Replace("  ", "");
-                  buildingSquare = reader.GetDouble(5).ToString(CultureInfo.CurrentCulture);
-                  livingSquare = reader.GetDouble(6).ToString(CultureInfo.CurrentCulture);
-                  noLivingSqaure = reader.GetDouble(7).ToString(CultureInfo.CurrentCulture);
-                  countFloor = reader.GetInt32(9).ToString();
-                  residents = reader.GetInt32(10).ToString();
-                  mansardaSquare = reader.GetDouble(11).ToString(CultureInfo.CurrentCulture);
-                  otoplenie = reader.GetBoolean(12).ToString();
-                  gvs = reader.GetBoolean(13).ToString();
-                  es = reader.GetBoolean(14).ToString();
-                  gs = reader.GetBoolean(15).ToString();
-                  typeApartaments = reader.GetString(16).Replace("  ", "");
-                  countApartaments = reader.GetString(17).Replace("  ", "");
-                  countInternal = reader.GetInt32(18).ToString();
-                  dateTep = reader.GetDateTime(19);
-                  typeRepair = reader.GetString(21);
-                  countLift = reader.GetInt32(22).ToString();
+                    dateBuild = reader.GetString(1);
+                    dateRecon = reader.GetString(3);
+                    dateRepair = reader.GetString(4).Replace("  ", "");
+                    buildingSquare = reader.GetDouble(5).ToString(CultureInfo.CurrentCulture);
+                    livingSquare = reader.GetDouble(6).ToString(CultureInfo.CurrentCulture);
+                    noLivingSqaure = reader.GetDouble(7).ToString(CultureInfo.CurrentCulture);
+                    countFloor = reader.GetInt32(9).ToString();
+                    residents = reader.GetInt32(10).ToString();
+                    mansardaSquare = reader.GetDouble(11).ToString(CultureInfo.CurrentCulture);
+                    otoplenie = reader.GetBoolean(12).ToString();
+                    gvs = reader.GetBoolean(13).ToString();
+                    es = reader.GetBoolean(14).ToString();
+                    gs = reader.GetBoolean(15).ToString();
+                    typeApartaments = reader.GetString(16).Replace("  ", "");
+                    countApartaments = reader.GetString(17).Replace("  ", "");
+                    countInternal = reader.GetInt32(18).ToString();
+                    dateTep = reader.GetDateTime(19);
+                    typeRepair = reader.GetString(21);
+                    countLift = reader.GetInt32(22).ToString();
 
-                  x = (float) reader.GetDouble(24);
-                  y = (float) reader.GetDouble(25);
+                    x = (float)reader.GetDouble(24);
+                    y = (float)reader.GetDouble(25);
 
-                  distanceOnFoot = reader.GetString(26);
-                  distanceOnCar = reader.GetString(27);
-                  metroInBase = reader.GetString(28);
-                  xmetro = (float) reader.GetDouble(29);
-                  ymetro = (float) reader.GetDouble(30);
-                  IdBuilding = reader.GetGuid(31);
+                    distanceOnFoot = reader.GetString(26);
+                    distanceOnCar = reader.GetString(27);
+                    metroInBase = reader.GetString(28);
+                    xmetro = (float)reader.GetDouble(29);
+                    ymetro = (float)reader.GetDouble(30);
+                    IdBuilding = reader.GetGuid(31);
+                  }
+                  reader.Close();
                 }
-
-                reader.Close();
 
                 if (!string.IsNullOrEmpty(dateBuild))
                 {
@@ -419,7 +424,6 @@ where ID='{IdBuilding}'";
                     }
                   }
                 }
-
                 if (!string.IsNullOrEmpty(distanceOnCar) && string.IsNullOrEmpty(disCar))
                 {
                   var arrr = distanceOnCar.Split(',');
@@ -589,36 +593,40 @@ values(newid(),'{street}','{number}','{building}','{letter}','A0CC3147-65B0-472D
     private float[] GetCoorForBuildig(string adress)
     {
       float[] arr = null;
+      Thread.Sleep(2000);
       var yandex = new Yandex();
       var doc1 = yandex.SearchObjectByAddress(adress);
-      using (var sw1 = new StreamWriter(@"Coord.xml", false, System.Text.Encoding.UTF8))
+      if(!string.IsNullOrEmpty(doc1))
       {
-        sw1.WriteLine(doc1);
-      }
-
-      XmlDocument doc = new XmlDocument();
-      doc.Load(@"Coord.xml");
-      var root = doc.DocumentElement;
-      var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
-      if (GeoObjectCollection.ChildNodes.Count > 1)
-      {
-        var featureMember = GeoObjectCollection.ChildNodes[1];
-        if (featureMember.ChildNodes.Count > 0)
+        using (var sw1 = new StreamWriter(@"Coord.xml", false, System.Text.Encoding.UTF8))
         {
-          var GeoObject = featureMember.ChildNodes[0];
-          if (GeoObject.ChildNodes.Count > 4)
-          {
-            var Point = GeoObject.ChildNodes[4];
-            var coor = Point.InnerText.Split(' ');
-            float x = float.Parse(coor[1].Replace(".", ","));
-            float y = float.Parse(coor[0].Replace(".", ","));
+          sw1.WriteLine(doc1);
+        }
 
-            arr = new[] {x, y};
+        XmlDocument doc = new XmlDocument();
+        doc.Load(@"Coord.xml");
+        var root = doc.DocumentElement;
+        var GeoObjectCollection = root.GetElementsByTagName("GeoObjectCollection")[0];
+        if (GeoObjectCollection.ChildNodes.Count > 1)
+        {
+          var featureMember = GeoObjectCollection.ChildNodes[1];
+          if (featureMember.ChildNodes.Count > 0)
+          {
+            var GeoObject = featureMember.ChildNodes[0];
+            if (GeoObject.ChildNodes.Count > 4)
+            {
+              var Point = GeoObject.ChildNodes[4];
+              var coor = Point.InnerText.Split(' ');
+              float x = float.Parse(coor[1].Replace(".", ","));
+              float y = float.Parse(coor[0].Replace(".", ","));
+
+              arr = new[] { x, y };
+            }
           }
         }
-      }
 
-      File.Delete(@"Coord.xml");
+        File.Delete(@"Coord.xml");
+      }
       return arr;
     }
 

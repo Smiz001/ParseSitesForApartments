@@ -21,7 +21,7 @@ namespace Core.Sites
 {
   public class BKN : BaseParse
   {
-    #region Fiends
+    #region Fields
 
     private int minPage = 1;
     private int maxPage = 100;

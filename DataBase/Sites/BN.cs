@@ -1144,7 +1144,7 @@ namespace Core.Sites
         string metro = string.Empty;
         if (apartaments[i].GetElementsByClassName("object--metro").Length > 0)
           metro = apartaments[i].GetElementsByClassName("object--metro")[0].TextContent.Trim();
-        var metroObjEnum = ListMetros.Where(x => x.Name.ToUpper() == metro.ToUpper());
+        var metroObjEnum = ListMetros.Where(x => string.Compare(x.Name, metro, StringComparison.OrdinalIgnoreCase) == 0);
         if (metroObjEnum.Count() > 0)
         {
           building.MetroObj = metroObjEnum.First();

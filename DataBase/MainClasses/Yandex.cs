@@ -11,9 +11,16 @@ namespace Core.MainClasses
   {
     public string SearchObjectByAddress(string Address)
     {
-      string urlXml = "http://geocode-maps.yandex.ru/1.x/?geocode=" + Address + "&results=1";
-      Request request = new Request();
-      return request.GetResponseToString(request.GET(urlXml));
+      try
+      {
+        string urlXml = "http://geocode-maps.yandex.ru/1.x/?geocode=" + Address + "&results=1";
+        Request request = new Request();
+        return request.GetResponseToString(request.GET(urlXml));
+      }
+      catch
+      {
+        return null;
+      }
     }
   }
 
@@ -74,9 +81,13 @@ namespace Core.MainClasses
       }
 
       //Получение ответа.
-      HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-      Stream responsestream = response.GetResponseStream();
-      return responsestream;
+      var response = request.GetResponse() as HttpWebResponse;
+      if(response != null)
+      {
+        Stream responsestream = response.GetResponseStream();
+        return responsestream;
+      }
+      return null;
     }
 
     private Stream ResponseStreamPOST(string Url, string Command)
